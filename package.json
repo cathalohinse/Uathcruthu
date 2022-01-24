@@ -1,0 +1,28 @@
+{
+  "name": "uathcruthu-web",
+  "version": "1.0.0",
+  "description": "a web app that automates the processing of project submission data into a project showcase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cathalohinse/Uathcruthu.git"
+  },
+  "author": "Cathal Ó'hÍnse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cathalohinse/Uathcruthu/issues"
+  },
+  "homepage": "https://github.com/cathalohinse/Uathcruthu#readme",
+  "dependencies": {
+    "@hapi/hapi": "^20.2.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  },
+  "prettier": {
+    "printWidth": 120
+  }
+}
