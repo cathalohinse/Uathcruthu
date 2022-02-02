@@ -1,0 +1,31 @@
+<div class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+    <table class="uk-table">
+        <caption>
+            Submissions to Date
+        </caption>
+        <thead>
+        <th>Student Name</th>
+        <th>Project Title</th>
+        <th>Descriptive Title</th>
+        <th>Student Personal Photo</th>
+        <th>Project Image</th>
+        <th>Summary (<100 words)</th>
+        <th>Project Landing Page URL</th>
+        <th>Demonstration Video URL</th>
+        </thead>
+        <tbody class="uk-text-left">
+        {{#each submissions}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{projectTitle}}</td>
+                <td>{{descriptiveTitle}}</td>
+                <td>{{personalPhoto}}</td>
+                <td>{{projectImage}}</td>
+                <td>{{summary}}</td>
+                <td>{{projectUrl}}</td>
+                <td>{{videoUrl}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>

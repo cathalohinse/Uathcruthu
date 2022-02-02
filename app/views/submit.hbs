@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html style="background-color: #877EB4;">
+
+{{> welcome-menu }}
+{{> title-card }}
+
 <head>
-    <title>Ionchuir</title>
+    <title>{{title}}</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/css/uikit.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
@@ -28,76 +32,64 @@
     </div>
 </div>
 
-<form action="/signup" method="POST">
+<form action="/submit" method="POST">
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Name"/>
-        </div>
-    </div>
-
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Project Title"/>
+            <input class="uk-input uk-form-large" type="text" name="name" placeholder="Name"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Descriptive Title"/>
+            <input class="uk-input uk-form-large" type="text" name="projectTitle" placeholder="Project Title"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Personal Digital Photograph"/>
+            <input class="uk-input uk-form-large" type="text" name="descriptiveTitle" placeholder="Descriptive Title"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Project Image"/>
+            <input class="uk-input uk-form-large" type="file" name="personalPhoto" placeholder="Personal Digital Photograph"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Summary (≤100 words)"/>
+            <input class="uk-input uk-form-large" type="file" name="projectImage" placeholder="Project Image"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Project Landing Page URL"/>
+            <input class="uk-input uk-form-large" type="text" name="summary" placeholder="Summary (≤100 words)"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="firstName" placeholder="Project Video URL"/>
+            <input class="uk-input uk-form-large" type="url" name="landingPageUrl" placeholder="Project Landing Page URL"/>
         </div>
     </div>
 
     <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: mail"></span>
-            <input class="uk-input uk-form-large" type="text" name="email" />
+            <span class="uk-form-icon" uk-icon="icon: user"></span>
+            <input class="uk-input uk-form-large" type="url" name="videoUrl" placeholder="Project Video URL"/>
         </div>
     </div>
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: lock"></span>
-            <input class="uk-input uk-form-large" type="password" name="password" />
-        </div>
-    </div>
+
     <div class="uk-margin">
         <button style="background-color: #653DC2" class="uk-button uk-button-primary uk-button-large uk-width-1-1">Sign up</button>
     </div>

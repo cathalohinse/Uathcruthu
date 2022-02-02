@@ -1,13 +1,27 @@
+"use strict";
+
 const Submissions = {
-  index: {
+  home: {
+    auth: false,
     handler: function (request, h) {
-      return h.file("./app/views/main.html");
+      return h.view("home", { title: "Make a Submission" });
     },
   },
-
-  submit: {
+  report: {
+    auth: false,
     handler: function (request, h) {
-      return h.file("./app/views/submit.html");
+      return h.view("report", {
+        title: "Submissions to Date",
+        submissions: this.submissions,
+      });
+    },
+  },
+  submit: {
+    auth: false,
+    handler: function (request, h) {
+      const data = request.payload;
+      this.submissions.push(data);
+      return h.redirect("/report");
     },
   },
 };
