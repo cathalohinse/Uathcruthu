@@ -22,7 +22,7 @@ const Accounts = {
   showLogin: {
     auth: false,
     handler: function (request, h) {
-      return h.view("login", { title: "Login to Submissions" });
+      return h.view("login", { title: "Login to Submissions", subtitle: "This is the subtitle" });
     },
   },
   login: {

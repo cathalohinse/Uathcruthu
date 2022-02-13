@@ -5,6 +5,7 @@ const submissionSchema = new Schema({
   name: String,
   projectTitle: String,
   descriptiveTitle: String,
+  projectType: String,
   personalPhoto: String,
   projectImage: String,
   summary: String,

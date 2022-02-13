@@ -1,13 +1,9 @@
 <div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
-{{> title-card }}
-{{> welcome-menu }}
+    {{> main-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
 </div>
 
 <div class="uk-container uk-margin">
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
-        <div class="uk-width-auto@m">
-            <img width="300" src="images/ITPL.png" />
-        </div>
         <div class="uk-width-expand@m">
             <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
             <p>Leathanach Ionchuir</p>
@@ -15,70 +11,85 @@
     </div>
 </div>
 
-
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
-<form action="/submit" method="POST">
+    <h3 style="color: black" class="uk-card-title uk-text-center">Welcome back!</h3>
+    <form action="/submit" method="POST">
 
-
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="name" placeholder="Name"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Name:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                <input class="uk-input uk-form-small" type="text" name="name" placeholder="Name"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="projectTitle" placeholder="Project Title"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Project Title:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                <input class="uk-input uk-form-small" type="text" name="projectTitle" placeholder="Project Title"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="descriptiveTitle" placeholder="Descriptive Title"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Descriptive Title:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                <input class="uk-input uk-form-small" type="text" name="descriptiveTitle" placeholder="Descriptive Title"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="file" name="personalPhoto" placeholder="Personal Digital Photograph"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Project Type:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
+                <input class="uk-input uk-form-small" type="text" name="projectType" placeholder="Project Type"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="file" name="projectImage" placeholder="Project Image"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Personal Digital Photograph:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: camera"></span>
+                <input class="uk-input uk-form-small" type="file" name="personalPhoto" placeholder="Personal Digital Photograph"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="text" name="summary" placeholder="Summary (≤100 words)"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Project Image:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: image"></span>
+                <input class="uk-input uk-form-small" type="file" name="projectImage" placeholder="Project Image"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="url" name="landingPageUrl" placeholder="Project Landing Page URL"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Summary (100 words max.):</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: info"></span>
+                <textarea class="uk-textarea uk-form-small" rows="7" type="text" name="summary" placeholder="Summary (≤100 words)"/></textarea>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: user"></span>
-            <input class="uk-input uk-form-large" type="url" name="videoUrl" placeholder="Project Video URL"/>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Project Landing Page URL:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: link"></span>
+                <input class="uk-input uk-form-small" type="url" name="landingPageUrl" placeholder="Project Landing Page URL"/>
+            </div>
         </div>
-    </div>
 
-    <div class="uk-margin">
-        <button style="background-color: #653DC2" class="uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
-    </div>
-</form>
+        <div class="uk-margin">
+            <label style="color: black; font-size:120%">Demonstration Video URL:</label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: youtube"></span>
+                <input class="uk-input uk-form-small" type="url" name="videoUrl" placeholder="Demonstration Video URL"/>
+            </div>
+        </div>
 
+        <div class="uk-margin">
+            <button style="background-color: #653DC2" class="uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
+        </div>
+
+    </form>
 </div>

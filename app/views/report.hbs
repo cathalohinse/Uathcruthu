@@ -1,15 +1,20 @@
 <div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
-    {{> title-card }}
-    {{> main-menu }}
+    {{> main-menu title="Uathcruthú" subTitle="Submissions List" }}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+            <p>Leathanach Ionchuir</p>
+        </div>
+    </div>
 </div>
 
 <div class="uk-container uk-margin">
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
         <div class="uk-width-expand@m">
             {{> submission-list}}
-        </div>
-        <div class="uk-width-auto@m">
-            <img width="300" src="images/homer2.png">
         </div>
     </div>
 </div>
