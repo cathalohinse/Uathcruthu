@@ -1,0 +1,45 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> welcome-menu title="Uathcruthú" subTitle="Log in"}}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+            <p>Leathanach Ionchuir</p>
+        </div>
+    </div>
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+
+        <div>
+            <div style="background-color: #877EB4" class="uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                <h3 style="color: black" class="uk-card-title uk-text-center">Welcome back!</h3>
+                <form action="/login" method="POST">
+                    <div class="uk-margin">
+                        <div class="uk-inline uk-width-1-1">
+                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                            <input class="uk-input uk-form-large" type="email" name="email" placeholder="Email"/>
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <div class="uk-inline uk-width-1-1">
+                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                            <input class="uk-input uk-form-large" type="password" name="password" />
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <button style="background-color: #653DC2" class="uk-button uk-button-primary uk-button-large uk-width-1-1">Log In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <img width="300" src="images/ITPL.png">
+        </div>
+
+    </div>
+</div>
