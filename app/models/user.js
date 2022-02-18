@@ -2,7 +2,7 @@
 const Mongoose = require("mongoose");
 const Boom = require("@hapi/boom");
 const Schema = Mongoose.Schema;
-const bcrypt = require("bcrypt");
+//const bcrypt = require("bcrypt");
 
 const userSchema = new Schema({
   firstName: String,

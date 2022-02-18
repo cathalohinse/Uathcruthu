@@ -11,6 +11,7 @@
         <th>Summary (<100 words)</th>
         <th>Project Landing Page URL</th>
         <th>Demonstration Video URL</th>
+        <th>Submitted by</th>
         </thead>
         <tbody class="uk-text-left">
         {{#each submissions}}
@@ -24,6 +25,7 @@
                 <td>{{summary}}</td>
                 <td>{{projectUrl}}</td>
                 <td>{{videoUrl}}</td>
+                <td>{{submitter.firstName}} {{submitter.lastName}} {{submitter.email}}</td>
             </tr>
         {{/each}}
         </tbody>
