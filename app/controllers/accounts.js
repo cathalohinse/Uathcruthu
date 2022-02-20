@@ -1,5 +1,6 @@
 "use strict";
-//const User = require("../models/user");
+const User = require("../models/user");
+const Boom = require("@hapi/boom");
 
 const Accounts = {
   index: {
@@ -23,23 +24,28 @@ const Accounts = {
     },
   },
 
-  /*signup: {
-    auth: false,
-    handler: function (request, h) {
-      const user = request.payload;
-      this.users[user.email] = user;
-      return h.redirect("/login");
-    },
-  },*/
-
   signup: {
     auth: false,
-    handler: function (request, h) {
-      const user = request.payload;
-      this.users[user.email] = user;
-      request.cookieAuth.set({ id: user.email });
-      //this.currentUser = user;
-      return h.redirect("/login");
+    handler: async function (request, h) {
+      try {
+        const payload = request.payload;
+        let user = await User.findByEmail(payload.email);
+        if (user) {
+          const message = "Email address is already registered";
+          throw Boom.badData(message);
+        }
+        const newUser = new User({
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          email: payload.email,
+          password: payload.password,
+        });
+        user = await newUser.save();
+        request.cookieAuth.set({ id: user.id });
+        return h.redirect("/login");
+      } catch (err) {
+        return h.view("signup", { errors: [{ message: err.message }] });
+      }
     },
   },
 
@@ -50,27 +56,22 @@ const Accounts = {
     },
   },
 
-  /*login: {
-    auth: false,
-    handler: function (request, h) {
-      const user = request.payload;
-      if (user.email in this.users && user.password === this.users[user.email].password) {
-        return h.redirect("/submit");
-      }
-      return h.redirect("/");
-    },
-  },*/
-
   login: {
-    //auth: false,
-    handler: function (request, h) {
-      const user = request.payload;
-      if (user.email in this.users && user.password === this.users[user.email].password) {
-        //this.currentUser = this.users[user.email];
-        request.cookieAuth.set({ id: user.email });
+    auth: false,
+    handler: async function (request, h) {
+      const { email, password } = request.payload;
+      try {
+        let user = await User.findByEmail(email);
+        if (!user) {
+          const message = "Email address is not registered";
+          throw Boom.unauthorized(message);
+        }
+        user.comparePassword(password);
+        request.cookieAuth.set({ id: user.id });
         return h.redirect("/submit");
+      } catch (err) {
+        return h.view("login", { errors: [{ message: err.message }] });
       }
-      return h.redirect("/");
     },
   },
 

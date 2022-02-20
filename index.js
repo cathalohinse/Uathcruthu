@@ -6,6 +6,7 @@ const Vision = require("@hapi/vision");
 const env = require("dotenv");
 const Cookie = require("@hapi/cookie");
 const Handlebars = require("handlebars");
+require("./app/models/db");
 
 env.config();
 
@@ -14,12 +15,12 @@ const server = Hapi.server({
   host: "localhost",
 });
 
-server.bind({
+/*server.bind({
   //users: {},
   users: [],
   submissions: [],
   //currentUser: {},
-});
+});*/
 
 async function init() {
   await server.register(Vision);
@@ -49,8 +50,8 @@ async function init() {
 
   server.auth.strategy("session", "cookie", {
     cookie: {
-      name: "submission",
-      password: "password-should-be-32-characters",
+      name: process.env.cookie_name,
+      password: process.env.cookie_password,
       isSecure: false,
     },
     redirectTo: "/",

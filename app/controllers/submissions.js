@@ -1,4 +1,6 @@
 "use strict";
+const Submission = require("../models/submission");
+const User = require("../models/user");
 
 const Submissions = {
   home: {
@@ -7,40 +9,34 @@ const Submissions = {
       return h.view("home", { title: "Make a Submission" });
     },
   },
+
   report: {
-    //auth: false,
-    handler: function (request, h) {
+    handler: async function (request, h) {
+      const submissions = await Submission.find().populate("submitter").lean();
       return h.view("report", {
         title: "Submissions to Date",
-        submissions: this.submissions,
+        submissions: submissions,
       });
     },
   },
-  /*submit: {
-    auth: false,
-    handler: function (request, h) {
-      const data = request.payload;
-      this.submissions.push(data);
-      return h.redirect("/report");
-    },
-  },*/
-
-  /*submit: {
-    auth: false,
-    handler: function (request, h) {
-      let data = request.payload;
-      data.submitter = this.currentUser;
-      this.submissions.push(data);
-      return h.redirect("/report");
-    },
-  },*/
 
   submit: {
-    handler: function (request, h) {
+    handler: async function (request, h) {
+      const id = request.auth.credentials.id;
+      const user = await User.findById(id);
       const data = request.payload;
-      var submitterEmail = request.auth.credentials.id;
-      data.submitter = this.users[submitterEmail];
-      this.submissions.push(data);
+      const newSubmission = new Submission({
+        projectTitle: data.projectTitle,
+        descriptiveTitle: data.descriptiveTitle,
+        projectType: data.projectType,
+        personalPhoto: data.personalPhoto,
+        projectImage: data.projectImage,
+        summary: data.summary,
+        projectUrl: data.projectUrl,
+        videoUrl: data.videoUrl,
+        submitter: user._id,
+      });
+      await newSubmission.save();
       return h.redirect("/report");
     },
   },

@@ -2,21 +2,20 @@
     <h3 style="color: black" class="uk-card-title uk-text-center">            Submissions to Date</h3>
     <table style="color: black" class="uk-table">
         <thead>
-        <th>Student Name</th>
-        <th>Project Title</th>
-        <th>Descriptive Title</th>
-        <th>Project Type</th>
-        <th>Student Personal Photo</th>
-        <th>Project Image</th>
-        <th>Summary (<100 words)</th>
-        <th>Project Landing Page URL</th>
-        <th>Demonstration Video URL</th>
-        <th>Submitted by</th>
+        <th style="color: black">Student Name</th>
+        <th style="color: black">Project Title</th>
+        <th style="color: black">Descriptive Title</th>
+        <th style="color: black">Project Type</th>
+        <th style="color: black">Student Personal Photo</th>
+        <th style="color: black">Project Image</th>
+        <th style="color: black">Summary (<100 words)</th>
+        <th style="color: black">Project Landing Page URL</th>
+        <th style="color: black">Demonstration Video URL</th>
         </thead>
         <tbody class="uk-text-left">
         {{#each submissions}}
             <tr>
-                <td>{{name}}</td>
+                <td>{{submitter.firstName}} {{submitter.lastName}}</td>
                 <td>{{projectTitle}}</td>
                 <td>{{descriptiveTitle}}</td>
                 <td>{{projectType}}</td>
@@ -25,7 +24,6 @@
                 <td>{{summary}}</td>
                 <td>{{projectUrl}}</td>
                 <td>{{videoUrl}}</td>
-                <td>{{submitter.firstName}} {{submitter.lastName}} {{submitter.email}}</td>
             </tr>
         {{/each}}
         </tbody>
