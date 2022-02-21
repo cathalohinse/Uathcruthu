@@ -26,6 +26,9 @@ const Submissions = {
       const user = await User.findById(id);
       const data = request.payload;
       const newSubmission = new Submission({
+        //name: user.firstName + " " + user.lastName,
+        firstName: user.firstName,
+        lastName: user.lastName,
         projectTitle: data.projectTitle,
         descriptiveTitle: data.descriptiveTitle,
         projectType: data.projectType,

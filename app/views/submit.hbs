@@ -13,13 +13,13 @@
 
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Welcome back!</h3>
-    <form action="/submit" method="POST">
+    <form action="/submit/{{submission._id}}" method="POST">
 
         <div class="uk-margin">
             <label style="color: black; font-size:120%">Project Title:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: pencil"></span>
-                <input class="uk-input uk-form-small" type="text" name="projectTitle" placeholder="Project Title"/>
+                <input class="uk-input uk-form-small" type="text" name="projectTitle" placeholder="{{submission.projectTitle}}"/>
             </div>
         </div>
 

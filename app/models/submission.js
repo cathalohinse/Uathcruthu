@@ -2,6 +2,9 @@
 const Mongoose = require("mongoose");
 const Schema = Mongoose.Schema;
 const submissionSchema = new Schema({
+  //name: String,
+  firstName: String,
+  lastName: String,
   projectTitle: String,
   descriptiveTitle: String,
   projectType: String,

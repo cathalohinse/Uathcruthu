@@ -1,6 +1,7 @@
 "use strict";
 const User = require("../models/user");
 const Boom = require("@hapi/boom");
+const Submission = require("../models/submission");
 
 const Accounts = {
   index: {
@@ -27,6 +28,51 @@ const Accounts = {
   signup: {
     auth: false,
     handler: async function (request, h) {
+      //const id = request.auth.credentials.id;
+      //const user = await User.findById(id);
+
+      try {
+        const payload = request.payload;
+        let user = await User.findByEmail(payload.email);
+        if (user) {
+          const message = "Email address is already registered";
+          throw Boom.badData(message);
+        }
+        const newUser = new User({
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          email: payload.email,
+          password: payload.password,
+        });
+
+        const newSubmission = new Submission({
+          //name: newUser.firstName + " " + newUser.lastName,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          projectTitle: "",
+          descriptiveTitle: "",
+          projectType: "",
+          personalPhoto: "",
+          projectImage: "",
+          summary: "",
+          projectUrl: "",
+          videoUrl: "",
+          submitter: newUser,
+        });
+        await newSubmission.save();
+
+        user = await newUser.save();
+        request.cookieAuth.set({ id: user.id });
+        return h.redirect("/login");
+      } catch (err) {
+        return h.view("signup", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
+  /*signup: {
+    auth: false,
+    handler: async function (request, h) {
       try {
         const payload = request.payload;
         let user = await User.findByEmail(payload.email);
@@ -47,7 +93,7 @@ const Accounts = {
         return h.view("signup", { errors: [{ message: err.message }] });
       }
     },
-  },
+  },*/
 
   showLogin: {
     auth: false,
