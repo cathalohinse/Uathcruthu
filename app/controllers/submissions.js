@@ -20,7 +20,7 @@ const Submissions = {
     },
   },
 
-  submit: {
+  /*submit: {
     handler: async function (request, h) {
       const id = request.auth.credentials.id;
       const user = await User.findById(id);
@@ -42,6 +42,37 @@ const Submissions = {
       await newSubmission.save();
       return h.redirect("/report");
     },
+  },*/
+
+  submit: {
+    handler: async function (request, h) {
+      try {
+        const submissionEdit = await request.payload;
+        const userId = await request.auth.credentials.id;
+        const user = await User.findById(userId);
+        const submission = await Submission.findByUserId(user);
+        console.log(submission);
+        submission.projectTitle = submissionEdit.projectTitle;
+        submission.descriptiveTitle = submissionEdit.descriptiveTitle;
+        submission.projectType = submissionEdit.projectType;
+        submission.personalPhoto = submissionEdit.personalPhoto;
+        submission.projectImage = submissionEdit.projectImage;
+        submission.summary = submissionEdit.summary;
+        submission.projectUrl = submissionEdit.projectUrl;
+        submission.videoUrl = submissionEdit.videoUrl;
+        await submission.save();
+        return h.redirect("/report");
+      } catch (err) {
+        return h.view("main", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
+  payload: {
+    multipart: true,
+    output: "data",
+    maxBytes: 209715200,
+    parse: true,
   },
 };
 

@@ -19,4 +19,9 @@ const submissionSchema = new Schema({
   },
 });
 
+//My own custom built method:
+submissionSchema.statics.findByUserId = function (submitter) {
+  return this.findOne({ submitter: submitter });
+};
+
 module.exports = Mongoose.model("Submission", submissionSchema);

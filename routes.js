@@ -8,7 +8,7 @@ module.exports = [
   { method: "GET", path: "/submit", config: Accounts.submit },
   { method: "GET", path: "/login", config: Accounts.showLogin },
   { method: "POST", path: "/login", config: Accounts.login },
-  { method: "POST", path: "/submit/{_id}", config: Submissions.submit },
+  { method: "POST", path: "/submit", config: Submissions.submit },
   { method: "GET", path: "/report", config: Submissions.report },
   { method: "GET", path: "/signup", config: Accounts.showSignup },
   { method: "POST", path: "/signup", config: Accounts.signup },
