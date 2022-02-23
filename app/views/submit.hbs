@@ -6,6 +6,9 @@
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
         <div class="uk-width-expand@m">
             <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+            <h2 class="uk-heading-small">{{submission.firstName}}</h2>
+            <br>
+            <h2 class="uk-heading-small">{{submission}}</h2>
             <p>Leathanach Ionchuir</p>
         </div>
     </div>
@@ -13,13 +16,19 @@
 
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Welcome back!</h3>
-    <form action="/submit" method="POST">
+    <form action="/submit
+" method="POST">
 
         <div class="uk-margin">
             <label style="color: black; font-size:120%">Project Title:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: pencil"></span>
-                <input class="uk-input uk-form-small" type="text" name="projectTitle" placeholder="{{submission.projectTitle}}"/>
+                <input class="uk-input uk-form-small" type="text" name="projectTitle" {{#if submission.projectTitle}}
+                       placeholder="{{submission.projectTitle}}"
+                       {{/if}}
+                    {{#unless submission.projectTitle}}
+                       placeholder="Project Title"
+                    {{/unless}}/>
             </div>
         </div>
 
@@ -27,7 +36,12 @@
             <label style="color: black; font-size:120%">Descriptive Title:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: pencil"></span>
-                <input class="uk-input uk-form-small" type="text" name="descriptiveTitle" placeholder="Descriptive Title"/>
+                <input class="uk-input uk-form-small" type="text" name="descriptiveTitle" {{#if submission.descriptiveTitle}}
+                       placeholder="{{submission.descriptiveTitle}}"
+                {{/if}}
+                    {{#unless submission.descriptiveTitle}}
+                       placeholder="Descriptive Title"
+                    {{/unless}}/>
             </div>
         </div>
 
@@ -35,7 +49,12 @@
             <label style="color: black; font-size:120%">Project Type:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
-                <input class="uk-input uk-form-small" type="text" name="projectType" placeholder="Project Type"/>
+                <input class="uk-input uk-form-small" type="text" name="projectType" {{#if submission.projectType}}
+                       placeholder="{{submission.projectType}}"
+                {{/if}}
+                    {{#unless submission.projectType}}
+                       placeholder="Project Type"
+                    {{/unless}}/>
             </div>
         </div>
 
@@ -43,7 +62,12 @@
             <label style="color: black; font-size:120%">Personal Digital Photograph:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: camera"></span>
-                <input class="uk-input uk-form-small" type="file" name="personalPhoto" placeholder="Personal Digital Photograph"/>
+                <input class="uk-input uk-form-small" type="file" name="personalPhoto" {{#if submission.personalPhoto}}
+                       placeholder="{{submission.personalPhoto}}"
+                {{/if}}
+                    {{#unless submission.personalPhoto}}
+                       placeholder="Personal Digital Photograph"
+                    {{/unless}}/>
             </div>
         </div>
 
@@ -51,7 +75,12 @@
             <label style="color: black; font-size:120%">Project Image:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: image"></span>
-                <input class="uk-input uk-form-small" type="file" name="projectImage" placeholder="Project Image"/>
+                <input class="uk-input uk-form-small" type="file" name="projectImage" {{#if submission.projectImage}}
+                       placeholder="{{submission.projectImage}}"
+                {{/if}}
+                    {{#unless submission.projectImage}}
+                       placeholder="Project Image"
+                    {{/unless}}/>
             </div>
         </div>
 
@@ -59,7 +88,12 @@
             <label style="color: black; font-size:120%">Summary (100 words max.):</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: info"></span>
-                <textarea class="uk-textarea uk-form-small" rows="7" type="text" name="summary" placeholder="Summary (≤100 words)"/></textarea>
+                <textarea class="uk-textarea uk-form-small" rows="7" type="text" name="summary" {{#if submission.summary}}
+                          placeholder="{{submission.summary}}"
+                {{/if}}
+                    {{#unless submission.summary}}
+                          placeholder="Summary (≤100 characters)"
+                    {{/unless}}/></textarea>
             </div>
         </div>
 
@@ -67,7 +101,12 @@
             <label style="color: black; font-size:120%">Project Landing Page URL:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: link"></span>
-                <input class="uk-input uk-form-small" type="url" name="projectUrl" placeholder="Project Landing Page URL"/>
+                <input class="uk-input uk-form-small" type="url" name="projectUrl" {{#if submission.projectUrl}}
+                       placeholder="{{submission.projectUrl}}"
+                {{/if}}
+                    {{#unless submission.projectUrl}}
+                       placeholder="Project Landing Page URL"
+                    {{/unless}}/>
             </div>
         </div>
 
@@ -75,7 +114,12 @@
             <label style="color: black; font-size:120%">Demonstration Video URL:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: youtube"></span>
-                <input class="uk-input uk-form-small" type="url" name="videoUrl" placeholder="Demonstration Video URL"/>
+                <input class="uk-input uk-form-small" type="url" name="videoUrl" {{#if submission.videoUrl}}
+                       placeholder="{{submission.videoUrl}}"
+                {{/if}}
+                    {{#unless submission.videoUrl}}
+                       placeholder="Demonstration Video URL"
+                    {{/unless}}/>
             </div>
         </div>
 

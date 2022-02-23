@@ -16,8 +16,9 @@ const Accounts = {
     handler: async function (request, h) {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
-      const submission = await Submission.findByUserId(user);
+      const submission = await Submission.findByUserId(user).lean();
       //const submission = await Submission.findById(request.params._id);
+      console.log(`Hey ` + submission.firstName);
       return h.view("submit", { title: "Project Submission", submission: submission });
     },
   },

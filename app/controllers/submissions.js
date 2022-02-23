@@ -12,10 +12,18 @@ const Submissions = {
 
   report: {
     handler: async function (request, h) {
-      const submissions = await Submission.find().populate("submitter").lean();
+      //const submissions = await Submission.find().populate("submitter").lean();
+
+      const userId = await request.auth.credentials.id;
+      const user = await User.findById(userId);
+      //const submission = await Submission.findByUserId(user);
+      const submission = await Submission.findById(request.params._id);
+      const submissions = await Submission.find().populate(submission).lean();
+
       return h.view("report", {
         title: "Submissions to Date",
         submissions: submissions,
+        //submission: submission,
       });
     },
   },
@@ -52,14 +60,30 @@ const Submissions = {
         const user = await User.findById(userId);
         const submission = await Submission.findByUserId(user);
         console.log(submission);
-        submission.projectTitle = submissionEdit.projectTitle;
-        submission.descriptiveTitle = submissionEdit.descriptiveTitle;
-        submission.projectType = submissionEdit.projectType;
-        submission.personalPhoto = submissionEdit.personalPhoto;
-        submission.projectImage = submissionEdit.projectImage;
-        submission.summary = submissionEdit.summary;
-        submission.projectUrl = submissionEdit.projectUrl;
-        submission.videoUrl = submissionEdit.videoUrl;
+        if (submissionEdit.projectTitle !== "") {
+          submission.projectTitle = submissionEdit.projectTitle;
+        }
+        if (submissionEdit.descriptiveTitle !== "") {
+          submission.descriptiveTitle = submissionEdit.descriptiveTitle;
+        }
+        if (submissionEdit.projectType !== "") {
+          submission.projectType = submissionEdit.projectType;
+        }
+        if (submissionEdit.personalPhoto !== "") {
+          submission.personalPhoto = submissionEdit.personalPhoto;
+        }
+        if (submissionEdit.projectImage !== "") {
+          submission.projectImage = submissionEdit.projectImage;
+        }
+        if (submissionEdit.summary !== "") {
+          submission.summary = submissionEdit.summary;
+        }
+        if (submissionEdit.projectUrl !== "") {
+          submission.projectUrl = submissionEdit.projectUrl;
+        }
+        if (submissionEdit.videoUrl !== "") {
+          submission.videoUrl = submissionEdit.videoUrl;
+        }
         await submission.save();
         return h.redirect("/report");
       } catch (err) {
