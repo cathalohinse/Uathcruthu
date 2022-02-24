@@ -4,7 +4,6 @@ const User = require("../models/user");
 
 const Submissions = {
   home: {
-    //auth: false,
     handler: function (request, h) {
       return h.view("home", { title: "Make a Submission" });
     },
@@ -12,45 +11,17 @@ const Submissions = {
 
   report: {
     handler: async function (request, h) {
-      //const submissions = await Submission.find().populate("submitter").lean();
-
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
-      //const submission = await Submission.findByUserId(user);
-      const submission = await Submission.findById(request.params._id);
-      const submissions = await Submission.find().populate(submission).lean();
-
+      const submission = await Submission.findByUserId(user).lean();
+      console.log(`User First Name: ` + user.firstName);
+      console.log("Submission (report): " + submission.firstName);
       return h.view("report", {
         title: "Submissions to Date",
-        submissions: submissions,
-        //submission: submission,
+        submission: submission,
       });
     },
   },
-
-  /*submit: {
-    handler: async function (request, h) {
-      const id = request.auth.credentials.id;
-      const user = await User.findById(id);
-      const data = request.payload;
-      const newSubmission = new Submission({
-        //name: user.firstName + " " + user.lastName,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        projectTitle: data.projectTitle,
-        descriptiveTitle: data.descriptiveTitle,
-        projectType: data.projectType,
-        personalPhoto: data.personalPhoto,
-        projectImage: data.projectImage,
-        summary: data.summary,
-        projectUrl: data.projectUrl,
-        videoUrl: data.videoUrl,
-        submitter: user._id,
-      });
-      await newSubmission.save();
-      return h.redirect("/report");
-    },
-  },*/
 
   submit: {
     handler: async function (request, h) {
@@ -59,7 +30,7 @@ const Submissions = {
         const userId = await request.auth.credentials.id;
         const user = await User.findById(userId);
         const submission = await Submission.findByUserId(user);
-        console.log(submission);
+        console.log("Submission (submit): " + submission);
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = submissionEdit.projectTitle;
         }
@@ -85,6 +56,7 @@ const Submissions = {
           submission.videoUrl = submissionEdit.videoUrl;
         }
         await submission.save();
+        console.log("New Submission (submit): " + submission);
         return h.redirect("/report");
       } catch (err) {
         return h.view("main", { errors: [{ message: err.message }] });

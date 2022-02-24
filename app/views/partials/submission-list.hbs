@@ -13,19 +13,17 @@
         <th style="color: black">Demonstration Video URL</th>
         </thead>
         <tbody class="uk-text-left">
-        {{#each submissions}}
-            <tr>
-                <td>{{firstName}} {{lastName}}</td>
-                <td>{{projectTitle}}</td>
-                <td>{{descriptiveTitle}}</td>
-                <td>{{projectType}}</td>
-                <td>{{personalPhoto}}</td>
-                <td>{{projectImage}}</td>
-                <td>{{summary}}</td>
-                <td>{{projectUrl}}</td>
-                <td>{{videoUrl}}</td>
+                    <tr>
+                <td>{{submission.firstName}} {{submission.lastName}}</td>
+                <td>{{submission.projectTitle}}</td>
+                <td>{{submission.descriptiveTitle}}</td>
+                <td>{{submission.projectType}}</td>
+                <td>{{submission.personalPhoto}}</td>
+                <td>{{submission.projectImage}}</td>
+                <td>{{submission.summary}}</td>
+                <td>{{submission.projectUrl}}</td>
+                <td>{{submission.videoUrl}}</td>
             </tr>
-        {{/each}}
         </tbody>
     </table>
 </div>

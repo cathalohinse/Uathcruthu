@@ -12,12 +12,10 @@ const Accounts = {
   },
 
   submit: {
-    //auth: false,
     handler: async function (request, h) {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
-      //const submission = await Submission.findById(request.params._id);
       console.log(`Hey ` + submission.firstName);
       return h.view("submit", { title: "Project Submission", submission: submission });
     },
@@ -33,9 +31,6 @@ const Accounts = {
   signup: {
     auth: false,
     handler: async function (request, h) {
-      //const id = request.auth.credentials.id;
-      //const user = await User.findById(id);
-
       try {
         const payload = request.payload;
         let user = await User.findByEmail(payload.email);
@@ -51,7 +46,6 @@ const Accounts = {
         });
 
         const newSubmission = new Submission({
-          //name: newUser.firstName + " " + newUser.lastName,
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           projectTitle: "",
@@ -74,31 +68,6 @@ const Accounts = {
       }
     },
   },
-
-  /*signup: {
-    auth: false,
-    handler: async function (request, h) {
-      try {
-        const payload = request.payload;
-        let user = await User.findByEmail(payload.email);
-        if (user) {
-          const message = "Email address is already registered";
-          throw Boom.badData(message);
-        }
-        const newUser = new User({
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          email: payload.email,
-          password: payload.password,
-        });
-        user = await newUser.save();
-        request.cookieAuth.set({ id: user.id });
-        return h.redirect("/login");
-      } catch (err) {
-        return h.view("signup", { errors: [{ message: err.message }] });
-      }
-    },
-  },*/
 
   showLogin: {
     auth: false,
@@ -127,7 +96,6 @@ const Accounts = {
   },
 
   logout: {
-    //auth: false,
     handler: function (request, h) {
       request.cookieAuth.clear();
       return h.redirect("/");
