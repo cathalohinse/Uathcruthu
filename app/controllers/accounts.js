@@ -7,6 +7,7 @@ const Accounts = {
   index: {
     auth: false,
     handler: function (request, h) {
+      console.log("Welcome to Uathcruthú");
       return h.view("main", { title: "ITPL Tionscadal Cuir Isteach" });
     },
   },
@@ -16,7 +17,7 @@ const Accounts = {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
-      console.log(`Hey ` + submission.firstName);
+      console.log(submission.firstName + " " + submission.lastName + " has navigated to the submit screen");
       return h.view("submit", { title: "Project Submission", submission: submission });
     },
   },
@@ -24,6 +25,7 @@ const Accounts = {
   showSignup: {
     auth: false,
     handler: function (request, h) {
+      console.log("User has navigated to the sign-up screen");
       return h.view("signup", { title: "Signup for Submissions", subtitle: "This is the Signup Subtitle" });
     },
   },
@@ -62,8 +64,10 @@ const Accounts = {
 
         user = await newUser.save();
         request.cookieAuth.set({ id: user.id });
+        console.log(newUser.firstName + " " + newUser.lastName + " has registered");
         return h.redirect("/login");
       } catch (err) {
+        console.log("Error registering");
         return h.view("signup", { errors: [{ message: err.message }] });
       }
     },
@@ -72,6 +76,7 @@ const Accounts = {
   showLogin: {
     auth: false,
     handler: function (request, h) {
+      console.log("User has navigated to the login screen");
       return h.view("login", { title: "Login to Submissions", subtitle: "This is the subtitle" });
     },
   },
@@ -88,8 +93,10 @@ const Accounts = {
         }
         user.comparePassword(password);
         request.cookieAuth.set({ id: user.id });
+        console.log(user.firstName + " " + user.lastName + " has logged in");
         return h.redirect("/submit");
       } catch (err) {
+        console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });
       }
     },
@@ -98,6 +105,7 @@ const Accounts = {
   logout: {
     handler: function (request, h) {
       request.cookieAuth.clear();
+      console.log("User has logged out");
       return h.redirect("/");
     },
   },

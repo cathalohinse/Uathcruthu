@@ -5,6 +5,7 @@ const User = require("../models/user");
 const Submissions = {
   home: {
     handler: function (request, h) {
+      console.log("Welcome home");
       return h.view("home", { title: "Make a Submission" });
     },
   },
@@ -14,10 +15,10 @@ const Submissions = {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
-      console.log(`User First Name: ` + user.firstName);
-      console.log("Submission (report): " + submission.firstName);
+      console.log(user.firstName + " has submitted " + submission.projectTitle);
+      console.log("Submission: " + submission);
       return h.view("report", {
-        title: "Submissions to Date",
+        title: "User's Submission",
         submission: submission,
       });
     },
@@ -56,9 +57,10 @@ const Submissions = {
           submission.videoUrl = submissionEdit.videoUrl;
         }
         await submission.save();
-        console.log("New Submission (submit): " + submission);
+        console.log(user.firstName + " has updated " + submissionEdit.projectTitle);
         return h.redirect("/report");
       } catch (err) {
+        console.log("Error updating Submission");
         return h.view("main", { errors: [{ message: err.message }] });
       }
     },
