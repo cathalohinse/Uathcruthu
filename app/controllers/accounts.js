@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
 const Joi = require("@hapi/joi");
+const sanitizeHtml = require("sanitize-html");
 
 const Accounts = {
   index: {

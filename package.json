@@ -28,7 +28,8 @@
     "cloudinary-core": "^2.12.3",
     "dotenv": "^15.0.1",
     "handlebars": "^4.7.7",
-    "mongoose": "^6.2.2"
+    "mongoose": "^6.2.2",
+    "sanitize-html": "^2.7.0"
   },
   "devDependencies": {
     "prettier": "^2.5.1"
