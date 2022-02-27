@@ -5,7 +5,7 @@ const Submissions = require("./app/controllers/submissions");
 
 module.exports = [
   { method: "GET", path: "/", config: Accounts.index },
-  { method: "GET", path: "/submit", config: Accounts.submit },
+  { method: "GET", path: "/submit", config: Accounts.showSubmit },
   { method: "GET", path: "/login", config: Accounts.showLogin },
   { method: "POST", path: "/login", config: Accounts.login },
   { method: "POST", path: "/submit", config: Submissions.submit },
