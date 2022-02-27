@@ -22,6 +22,8 @@
     "@hapi/hapi": "^20.2.1",
     "@hapi/inert": "^6.0.5",
     "@hapi/vision": "^6.1.0",
+    "cloudinary": "^1.28.1",
+    "cloudinary-core": "^2.12.3",
     "dotenv": "^15.0.1",
     "handlebars": "^4.7.7",
     "mongoose": "^6.2.2"

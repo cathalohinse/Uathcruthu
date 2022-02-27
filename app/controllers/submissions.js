@@ -1,6 +1,7 @@
 "use strict";
 const Submission = require("../models/submission");
 const User = require("../models/user");
+const ImageStore = require("../utils/image-store");
 
 const Submissions = {
   home: {
@@ -31,6 +32,8 @@ const Submissions = {
         const userId = await request.auth.credentials.id;
         const user = await User.findById(userId);
         const submission = await Submission.findByUserId(user);
+        //const result = await ImageStore.uploadImage(submissionEdit.personalPhoto);
+        //const imageUrl = result.url;
         console.log("Submission (submit): " + submission);
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = submissionEdit.projectTitle;
@@ -42,7 +45,8 @@ const Submissions = {
           submission.projectType = submissionEdit.projectType;
         }
         if (submissionEdit.personalPhoto !== "") {
-          submission.personalPhoto = submissionEdit.personalPhoto;
+          //submission.personalPhoto = submissionEdit.personalPhoto;
+          submission.personalPhoto = imageUrl;
         }
         if (submissionEdit.projectImage !== "") {
           submission.projectImage = submissionEdit.projectImage;
@@ -68,6 +72,7 @@ const Submissions = {
 
   payload: {
     multipart: true,
+    //output: "data",
     output: "data",
     maxBytes: 209715200,
     parse: true,
