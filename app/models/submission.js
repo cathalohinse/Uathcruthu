@@ -2,7 +2,9 @@
 const Mongoose = require("mongoose");
 const Schema = Mongoose.Schema;
 const submissionSchema = new Schema({
-  name: String,
+  //name: String,
+  firstName: String,
+  lastName: String,
   projectTitle: String,
   descriptiveTitle: String,
   projectType: String,
@@ -16,5 +18,10 @@ const submissionSchema = new Schema({
     ref: "User",
   },
 });
+
+//My own custom built method:
+submissionSchema.statics.findByUserId = function (submitter) {
+  return this.findOne({ submitter: submitter });
+};
 
 module.exports = Mongoose.model("Submission", submissionSchema);
