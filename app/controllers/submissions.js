@@ -76,8 +76,8 @@ const Submissions = {
           submission.projectType = submissionEdit.projectType;
         }
         if (submissionEdit.personalPhoto !== "") {
-          //submission.personalPhoto = submissionEdit.personalPhoto;
-          submission.personalPhoto = imageUrl;
+          submission.personalPhoto = submissionEdit.personalPhoto;
+          //submission.personalPhoto = imageUrl;
         }
         if (submissionEdit.projectImage !== "") {
           submission.projectImage = submissionEdit.projectImage;
@@ -96,7 +96,7 @@ const Submissions = {
         return h.redirect("/report");
       } catch (err) {
         console.log("Error updating Submission");
-        return h.view("main", { errors: [{ message: err.message }] });
+        return h.view("submit", { errors: [{ message: err.message }] });
       }
     },
   },
