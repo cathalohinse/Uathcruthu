@@ -2,6 +2,7 @@
 const Submission = require("../models/submission");
 const User = require("../models/user");
 const ImageStore = require("../utils/image-store");
+const Joi = require("@hapi/joi");
 
 const Submissions = {
   home: {
@@ -26,6 +27,36 @@ const Submissions = {
   },
 
   submit: {
+    validate: {
+      payload: {
+        projectTitle: Joi.string().allow("").min(4),
+        descriptiveTitle: Joi.string().allow(""),
+        projectType: Joi.string().allow(""),
+        personalPhoto: Joi.any().allow(""),
+        projectImage: Joi.any().allow(""),
+        summary: Joi.string().allow("").max(100),
+        projectUrl: Joi.string().allow(""),
+        videoUrl: Joi.string().allow(""),
+      },
+      options: {
+        abortEarly: false,
+      },
+      failAction: async function (request, h, error) {
+        const userId = await request.auth.credentials.id;
+        const user = await User.findById(userId);
+        const submission = await Submission.findByUserId(user).lean();
+        console.log(user.firstName + " has entered unacceptable data for submission");
+        return h
+          .view("submit", {
+            title: "Submission error",
+            errors: error.details,
+            submission: submission,
+          })
+          .takeover()
+          .code(400);
+      },
+    },
+
     handler: async function (request, h) {
       try {
         const submissionEdit = await request.payload;
