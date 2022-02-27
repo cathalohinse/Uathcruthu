@@ -2,6 +2,7 @@
 const User = require("../models/user");
 const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
+const Joi = require("@hapi/joi");
 
 const Accounts = {
   index: {
@@ -12,7 +13,7 @@ const Accounts = {
     },
   },
 
-  submit: {
+  showSubmit: {
     handler: async function (request, h) {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
@@ -32,6 +33,34 @@ const Accounts = {
 
   signup: {
     auth: false,
+
+    validate: {
+      payload: {
+        firstName: Joi.string()
+          .required()
+          .regex(/^[A-Z][A-Z,a-z]{1,}$/), //Allows for a first name with only two characters, both of which could be uppercase (e.g. 'PJ'),
+        lastName: Joi.string()
+          .required()
+          .regex(/^[A-Z]/)
+          .min(3),
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+      },
+      options: {
+        abortEarly: false,
+      },
+      failAction: function (request, h, error) {
+        console.log("User has entered unacceptable data for signing up");
+        return h
+          .view("signup", {
+            title: "Sign up Error",
+            errors: error.details,
+          })
+          .takeover()
+          .code(400);
+      },
+    },
+
     handler: async function (request, h) {
       try {
         const payload = request.payload;
@@ -83,6 +112,27 @@ const Accounts = {
 
   login: {
     auth: false,
+
+    validate: {
+      payload: {
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+      },
+      options: {
+        abortEarly: false,
+      },
+      failAction: function (request, h, error) {
+        console.log("User has entered unacceptable data for logging in");
+        return h
+          .view("login", {
+            title: "Log in Error",
+            errors: error.details,
+          })
+          .takeover()
+          .code(400);
+      },
+    },
+
     handler: async function (request, h) {
       const { email, password } = request.payload;
       try {
