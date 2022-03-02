@@ -3,6 +3,7 @@ const Submission = require("../models/submission");
 const User = require("../models/user");
 const ImageStore = require("../utils/image-store");
 const Joi = require("@hapi/joi");
+const sanitizeHtml = require("sanitize-html");
 
 const Submissions = {
   home: {
@@ -67,29 +68,29 @@ const Submissions = {
         //const imageUrl = result.url;
         console.log("Submission (submit): " + submission);
         if (submissionEdit.projectTitle !== "") {
-          submission.projectTitle = submissionEdit.projectTitle;
+          submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
         if (submissionEdit.descriptiveTitle !== "") {
-          submission.descriptiveTitle = submissionEdit.descriptiveTitle;
+          submission.descriptiveTitle = sanitizeHtml(submissionEdit.descriptiveTitle);
         }
         if (submissionEdit.projectType !== "") {
-          submission.projectType = submissionEdit.projectType;
+          submission.projectType = sanitizeHtml(submissionEdit.projectType);
         }
         if (submissionEdit.personalPhoto !== "") {
-          submission.personalPhoto = submissionEdit.personalPhoto;
+          submission.personalPhoto = sanitizeHtml(submissionEdit.personalPhoto);
           //submission.personalPhoto = imageUrl;
         }
         if (submissionEdit.projectImage !== "") {
-          submission.projectImage = submissionEdit.projectImage;
+          submission.projectImage = sanitizeHtml(submissionEdit.projectImage);
         }
         if (submissionEdit.summary !== "") {
-          submission.summary = submissionEdit.summary;
+          submission.summary = sanitizeHtml(submissionEdit.summary);
         }
         if (submissionEdit.projectUrl !== "") {
-          submission.projectUrl = submissionEdit.projectUrl;
+          submission.projectUrl = sanitizeHtml(submissionEdit.projectUrl);
         }
         if (submissionEdit.videoUrl !== "") {
-          submission.videoUrl = submissionEdit.videoUrl;
+          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
         }
         await submission.save();
         console.log(user.firstName + " has updated " + submissionEdit.projectTitle);
