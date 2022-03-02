@@ -71,10 +71,10 @@ const Accounts = {
           throw Boom.badData(message);
         }
         const newUser = new User({
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          email: payload.email,
-          password: payload.password,
+          firstName: sanitizeHtml(payload.firstName),
+          lastName: sanitizeHtml(payload.lastName),
+          email: sanitizeHtml(payload.email),
+          password: sanitizeHtml(payload.password),
         });
 
         const newSubmission = new Submission({
