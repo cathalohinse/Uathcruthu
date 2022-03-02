@@ -153,6 +153,34 @@ const Accounts = {
     },
   },
 
+  showcase: {
+    handler: async function (request, h) {
+      //const userId = await request.auth.credentials.id;
+      //const user = await User.findById(userId).lean();
+      //const users = await User.find().populate(user).lean();
+      //const users = await User.find().populate(user).lean();
+      const users = await User.find().lean();
+      //const users = await User.findAll();
+      //console.log(user.firstName + " has navigated to Showcase Page");
+      console.log("The following users are on the system " + users);
+      return h.view("showcase", { title: "Showcases", users: users });
+    },
+  },
+
+  showcaseFile: {
+    handler: async function (request, h) {
+      const userId = await request.params;
+      const user = await User.findById(userId);
+      const submission = await Submission.findByUserId(user).lean();
+      console.log(user.firstName + " has submitted " + submission.projectTitle);
+      console.log("Submission: " + submission);
+      return h.view("report", {
+        title: "User's Submission",
+        submission: submission,
+      });
+    },
+  },
+
   logout: {
     handler: function (request, h) {
       request.cookieAuth.clear();
