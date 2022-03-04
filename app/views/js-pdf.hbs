@@ -1,0 +1,41 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> welcome-menu title="Uathcruthú" subTitle="PDF" }}
+</div>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width-device, initial-scale=1, maximum-scale=1">
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">js.PDF</h1>
+        </div>
+    </div>
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-auto@m">
+            <img width="300" src="images/ITPL.png" />
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function pdfDocument() {
+        const { jsPDF } = require("jspdf");
+        console.log("Trying to generate pdf");
+        const doc = new jsPDF();
+        //var doc = new jsPDF();
+        doc.text("Hello there", 40, 40)
+        doc.save("output.pdf")
+    }
+
+
+</script>
+
+<body>
+<div>
+    <button onclick="pdfDocument()" id="button">Convert to PDF</button>
+    <a href="/create-pdf">Convert</a>
+</div>
+</body>

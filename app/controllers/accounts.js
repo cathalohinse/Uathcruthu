@@ -154,6 +154,7 @@ const Accounts = {
   },
 
   showcase: {
+    auth: false,
     handler: async function (request, h) {
       //const userId = await request.auth.credentials.id;
       //const user = await User.findById(userId).lean();
@@ -168,6 +169,7 @@ const Accounts = {
   },
 
   showcaseFile: {
+    auth: false,
     handler: async function (request, h) {
       const userId = await request.params;
       const user = await User.findById(userId);
