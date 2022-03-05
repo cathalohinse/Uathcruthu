@@ -172,13 +172,14 @@ const Accounts = {
     auth: false,
     handler: async function (request, h) {
       const userId = await request.params;
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
       console.log(user.firstName + " has submitted " + submission.projectTitle);
       console.log("Submission: " + submission);
       return h.view("report", {
         title: "User's Submission",
         submission: submission,
+        user: user,
       });
     },
   },
