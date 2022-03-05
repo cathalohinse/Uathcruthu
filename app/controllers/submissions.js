@@ -16,13 +16,14 @@ const Submissions = {
   report: {
     handler: async function (request, h) {
       const userId = await request.auth.credentials.id;
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
       console.log(user.firstName + " has submitted " + submission.projectTitle);
       console.log("Submission: " + submission);
       return h.view("report", {
         title: "User's Submission",
         submission: submission,
+        user: user,
       });
     },
   },
