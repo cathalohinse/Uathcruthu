@@ -65,11 +65,19 @@ const Submissions = {
         const user = await User.findById(userId);
         const submissionEdit = request.payload;
         const submission = await Submission.findByUserId(user);
-        const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto);
-        const personalPhotoUrl = personalPhotoResult.url;
-        const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
-        const projectImageUrl = projectImageResult.url;
-        console.log("Submission (submit): " + submission);
+
+        if (submissionEdit.personalPhoto.length !== undefined) {
+          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto);
+          const personalPhotoUrl = personalPhotoResult.url;
+          submission.personalPhoto = personalPhotoUrl;
+        }
+
+        if (submissionEdit.projectImage.length !== undefined) {
+          const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
+          const projectImageUrl = projectImageResult.url;
+          submission.projectImage = projectImageUrl;
+        }
+
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
@@ -78,12 +86,6 @@ const Submissions = {
         }
         if (submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
-        }
-        if (submissionEdit.personalPhoto !== "") {
-          submission.personalPhoto = personalPhotoUrl;
-        }
-        if (submissionEdit.projectImage !== "") {
-          submission.projectImage = projectImageUrl;
         }
         if (submissionEdit.summary !== "") {
           submission.summary = sanitizeHtml(submissionEdit.summary);
@@ -94,6 +96,7 @@ const Submissions = {
         if (submissionEdit.videoUrl !== "") {
           submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
         }
+        console.log("Submission (submit): " + submission);
         await submission.save();
         console.log(user.firstName + " has updated " + submission.projectTitle);
         return h.redirect("/report");

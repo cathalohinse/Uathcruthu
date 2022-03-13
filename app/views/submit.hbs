@@ -71,7 +71,7 @@
             <label style="color: black; font-size:120%">Project Image:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: image"></span>
-                <input class="uk-input uk-form-small" type="file" name="projectImage" {{#if submission.projectImage}}
+                <input class="uk-input uk-form-small" type="file" name="projectImage" accept="image/png, image/jpeg" {{#if submission.projectImage}}
                        placeholder="{{submission.projectImage}}"
                 {{/if}}
                     {{#unless submission.projectImage}}
