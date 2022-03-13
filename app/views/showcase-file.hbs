@@ -1,5 +1,5 @@
 <div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
-    {{> main-menu title="Uathcruthú" subTitle="Showcase File" }}
+    {{> welcome-menu title="Uathcruthú" subTitle="Showcase File" }}
 </div>
 
 <div class="uk-container uk-margin">
@@ -80,8 +80,8 @@
                 </div>
             </div>
 
-
-
+            <input type="button" onclick="location.href='/create-pdf/{{user._id}}';" value="Create PDF"/>
+            {{> error }}
         </div>
     </div>
 </div>

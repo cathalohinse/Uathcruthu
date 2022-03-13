@@ -34,7 +34,6 @@ const Accounts = {
 
   signup: {
     auth: false,
-
     validate: {
       payload: {
         firstName: Joi.string()
@@ -80,14 +79,6 @@ const Accounts = {
         const newSubmission = new Submission({
           firstName: newUser.firstName,
           lastName: newUser.lastName,
-          projectTitle: "",
-          descriptiveTitle: "",
-          projectType: "",
-          personalPhoto: "",
-          projectImage: "",
-          summary: "",
-          projectUrl: "",
-          videoUrl: "",
           submitter: newUser,
         });
         await newSubmission.save();
@@ -100,6 +91,13 @@ const Accounts = {
         console.log("Error registering");
         return h.view("signup", { errors: [{ message: err.message }] });
       }
+    },
+
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
     },
   },
 
@@ -154,6 +152,7 @@ const Accounts = {
   },
 
   showcase: {
+    auth: false,
     handler: async function (request, h) {
       //const userId = await request.auth.credentials.id;
       //const user = await User.findById(userId).lean();
@@ -168,15 +167,17 @@ const Accounts = {
   },
 
   showcaseFile: {
+    auth: false,
     handler: async function (request, h) {
       const userId = await request.params;
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
       console.log(user.firstName + " has submitted " + submission.projectTitle);
       console.log("Submission: " + submission);
-      return h.view("report", {
+      return h.view("showcase-file", {
         title: "User's Submission",
         submission: submission,
+        user: user,
       });
     },
   },
