@@ -174,7 +174,7 @@ const Accounts = {
       const submission = await Submission.findByUserId(user).lean();
       console.log(user.firstName + " has submitted " + submission.projectTitle);
       console.log("Submission: " + submission);
-      return h.view("report", {
+      return h.view("showcase-file", {
         title: "User's Submission",
         submission: submission,
         user: user,

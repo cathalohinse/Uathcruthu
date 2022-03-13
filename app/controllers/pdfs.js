@@ -33,14 +33,18 @@ const Pdfs = {
         doc.addImage(projectImageImgData, "JPG", 0, 0, 30, 40);
         doc.text(submission.projectTitle, 10, 10);
         doc.save(user.firstName + user.lastName + ".pdf");
-        return h.view("report", {
+        return h.view("showcase-file", {
           title: "User's Submission",
           submission: submission,
         });
       } catch (err) {
+        const user = await User.findById(request.params._id).lean();
+        const submission = await Submission.findByUserId(user).lean();
         console.log("Error updating Submission");
-        return h.view("js-pdf", {
+        return h.view("showcase-file", {
           title: "Submission Error",
+          user: user,
+          submission: submission,
           errors: [{ message: err.message }],
         });
       }
