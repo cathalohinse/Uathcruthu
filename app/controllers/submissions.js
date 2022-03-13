@@ -67,12 +67,14 @@ const Submissions = {
         const submission = await Submission.findByUserId(user);
 
         if (submissionEdit.personalPhoto.length !== undefined) {
+          //await ImageStore.deleteImage(submission.personalPhoto.id);
           const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto);
           const personalPhotoUrl = personalPhotoResult.url;
           submission.personalPhoto = personalPhotoUrl;
         }
 
         if (submissionEdit.projectImage.length !== undefined) {
+          //await ImageStore.deleteImage(request.params.id);
           const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
           const projectImageUrl = projectImageResult.url;
           submission.projectImage = projectImageUrl;

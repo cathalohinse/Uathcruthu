@@ -30,8 +30,14 @@ const Pdfs = {
         console.log("Created pdf for: " + user.firstName);
 
         doc.addImage(personalPhotoImgData, "JPG", 100, 0, 30, 40);
-        doc.addImage(projectImageImgData, "JPG", 0, 0, 30, 40);
-        doc.text(submission.projectTitle, 10, 10);
+        doc.addImage(projectImageImgData, "JPG", 200, 0, 30, 40);
+        doc.text(submission.firstName + " " + submission.lastName, 10, 10);
+        doc.text(submission.projectTitle, 10, 20);
+        doc.text(submission.descriptiveTitle, 10, 30);
+        doc.text(submission.projectType, 10, 40);
+        doc.text(submission.summary, 10, 50);
+        doc.text(submission.projectUrl, 10, 100);
+        doc.text(submission.videoUrl, 10, 110);
         doc.save(user.firstName + user.lastName + ".pdf");
         return h.view("showcase-file", {
           title: "User's Submission",
