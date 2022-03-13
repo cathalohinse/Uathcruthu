@@ -34,7 +34,7 @@ const Submissions = {
         projectTitle: Joi.string().allow("").min(4),
         descriptiveTitle: Joi.string().allow(""),
         projectType: Joi.string().allow(""),
-        imagefile: Joi.any().allow(""),
+        personalPhoto: Joi.any().allow(""),
         projectImage: Joi.any().allow(""),
         summary: Joi.string().allow("").max(100),
         projectUrl: Joi.string().allow(""),
@@ -65,8 +65,10 @@ const Submissions = {
         const user = await User.findById(userId);
         const submissionEdit = request.payload;
         const submission = await Submission.findByUserId(user);
-        const result = await ImageStore.uploadImage(submissionEdit.imagefile);
-        const imageUrl = result.url;
+        const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto);
+        const personalPhotoUrl = personalPhotoResult.url;
+        const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
+        const projectImageUrl = projectImageResult.url;
         console.log("Submission (submit): " + submission);
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
@@ -77,11 +79,11 @@ const Submissions = {
         if (submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
         }
-        if (submissionEdit.imagefile !== "") {
-          submission.personalPhoto = imageUrl;
+        if (submissionEdit.personalPhoto !== "") {
+          submission.personalPhoto = personalPhotoUrl;
         }
         if (submissionEdit.projectImage !== "") {
-          submission.projectImage = sanitizeHtml(submissionEdit.projectImage);
+          submission.projectImage = projectImageUrl;
         }
         if (submissionEdit.summary !== "") {
           submission.summary = sanitizeHtml(submissionEdit.summary);
