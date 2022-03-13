@@ -19,8 +19,8 @@ const ImageStore = {
     return result.resources;
   },
 
-  uploadImage: async function (personalPhoto) {
-    await writeFile("./public/temp.img", personalPhoto);
+  uploadImage: async function (imagefile) {
+    await writeFile("./public/temp.img", imagefile);
     const response = await cloudinary.uploader.upload("./public/temp.img");
     return response;
   },

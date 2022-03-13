@@ -34,7 +34,7 @@ const Submissions = {
         projectTitle: Joi.string().allow("").min(4),
         descriptiveTitle: Joi.string().allow(""),
         projectType: Joi.string().allow(""),
-        personalPhoto: Joi.any().allow(""),
+        imagefile: Joi.any().allow(""),
         projectImage: Joi.any().allow(""),
         summary: Joi.string().allow("").max(100),
         projectUrl: Joi.string().allow(""),
@@ -50,7 +50,7 @@ const Submissions = {
         console.log(user.firstName + " has entered unacceptable data for submission");
         return h
           .view("submit", {
-            title: "Submission error",
+            title: "Submission Error",
             errors: error.details,
             submission: submission,
           })
@@ -61,12 +61,12 @@ const Submissions = {
 
     handler: async function (request, h) {
       try {
-        const submissionEdit = await request.payload;
         const userId = await request.auth.credentials.id;
         const user = await User.findById(userId);
+        const submissionEdit = request.payload;
         const submission = await Submission.findByUserId(user);
-        //const result = await ImageStore.uploadImage(submissionEdit.personalPhoto);
-        //const imageUrl = result.url;
+        const result = await ImageStore.uploadImage(submissionEdit.imagefile);
+        const imageUrl = result.url;
         console.log("Submission (submit): " + submission);
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
@@ -77,9 +77,8 @@ const Submissions = {
         if (submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
         }
-        if (submissionEdit.personalPhoto !== "") {
-          submission.personalPhoto = sanitizeHtml(submissionEdit.personalPhoto);
-          //submission.personalPhoto = imageUrl;
+        if (submissionEdit.imagefile !== "") {
+          submission.personalPhoto = imageUrl;
         }
         if (submissionEdit.projectImage !== "") {
           submission.projectImage = sanitizeHtml(submissionEdit.projectImage);
@@ -94,21 +93,22 @@ const Submissions = {
           submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
         }
         await submission.save();
-        console.log(user.firstName + " has updated " + submissionEdit.projectTitle);
+        console.log(user.firstName + " has updated " + submission.projectTitle);
         return h.redirect("/report");
       } catch (err) {
         console.log("Error updating Submission");
-        return h.view("submit", { errors: [{ message: err.message }] });
+        return h.view("submit", {
+          title: "Submission Error",
+          errors: [{ message: err.message }],
+        });
       }
     },
-  },
-
-  payload: {
-    multipart: true,
-    //output: "data",
-    output: "data",
-    maxBytes: 209715200,
-    parse: true,
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
+    },
   },
 };
 

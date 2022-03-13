@@ -13,8 +13,7 @@
 
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Welcome back!</h3>
-    <form action="/submit
-" method="POST">
+    <form action="/submit" method="POST" enctype="multipart/form-data">
 
         <div class="uk-margin">
             <label style="color: black; font-size:120%">Project Title:</label>
@@ -59,7 +58,7 @@
             <label style="color: black; font-size:120%">Personal Digital Photograph:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: camera"></span>
-                <input class="uk-input uk-form-small" type="file" name="personalPhoto" {{#if submission.personalPhoto}}
+                <input class="uk-input uk-form-small" type="file" name="imagefile" accept="image/png, image/jpeg" {{#if submission.personalPhoto}}
                        placeholder="{{submission.personalPhoto}}"
                 {{/if}}
                     {{#unless submission.personalPhoto}}
@@ -121,7 +120,7 @@
         </div>
 
         <div class="uk-margin">
-            <button style="background-color: #653DC2" class="uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
+            <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
         </div>
 
     </form>

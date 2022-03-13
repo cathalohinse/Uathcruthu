@@ -34,7 +34,6 @@ const Accounts = {
 
   signup: {
     auth: false,
-
     validate: {
       payload: {
         firstName: Joi.string()
@@ -80,14 +79,6 @@ const Accounts = {
         const newSubmission = new Submission({
           firstName: newUser.firstName,
           lastName: newUser.lastName,
-          projectTitle: "",
-          descriptiveTitle: "",
-          projectType: "",
-          personalPhoto: "",
-          projectImage: "",
-          summary: "",
-          projectUrl: "",
-          videoUrl: "",
           submitter: newUser,
         });
         await newSubmission.save();
@@ -100,6 +91,13 @@ const Accounts = {
         console.log("Error registering");
         return h.view("signup", { errors: [{ message: err.message }] });
       }
+    },
+
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
     },
   },
 
