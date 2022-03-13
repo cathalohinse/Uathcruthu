@@ -1,0 +1,35 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> welcome-menu title="Uathcruthú" subTitle="Showcase Selection" }}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+        </div>
+    </div>
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+
+            <div class="uk-grid">
+                <div class="uk-width-1-2 uk-grid-margin">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Student Name:</div>
+                        {{#each users}}
+                        <a href="/showcase-file/{{_id}}" class="uk-card uk-card-small uk-text-center uk-padding-remove">
+                            <div class="uk-width-1-2 uk-grid-margin">
+                                <div style="color: black" class="uk-text-left">{{firstName}} {{lastName}}</div>
+                            </div>
+                        </a>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            {{> error }}
+        </div>
+    </div>
+</div>

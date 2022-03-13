@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
 const Joi = require("@hapi/joi");
+const sanitizeHtml = require("sanitize-html");
 
 const Accounts = {
   index: {
@@ -33,7 +34,6 @@ const Accounts = {
 
   signup: {
     auth: false,
-
     validate: {
       payload: {
         firstName: Joi.string()
@@ -70,23 +70,15 @@ const Accounts = {
           throw Boom.badData(message);
         }
         const newUser = new User({
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          email: payload.email,
-          password: payload.password,
+          firstName: sanitizeHtml(payload.firstName),
+          lastName: sanitizeHtml(payload.lastName),
+          email: sanitizeHtml(payload.email),
+          password: sanitizeHtml(payload.password),
         });
 
         const newSubmission = new Submission({
           firstName: newUser.firstName,
           lastName: newUser.lastName,
-          projectTitle: "",
-          descriptiveTitle: "",
-          projectType: "",
-          personalPhoto: "",
-          projectImage: "",
-          summary: "",
-          projectUrl: "",
-          videoUrl: "",
           submitter: newUser,
         });
         await newSubmission.save();
@@ -99,6 +91,13 @@ const Accounts = {
         console.log("Error registering");
         return h.view("signup", { errors: [{ message: err.message }] });
       }
+    },
+
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
     },
   },
 
@@ -149,6 +148,37 @@ const Accounts = {
         console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });
       }
+    },
+  },
+
+  showcase: {
+    auth: false,
+    handler: async function (request, h) {
+      //const userId = await request.auth.credentials.id;
+      //const user = await User.findById(userId).lean();
+      //const users = await User.find().populate(user).lean();
+      //const users = await User.find().populate(user).lean();
+      const users = await User.find().lean();
+      //const users = await User.findAll();
+      //console.log(user.firstName + " has navigated to Showcase Page");
+      console.log("The following users are on the system " + users);
+      return h.view("showcase", { title: "Showcases", users: users });
+    },
+  },
+
+  showcaseFile: {
+    auth: false,
+    handler: async function (request, h) {
+      const userId = await request.params;
+      const user = await User.findById(userId).lean();
+      const submission = await Submission.findByUserId(user).lean();
+      console.log(user.firstName + " has submitted " + submission.projectTitle);
+      console.log("Submission: " + submission);
+      return h.view("showcase-file", {
+        title: "User's Submission",
+        submission: submission,
+        user: user,
+      });
     },
   },
 

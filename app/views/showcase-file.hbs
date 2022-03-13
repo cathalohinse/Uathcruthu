@@ -1,0 +1,87 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> welcome-menu title="Uathcruthú" subTitle="Showcase File" }}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+        </div>
+    </div>
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+
+
+            <div class="uk-grid">
+                <div class="uk-width-1-2 uk-grid-margin">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Student Name:</div>
+                        <div style="color: black" class="uk-text-left">{{submission.firstName}} {{submission.lastName}}</div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Project Title:</div>
+                        <div style="color: black" class="uk-text-left">{{submission.projectTitle}}</div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Descriptive Title:</div>
+                        <div style="color: black" class="uk-text-left">{{submission.descriptiveTitle}}</div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Project Type:</div>
+                        <div style="color: black" class="uk-text-left">{{submission.projectType}}</div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Student Personal Photo:</div>
+                        <div style="color: black" class="uk-text-left"><img src="{{submission.personalPhoto}}" alt="Personal Photo"></div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Project Image:</div>
+                        <div style="color: black" class="uk-text-left"><img src="{{submission.projectImage}}" alt="Project Image"></div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-1 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Summary (≤100 characters):</div>
+                        <div style="color: black" class="uk-text-left">{{submission.summary}}</div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Project Landing Page URL:</div>
+                        <div style="color: black" class="uk-text-left">{{submission.projectUrl}}</div>
+                    </div>
+                </div>
+
+                <div class="uk-width-1-2 uk-grid-margin-small">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <div style="color: black" class="uk-text-left">Demonstration Video URL:</div>
+                        <div style="color: black" class="uk-text-left">{{submission.videoUrl}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="button" onclick="location.href='/create-pdf/{{user._id}}';" value="Create PDF"/>
+            {{> error }}
+        </div>
+    </div>
+</div>
