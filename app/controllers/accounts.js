@@ -4,6 +4,7 @@ const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
+const { jsPDF } = require("jspdf");
 
 const Accounts = {
   index: {
@@ -19,7 +20,7 @@ const Accounts = {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
-      console.log(submission.firstName + " " + submission.lastName + " has navigated to the submit screen");
+      console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
       return h.view("submit", { title: "Project Submission", submission: submission });
     },
   },
@@ -27,7 +28,7 @@ const Accounts = {
   showSignup: {
     auth: false,
     handler: function (request, h) {
-      console.log("User has navigated to the sign-up screen");
+      console.log("User has navigated to the Sign-Up page");
       return h.view("signup", { title: "Signup for Submissions", subtitle: "This is the Signup Subtitle" });
     },
   },
@@ -75,6 +76,7 @@ const Accounts = {
           email: sanitizeHtml(payload.email),
           password: sanitizeHtml(payload.password),
         });
+        user = await newUser.save();
 
         const newSubmission = new Submission({
           firstName: newUser.firstName,
@@ -83,7 +85,10 @@ const Accounts = {
         });
         await newSubmission.save();
 
-        user = await newUser.save();
+        const doc = await new jsPDF("landscape");
+        doc.text(newUser.firstName + " has not created their Handbook yet.", 20, 20);
+        doc.save("./public/handbooks/" + newUser.firstName + newUser.lastName + ".pdf");
+
         request.cookieAuth.set({ id: user.id });
         console.log(newUser.firstName + " " + newUser.lastName + " has registered");
         return h.redirect("/login");
@@ -104,8 +109,8 @@ const Accounts = {
   showLogin: {
     auth: false,
     handler: function (request, h) {
-      console.log("User has navigated to the login screen");
-      return h.view("login", { title: "Login to Submissions", subtitle: "This is the subtitle" });
+      console.log("User has navigated to the Login page");
+      return h.view("login", { title: "Login", subtitle: "This is the subtitle" });
     },
   },
 
@@ -124,7 +129,7 @@ const Accounts = {
         console.log("User has entered unacceptable data for logging in");
         return h
           .view("login", {
-            title: "Log in Error",
+            title: "Login Error",
             errors: error.details,
           })
           .takeover()
@@ -154,31 +159,14 @@ const Accounts = {
   showcase: {
     auth: false,
     handler: async function (request, h) {
-      //const userId = await request.auth.credentials.id;
-      //const user = await User.findById(userId).lean();
-      //const users = await User.find().populate(user).lean();
-      //const users = await User.find().populate(user).lean();
-      const users = await User.find().lean();
-      //const users = await User.findAll();
-      //console.log(user.firstName + " has navigated to Showcase Page");
-      console.log("The following users are on the system " + users);
-      return h.view("showcase", { title: "Showcases", users: users });
-    },
-  },
-
-  showcaseFile: {
-    auth: false,
-    handler: async function (request, h) {
-      const userId = await request.params;
-      const user = await User.findById(userId).lean();
-      const submission = await Submission.findByUserId(user).lean();
-      console.log(user.firstName + " has submitted " + submission.projectTitle);
-      console.log("Submission: " + submission);
-      return h.view("showcase-file", {
-        title: "User's Submission",
-        submission: submission,
-        user: user,
-      });
+      try {
+        const users = await User.find().lean();
+        console.log("User has navigated to the Showcase page");
+        return h.view("showcase", { title: "Showcases", users: users });
+      } catch (err) {
+        console.log("Error loading Showcase page");
+        return h.view("main", { errors: [{ message: err.message }] });
+      }
     },
   },
 

@@ -18,10 +18,9 @@ const Submissions = {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
-      console.log(user.firstName + " has submitted " + submission.projectTitle);
-      console.log("Submission: " + submission);
+      console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
       return h.view("report", {
-        title: "User's Submission",
+        title: user.firstName + "'s Submission",
         submission: submission,
         user: user,
       });
@@ -67,8 +66,8 @@ const Submissions = {
         const submission = await Submission.findByUserId(user);
 
         if (submissionEdit.personalPhoto.length !== undefined) {
-          //await ImageStore.deleteImage(submission.personalPhoto.id);
-          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto);
+          //await ImageStore.deleteImage(submission.personalPhoto.id); //if I have time, I'll implement a delete functionality to avoid clogging up cloudinary account
+          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto); //consider re-ordering images to maintain consistency
           const personalPhotoUrl = personalPhotoResult.url;
           submission.personalPhoto = personalPhotoUrl;
         }
@@ -98,9 +97,8 @@ const Submissions = {
         if (submissionEdit.videoUrl !== "") {
           submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
         }
-        console.log("Submission (submit): " + submission);
+        console.log(user.firstName + " has created/updated the following Submission: " + submission);
         await submission.save();
-        console.log(user.firstName + " has updated " + submission.projectTitle);
         return h.redirect("/report");
       } catch (err) {
         console.log("Error updating Submission");
