@@ -1,53 +1,53 @@
 "use strict";
 const User = require("../models/user");
-const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
-const Joi = require("@hapi/joi");
-const sanitizeHtml = require("sanitize-html");
 const imageDataURI = require("image-data-uri");
 const { jsPDF } = require("jspdf");
 
 const Pdfs = {
-  jsPdf: {
-    auth: false,
-    handler: function (request, h) {
-      console.log("js.PDF");
-      return h.view("js-pdf", { title: "jspdf" });
-    },
-  },
-
   createPdf: {
     auth: false,
     handler: async function (request, h) {
       try {
-        //const imgData = await imageDataURI.encodeFromFile("public/images/ITPL.png");
+        const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
         const doc = new jsPDF("landscape");
         const user = await User.findById(request.params._id).lean();
         const submission = await Submission.findByUserId(user).lean();
-        const personalPhotoImgData = await imageDataURI.encodeFromURL(submission.projectImage);
-        const projectImageImgData = await imageDataURI.encodeFromURL(submission.personalPhoto);
-        console.log("Created the following pdf: " + submission.projectTitle);
-        console.log("Created pdf for: " + user.firstName);
+        const personalPhotoImgData = await imageDataURI.encodeFromURL(submission.personalPhoto);
+        const projectImageImgData = await imageDataURI.encodeFromURL(submission.projectImage);
+        const youtubeImgData = await imageDataURI.encodeFromFile("public/images/youtube.png");
+        console.log(
+          user.firstName + " " + user.lastName + " has created the following pdf: " + submission.projectTitle
+        );
 
-        doc.addImage(personalPhotoImgData, "JPG", 100, 0, 30, 40);
-        doc.addImage(projectImageImgData, "JPG", 200, 0, 30, 40);
-        doc.text(submission.firstName + " " + submission.lastName, 10, 10);
-        doc.text(submission.projectTitle, 10, 20);
-        doc.text(submission.descriptiveTitle, 10, 30);
-        doc.text(submission.projectType, 10, 40);
-        doc.text(submission.summary, 10, 50);
-        doc.text(submission.projectUrl, 10, 100);
-        doc.text(submission.videoUrl, 10, 110);
-        doc.save(user.firstName + user.lastName + ".pdf");
-        return h.view("showcase-file", {
+        doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
+        doc.addImage(personalPhotoImgData, "JPG", 5, 5, 50, 50); //originally w:30, h:40
+        doc.addImage(projectImageImgData, "JPG", 5, 70, 150, 120);
+        doc.setFontSize(30);
+        doc.text(submission.projectTitle, 70, 20);
+        doc.text(submission.descriptiveTitle, 70, 30);
+        doc.setFontSize(20);
+        doc.text(submission.projectType, 70, 40);
+        doc.text(submission.firstName + " " + submission.lastName, 70, 50);
+        doc.setFontSize(15);
+        doc.text(submission.summary, 165, 60);
+        doc.setTextColor(0, 102, 204);
+        doc.textWithLink("Project Landing Page", 5, 207, { url: submission.projectUrl });
+        doc.setFontSize(20);
+        doc.textWithLink("Video", 276, 202, { url: submission.videoUrl });
+        doc.addImage(youtubeImgData, "PNG", 275, 190, 20, 20);
+        doc.save("./public/handbooks/" + user.firstName + user.lastName + ".pdf");
+
+        return h.redirect("/report", {
           title: "User's Submission",
+          user: user,
           submission: submission,
         });
       } catch (err) {
         const user = await User.findById(request.params._id).lean();
         const submission = await Submission.findByUserId(user).lean();
-        console.log("Error updating Submission");
-        return h.view("showcase-file", {
+        console.log("Error creating pdf");
+        return h.view("report", {
           title: "Submission Error",
           user: user,
           submission: submission,
