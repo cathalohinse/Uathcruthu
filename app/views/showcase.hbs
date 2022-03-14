@@ -17,13 +17,13 @@
             <div class="uk-grid">
                 <div class="uk-width-1-2 uk-grid-margin">
                     <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-                        <div style="color: black" class="uk-text-left">Student Name:</div>
+                        <div style="color: black" class="uk-text-left"><strong>Student Name:</strong></div>
                         {{#each users}}
-                        <a href="/showcase-file/{{_id}}" class="uk-card uk-card-small uk-text-center uk-padding-remove">
-                            <div class="uk-width-1-2 uk-grid-margin">
-                                <div style="color: black" class="uk-text-left">{{firstName}} {{lastName}}</div>
-                            </div>
-                        </a>
+                            <a href="./handbooks/{{firstName}}{{lastName}}.pdf" target=”_blank” class="uk-card uk-card-small uk-text-center uk-padding-remove">
+                                <div class="uk-width-1-2 uk-grid-margin">
+                                    <div style="color: black" class="uk-text-left">{{firstName}} {{lastName}}</div>
+                                </div>
+                            </a>
                         {{/each}}
                     </div>
                 </div>
