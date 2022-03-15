@@ -1,10 +1,15 @@
-## Welcome to GitHub Pages
+## Uathcruthú Landing Page
 
-You can use the [editor on GitHub](https://github.com/cathalohinse/Uathcruthu/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+[Uathcruthú](https://uathcruthu.herokuapp.com/) is a web application that was written up as a final year project submission for the WIT Higher Diploma in Science in Computer Science. It is used to automate the handbook creation process.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Links
+* [Uathcruthú](https://uathcruthu.herokuapp.com/)
+* [Demonstration Video](https://www.youtube.com/watch?v=Uh36o_e1Kw4)
+* [GitHub Repository](https://github.com/cathalohinse/Uathcruthu)
+* [Trello Board](https://trello.com/b/3GvQzJVK/uathcruth%C3%BA)
 
-### Markdown
+
+
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
