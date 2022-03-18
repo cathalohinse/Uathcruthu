@@ -67,20 +67,6 @@ const Submissions = {
         const submissionEdit = request.payload;
         const submission = await Submission.findByUserId(user);
 
-        if (submissionEdit.personalPhoto.length !== undefined) {
-          //await ImageStore.deleteImage(submission.personalPhoto.id); //if I have time, I'll implement a delete functionality to avoid clogging up cloudinary account
-          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto); //consider re-ordering images to maintain consistency
-          const personalPhotoUrl = personalPhotoResult.url;
-          submission.personalPhoto = personalPhotoUrl;
-        }
-
-        if (submissionEdit.projectImage.length !== undefined) {
-          //await ImageStore.deleteImage(request.params.id);
-          const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
-          const projectImageUrl = projectImageResult.url;
-          submission.projectImage = projectImageUrl;
-        }
-
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
@@ -90,6 +76,35 @@ const Submissions = {
         if (submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
         }
+
+        if (submissionEdit.personalPhoto.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url, so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (submission.personalPhoto !== undefined) {
+            const personalPhotoFileName = await submission.personalPhoto.substr(
+              submission.personalPhoto.lastIndexOf("/") + 1
+            );
+            const personalPhotoPublic_id = await personalPhotoFileName.substr(0, personalPhotoFileName.indexOf("."));
+            await ImageStore.deleteImage(personalPhotoPublic_id);
+          }
+          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto); //consider re-ordering images to maintain consistency
+          const personalPhotoUrl = await personalPhotoResult.url;
+          submission.personalPhoto = await personalPhotoUrl;
+        }
+
+        if (submissionEdit.projectImage.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url, so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (submission.projectImage !== undefined) {
+            const projectImageFileName = await submission.projectImage.substr(
+              submission.projectImage.lastIndexOf("/") + 1
+            );
+            const projectImagePublic_id = await projectImageFileName.substr(0, projectImageFileName.indexOf("."));
+            await ImageStore.deleteImage(projectImagePublic_id);
+          }
+          const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
+          const projectImageUrl = projectImageResult.url;
+          submission.projectImage = projectImageUrl;
+        }
+
         if (submissionEdit.summary !== "") {
           submission.summary = sanitizeHtml(submissionEdit.summary);
         }
