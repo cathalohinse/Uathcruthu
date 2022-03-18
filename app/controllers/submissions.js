@@ -35,7 +35,9 @@ const Submissions = {
         projectType: Joi.string().allow(""),
         personalPhoto: Joi.any().allow(""),
         projectImage: Joi.any().allow(""),
-        summary: Joi.string().allow("").max(100),
+        summary: Joi.string()
+          .allow("")
+          .regex(/^\s*(\S+\s+|\S+$){0,100}$/i), //100 words max
         projectUrl: Joi.string().allow(""),
         videoUrl: Joi.string().allow(""),
       },
