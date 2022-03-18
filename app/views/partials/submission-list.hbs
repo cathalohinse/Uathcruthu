@@ -1,31 +1,64 @@
-<div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
-    <h3 style="color: black" class="uk-card-title uk-text-center">            Submissions to Date</h3>
-    <table style="color: black" class="uk-table">
-        <thead>
-        <th>Student Name</th>
-        <th>Project Title</th>
-        <th>Descriptive Title</th>
-        <th>Project Type</th>
-        <th>Student Personal Photo</th>
-        <th>Project Image</th>
-        <th>Summary (<100 words)</th>
-        <th>Project Landing Page URL</th>
-        <th>Demonstration Video URL</th>
-        </thead>
-        <tbody class="uk-text-left">
-        {{#each submissions}}
-            <tr>
-                <td>{{name}}</td>
-                <td>{{projectTitle}}</td>
-                <td>{{descriptiveTitle}}</td>
-                <td>{{projectType}}</td>
-                <td>{{personalPhoto}}</td>
-                <td>{{projectImage}}</td>
-                <td>{{summary}}</td>
-                <td>{{projectUrl}}</td>
-                <td>{{videoUrl}}</td>
-            </tr>
-        {{/each}}
-        </tbody>
-    </table>
+<div class="uk-grid">
+    <div class="uk-width-1-2 uk-grid-margin">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Student Name:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.firstName}} {{submission.lastName}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Title:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.projectTitle}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Descriptive Title:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.descriptiveTitle}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.projectType}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Student Personal Photo:</strong></div>
+            <div style="color: black" class="uk-text-left"><img src="{{submission.personalPhoto}}" alt="Personal Photo"></div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Image:</strong></div>
+            <div style="color: black" class="uk-text-left"><img src="{{submission.projectImage}}" alt="Project Image"></div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-1 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Summary (≤100 characters):</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.summary}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Landing Page URL:</strong></div>
+            <div style="color: black" class="uk-text-left"><a href={{submission.projectUrl}} target=”_blank”>{{submission.projectUrl}}</a></div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Demonstration Video URL:</strong></div>
+            <div style="color: black" class="uk-text-left"><a href={{submission.videoUrl}} target=”_blank”>{{submission.videoUrl}}</a></div>
+        </div>
+    </div>
 </div>

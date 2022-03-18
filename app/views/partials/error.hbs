@@ -1,0 +1,12 @@
+{{#if errors}}
+    <div style="background-color: #877EB4" class="uk-margin uk-text-left uk-alert">
+        <div style="color: black" class="uk-text">
+            There was a problem...
+        </div>
+        <ul style="color: black" class="uk-list uk-list-disc">
+            {{#each errors}}
+                <li>{{message}}</li>
+            {{/each}}
+        </ul>
+    </div>
+{{/if}}

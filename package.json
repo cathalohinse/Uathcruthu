@@ -4,6 +4,7 @@
   "description": "a web app that automates the processing of project submission data into a project showcase",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,13 +18,22 @@
   },
   "homepage": "https://github.com/cathalohinse/Uathcruthu#readme",
   "dependencies": {
+    "@hapi/boom": "^9.1.4",
     "@hapi/cookie": "^11.0.2",
     "@hapi/hapi": "^20.2.1",
     "@hapi/inert": "^6.0.5",
+    "@hapi/joi": "^17.1.1",
     "@hapi/vision": "^6.1.0",
-    "dotenv": "^15.0.0",
+    "cloudinary": "^1.28.1",
+    "cloudinary-core": "^2.12.3",
+    "dotenv": "^15.0.1",
     "handlebars": "^4.7.7",
-    "mongoose": "^6.1.9"
+    "https": "^1.0.0",
+    "image-data-uri": "^2.0.1",
+    "jspdf": "^2.5.1",
+    "just-handlebars-helpers": "^1.0.19",
+    "mongoose": "^6.2.2",
+    "sanitize-html": "^2.7.0"
   },
   "devDependencies": {
     "prettier": "^2.5.1"
