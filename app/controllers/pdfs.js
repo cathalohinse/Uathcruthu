@@ -22,7 +22,7 @@ const Pdfs = {
         );
 
         doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
-        doc.addImage(personalPhotoImgData, "JPG", 5, 5, 50, 50); //originally w:30, h:40
+        doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
         doc.addImage(projectImageImgData, "JPG", 5, 75, 150, 120);
         doc.setFontSize(30);
         doc.setFont(undefined, "bold");

@@ -12,16 +12,15 @@
 </div>
 
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
-    <h3 style="color: black" class="uk-card-title uk-text-center">Welcome back!</h3>
+    <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook/Showcase Submission</h3>
     <form action="/submit" method="POST" enctype="multipart/form-data">
 
         <div class="uk-margin">
             <label style="color: black; font-size:120%">Project Title:</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: pencil"></span>
-                <input class="uk-input uk-form-small" type="text" name="projectTitle" {{#if submission.projectTitle}}
-                       placeholder="{{submission.projectTitle}}"
-                       {{/if}}
+                <input class="uk-input uk-form-small" type="text" name="projectTitle" {{#if submission.projectTitle}} placeholder="{{submission.projectTitle}}"
+                {{/if}}
                     {{#unless submission.projectTitle}}
                        placeholder="Project Title"
                     {{/unless}}/>
@@ -41,18 +40,43 @@
             </div>
         </div>
 
-        <div class="uk-margin">
-            <label style="color: black; font-size:120%">Project Type:</label>
-            <div class="uk-inline uk-width-1-1">
-                <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
-                <input class="uk-input uk-form-small" type="text" name="projectType" {{#if submission.projectType}}
-                       placeholder="{{submission.projectType}}"
-                {{/if}}
-                    {{#unless submission.projectType}}
-                       placeholder="Project Type"
-                    {{/unless}}/>
+
+        {{#if (eq submission.projectType "Other")}}
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%"><strong>Project Type - if 'Other', please specify:</strong></label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
+                    <input class="uk-input uk-form-small" type="text" name="projectType" placeholder="Other - Please specify"/>
+                </div>
             </div>
-        </div>
+
+        {{else}}
+            <label style="color: black; font-size:120%" class="uk-form-label" for="form-stacked-select">Project Type</label>
+            <div class="uk-form-controls">
+                <select name="projectType" class="uk-select">
+                    {{#if submission.projectType}}
+                        <option value="{{submission.projectType}}" selected>{{submission.projectType}}</option>
+                    {{/if}}
+
+                    {{#unless submission.projectType}}
+                        <option value="" disabled selected hidden>Select Project Type</option>
+                    {{/unless}}/>
+
+                    {{#unless (eq submission.projectType "Native Mobile Application")}}
+                        <option value="Native Mobile Application">Native Mobile Application</option>
+                    {{/unless}}/>
+
+                    {{#unless (eq submission.projectType "Web Application")}}
+                        <option value="Web Application">Web Application</option>
+                    {{/unless}}
+
+                    {{#unless (eq submission.projectType "Other")}}
+                        <option value="Other">Other</option>
+                    {{/unless}}
+                </select>
+            </div>
+        {{/if}}
+
 
         <div class="uk-margin">
             <label style="color: black; font-size:120%">Personal Digital Photograph:</label>

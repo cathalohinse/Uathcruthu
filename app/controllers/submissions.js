@@ -114,6 +114,17 @@ const Submissions = {
         if (submissionEdit.videoUrl !== "") {
           submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
         }
+
+        if (submissionEdit.projectType === "Other") {
+          submission.projectType = sanitizeHtml(submissionEdit.projectType);
+          await submission.save();
+          console.log("Error updating Submission");
+          return h.redirect("/submit", {
+            title: "Specify Project Type",
+            submission: submission,
+          });
+        }
+
         console.log(user.firstName + " has created/updated the following Submission: " + submission);
         await submission.save();
         return h.redirect("/report");
