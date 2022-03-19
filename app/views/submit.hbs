@@ -6,11 +6,22 @@
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
         <div class="uk-width-expand@m">
             <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
-            <p>Leathanach Ionchuir</p>
         </div>
     </div>
 </div>
 
+{{#if (gt deadline today)}}
+    <div class="uk-container uk-margin">
+        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+            <div class="uk-width-expand@m">
+                <h1 class="uk-heading-small">You have missed the deadline for submission!</h1>
+                <p>Leathanach Ionchuir</p>
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#unless (gt deadline today)}}
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook/Showcase Submission</h3>
     <form action="/submit" method="POST" enctype="multipart/form-data">
@@ -152,3 +163,4 @@
     {{> error }}
 
 </div>
+{{/unless}}

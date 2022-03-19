@@ -15,6 +15,11 @@ const Submissions = {
 
   report: {
     handler: async function (request, h) {
+      //const date = new Date();
+      //const today = date.getDate();
+      const today = Date.now();
+      const deadline = Math.floor(new Date("2022.04.10").getTime() / 1000);
+
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
@@ -23,6 +28,8 @@ const Submissions = {
         title: user.firstName + "'s Submission",
         submission: submission,
         user: user,
+        today: today,
+        deadline: deadline,
       });
     },
   },

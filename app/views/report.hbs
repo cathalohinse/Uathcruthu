@@ -10,6 +10,19 @@
     </div>
 </div>
 
+{{#if (gt deadline today)}}
+    <div class="uk-container uk-margin">
+        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+            <div class="uk-width-expand@m">
+                <h1 class="uk-heading-small">You have missed the deadline for submission!</h1>
+                <p>Leathanach Ionchuir</p>
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#unless (gt deadline today)}}
+
 <div class="uk-container uk-margin">
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
         <div class="uk-width-expand@m">
@@ -31,3 +44,4 @@
         </div>
     </div>
 </div>
+{{/unless}}
