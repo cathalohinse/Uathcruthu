@@ -45,6 +45,7 @@ const Submissions = {
           .regex(/^\s*(\S+\s+|\S+$){0,100}$/i), //100 words max
         projectUrl: Joi.string().allow(""),
         videoUrl: Joi.string().allow(""),
+        nda: Joi.boolean(),
       },
       options: {
         abortEarly: false,
@@ -72,6 +73,8 @@ const Submissions = {
         const submissionEdit = request.payload;
         const submission = await Submission.findByUserId(user);
 
+        submission.nda = submissionEdit.nda;
+
         if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
@@ -83,7 +86,8 @@ const Submissions = {
         }
 
         if (submissionEdit.personalPhoto.length !== undefined) {
-          //Extracting the public_id from the previously submitted image url, so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
           if (submission.personalPhoto !== undefined) {
             const personalPhotoFileName = await submission.personalPhoto.substr(
               submission.personalPhoto.lastIndexOf("/") + 1

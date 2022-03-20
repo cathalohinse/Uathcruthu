@@ -16,6 +16,7 @@ const submissionSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  nda: Boolean,
 });
 
 //My own custom built method:
