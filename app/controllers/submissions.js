@@ -4,6 +4,7 @@ const User = require("../models/user");
 const ImageStore = require("../utils/image-store");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
+const Deadline = require("../controllers/accounts");
 
 const Submissions = {
   home: {
@@ -15,11 +16,8 @@ const Submissions = {
 
   report: {
     handler: async function (request, h) {
-      //const date = new Date();
-      //const today = date.getDate();
-      const today = Date.now();
-      const deadline = Math.floor(new Date("2022.04.10").getTime() / 1000);
-
+      const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
+      const deadline = await Deadline.deadline();
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();

@@ -10,7 +10,7 @@
     </div>
 </div>
 
-{{#if (gt deadline today)}}
+{{#if (gt today deadline)}}
     <div class="uk-container uk-margin">
         <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
             <div class="uk-width-expand@m">
@@ -21,7 +21,7 @@
     </div>
 {{/if}}
 
-{{#unless (gt deadline today)}}
+{{#unless (gt today deadline)}}
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook/Showcase Submission</h3>
     <form action="/submit" method="POST" enctype="multipart/form-data">

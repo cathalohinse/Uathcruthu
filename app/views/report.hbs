@@ -10,7 +10,7 @@
     </div>
 </div>
 
-{{#if (gt deadline today)}}
+{{#if (gt today deadline)}}
     <div class="uk-container uk-margin">
         <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
             <div class="uk-width-expand@m">
@@ -21,7 +21,7 @@
     </div>
 {{/if}}
 
-{{#unless (gt deadline today)}}
+{{#unless (gt today deadline)}}
 
 <div class="uk-container uk-margin">
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
