@@ -7,21 +7,38 @@ const sanitizeHtml = require("sanitize-html");
 const { jsPDF } = require("jspdf");
 
 const Accounts = {
+  deadline: async function () {
+    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
+    return deadline;
+  },
+
   index: {
     auth: false,
     handler: function (request, h) {
       console.log("Welcome to Uathcruthú");
+      const date = new Date();
+      const week_day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const month_name = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      console.log(
+        week_day[date.getDay()] + " " + month_name[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear()
+      );
       return h.view("main", { title: "ITPL Tionscadal Cuir Isteach" });
     },
   },
 
   showSubmit: {
     handler: async function (request, h) {
+      const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
       console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
-      return h.view("submit", { title: "Project Submission", submission: submission });
+      return h.view("submit", {
+        title: "Project Submission",
+        submission: submission,
+        today: today,
+        deadline: await Accounts.deadline(),
+      });
     },
   },
 
