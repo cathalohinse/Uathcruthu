@@ -43,7 +43,7 @@
 
     <div class="uk-width-1-1 uk-grid-margin-small">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-            <div style="color: black" class="uk-text-left"><strong>Summary (≤100 characters):</strong></div>
+            <div style="color: black" class="uk-text-left"><strong>Summary (≤100 words):</strong></div>
             <div style="color: black" class="uk-text-left">{{submission.summary}}</div>
         </div>
     </div>
@@ -51,14 +51,14 @@
     <div class="uk-width-1-2 uk-grid-margin-small">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
             <div style="color: black" class="uk-text-left"><strong>Project Landing Page URL:</strong></div>
-            <div style="color: black" class="uk-text-left">{{submission.projectUrl}}</div>
+            <div style="color: black" class="uk-text-left"><a href={{submission.projectUrl}} target=”_blank”>{{submission.projectUrl}}</a></div>
         </div>
     </div>
 
     <div class="uk-width-1-2 uk-grid-margin-small">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
             <div style="color: black" class="uk-text-left"><strong>Demonstration Video URL:</strong></div>
-            <div style="color: black" class="uk-text-left">{{submission.videoUrl}}</div>
+            <div style="color: black" class="uk-text-left"><a href={{submission.videoUrl}} target=”_blank”>{{submission.videoUrl}}</a></div>
         </div>
     </div>
 </div>
