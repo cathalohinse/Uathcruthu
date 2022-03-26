@@ -1,9 +1,9 @@
-<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small uk-grid">
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
     {{> main-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
 </div>
 
 <div class="uk-container uk-margin">
-    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
         <div class="uk-width-expand@m">
             <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
         </div>
@@ -12,7 +12,7 @@
 
 {{#if (gt today deadline)}}
     <div class="uk-container uk-margin">
-        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
+        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
             <div class="uk-width-expand@m">
                 <h1 class="uk-heading-small">You have missed the deadline for submission!</h1>
                 <p>Leathanach Ionchuir</p>
@@ -26,7 +26,7 @@
     <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook/Showcase Submission</h3>
     <form name="submission-form" action="/submit" method="POST" enctype="multipart/form-data">
 
-        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+        <div class="uk-margin uk-grid-small uk-child-width-auto" uk-grid>
             <label for="nda" style="color: black">
                 <input class="uk-checkbox" type="checkbox" id="nda" name="nda" value="true" onclick="disableField()"> Non Disclosure Agreement
             </label>
