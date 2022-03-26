@@ -225,10 +225,13 @@ const Pdfs = {
       try {
         const users = await User.find().lean();
         const merger = new PDFMerger();
-        merger.add("./public/handbooks/DanShanahan.pdf");
-        merger.add("./public/handbooks/JohnMullane.pdf");
+        let i = 0;
+        while (i < users.length) {
+          merger.add("./public/handbooks/" + users[i].firstName + users[i].lastName + ".pdf");
+          i++;
+        }
         await merger.save("./public/handbooks/handbook.pdf");
-        console.log("Handbook has been created");
+        console.log("Handbook has now been created");
         return h.view("admin", { title: "Admin", users: users });
       } catch (err) {
         console.log("Error creating handbook");
