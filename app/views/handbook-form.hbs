@@ -1,0 +1,85 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> main-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+        </div>
+    </div>
+</div>
+
+
+    <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+        <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook Creation</h3>
+        <form name="submission-form" action="/admin-submit" method="POST" enctype="multipart/form-data">
+
+
+            <div class="uk-margin" id="courseTitle">
+                <label style="color: black; font-size:120%" id="courseTitleLabel">Course Title:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input uk-form-small" id="courseTitle" type="text" name="courseTitle"
+                        {{#if adminSubmission.courseTitle}}
+                           placeholder="{{adminSubmission.courseTitle}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseTitle}}
+                           placeholder="Course Title"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin" id="handbookTitle">
+                <label style="color: black; font-size:120%">Handbook Title:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input uk-form-small" type="text" name="handbookTitle"
+                        {{#if adminSubmission.handbookTitle}}
+                           placeholder="{{adminSubmission.handbookTitle}}"
+                        {{/if}}
+                        {{#unless adminSubmission.handbookTitle}}
+                           placeholder="Handbook Title"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Background Image:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: camera"></span>
+                    <input class="uk-input uk-form-small" type="file" name="backgroundImage" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.backgroundImage}}
+                           placeholder="{{adminSubmission.backgroundImage}}"
+                        {{/if}}
+                        {{#unless adminSubmission.backgroundImage}}
+                           placeholder="Background Image"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin" id="deadline">
+                <label style="color: black; font-size:120%">Deadline:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: link"></span>
+                    <input class="uk-input uk-form-small" type="text" name="deadline"
+                        {{#if adminSubmission.deadline}}
+                           placeholder="{{adminSubmission.deadline}}"
+                        {{/if}}
+                        {{#unless adminSubmission.deadline}}
+                           placeholder="Deadline"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+
+            <div class="uk-margin">
+                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
+            </div>
+
+        </form>
+
+        {{> error }}
+
+    </div>

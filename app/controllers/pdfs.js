@@ -1,7 +1,9 @@
 "use strict";
 const User = require("../models/user");
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const imageDataURI = require("image-data-uri");
+const ImageStore = require("../utils/image-store");
 const { jsPDF } = require("jspdf");
 const Deadline = require("../controllers/accounts");
 const Joi = require("@hapi/joi");
@@ -219,6 +221,21 @@ const Pdfs = {
     },
   },
 
+  showHandbookForm: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
+        console.log("User has navigated to the 'Other' Project-Selection page");
+        return h.view("handbook-form", { title: "Other Project Selection", users: users, submissions: submissions });
+      } catch (err) {
+        console.log("Error loading Showcase page");
+        return h.view("admin", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
   createHandBook: {
     auth: false,
     handler: async function (request, h) {
@@ -239,6 +256,112 @@ const Pdfs = {
       }
     },
   },
+
+  deadline: async function () {
+    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
+    return deadline;
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  adminSubmit: {
+    validate: {
+      payload: {
+        courseTitle: Joi.string(),
+        handbookTitle: Joi.string(),
+        backgroundImage: Joi.any(),
+        deadline: Joi.string(),
+      },
+      options: {
+        abortEarly: false,
+      },
+      failAction: async function (request, h, error) {
+        const userId = await request.auth.credentials.id;
+        const user = await User.findById(userId);
+        const submission = await Submission.findByUserId(user).lean();
+        console.log("User has entered unacceptable data for admin submission");
+        return h
+          .view("handbook-form", {
+            title: "Submission Error",
+            errors: error.details,
+            //submission: submission,
+          })
+          .takeover()
+          .code(400);
+      },
+    },
+
+    handler: async function (request, h) {
+      try {
+        const userId = await request.auth.credentials.id;
+        const user = await User.findById(userId);
+        const adminSubmissionEdit = request.payload;
+        //const adminSubmission = await AdminSubmission.findByUserId(user);
+        const adminSubmission = new AdminSubmission();
+
+        if (adminSubmissionEdit.courseTitle !== "") {
+          adminSubmission.courseTitle = sanitizeHtml(adminSubmissionEdit.courseTitle);
+        }
+        if (adminSubmissionEdit.handbookTitle !== "") {
+          adminSubmission.handbookTitle = sanitizeHtml(adminSubmissionEdit.handbookTitle);
+        }
+        if (adminSubmissionEdit.deadline !== "") {
+          adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
+        }
+
+        if (adminSubmissionEdit.backgroundImage.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.backgroundImage !== undefined) {
+            const backgroundImageFileName = await adminSubmission.backgroundImage.substr(
+              adminSubmission.backgroundImage.lastIndexOf("/") + 1
+            );
+            const backgroundImagePublic_id = await backgroundImageFileName.substr(
+              0,
+              backgroundImageFileName.indexOf(".")
+            );
+            await ImageStore.deleteImage(backgroundImagePublic_id);
+          }
+          const backgroundImageResult = await ImageStore.uploadImage(adminSubmissionEdit.backgroundImage); //consider re-ordering images to maintain consistency
+          const backgroundImageUrl = await backgroundImageResult.url;
+          adminSubmission.backgroundImage = await backgroundImageUrl;
+        }
+
+        /*if (submissionEdit.videoUrl !== "") {
+          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
+        }*/
+
+        /*if (submissionEdit.projectType === "Other") {
+          submission.projectTypeOther = true;
+          console.log("Other: " + submission.projectTypeOther);
+          submission.projectType = sanitizeHtml(submissionEdit.projectType);
+          await submission.save();
+          console.log("If Project Type is 'Other', please specify");
+          return h.redirect("/submission-form", {
+            title: "Specify Project Type",
+            submission: submission,
+          });
+        }*/
+
+        await adminSubmission.save();
+        return h.redirect("/admin");
+      } catch (err) {
+        console.log("Error submitting admin pages");
+        return h.view("admin", {
+          title: "Submission Error",
+          errors: [{ message: err.message }],
+        });
+      }
+    },
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
+    },
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////
 };
 
 module.exports = Pdfs;
