@@ -33,6 +33,7 @@
     "jspdf": "^2.5.1",
     "just-handlebars-helpers": "^1.0.19",
     "mongoose": "^6.2.2",
+    "pdf-merger-js": "^3.4.0",
     "sanitize-html": "^2.7.0"
   },
   "devDependencies": {
