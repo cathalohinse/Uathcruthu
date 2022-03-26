@@ -1,9 +1,9 @@
-<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small uk-grid">
     {{> main-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
 </div>
 
 <div class="uk-container uk-margin">
-    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
         <div class="uk-width-expand@m">
             <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
         </div>
@@ -12,7 +12,7 @@
 
 {{#if (gt today deadline)}}
     <div class="uk-container uk-margin">
-        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
             <div class="uk-width-expand@m">
                 <h1 class="uk-heading-small">You have missed the deadline for submission!</h1>
                 <p>Leathanach Ionchuir</p>
@@ -24,18 +24,20 @@
 {{#unless (gt today deadline)}}
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook/Showcase Submission</h3>
-    <form action="/submit" method="POST" enctype="multipart/form-data">
+    <form name="submission-form" action="/submit" method="POST" enctype="multipart/form-data">
 
         <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
             <label for="nda" style="color: black">
-                <input class="uk-checkbox" type="checkbox" id="nda" name="nda" value="true" onclick="disableField()"> Non Disclosure Agreement?
+                <input class="uk-checkbox" type="checkbox" id="nda" name="nda" value="true" onclick="disableField()"> Non Disclosure Agreement
             </label>
             <script type="text/javascript">
                 function disableField(){
+                    document.getElementById("pleaseSpecify").hidden = false;
                     if(document.getElementById("nda").checked === true){
                         document.getElementById("projectTitle").hidden = true;
                         document.getElementById("descriptiveTitle").hidden = true;
                         document.getElementById("projectType").hidden = true;
+                        document.getElementById("pleaseSpecify").hidden = true;
                         document.getElementById("projectImage").hidden = true;
                         document.getElementById("summary").hidden = true;
                         document.getElementById("projectUrl").hidden = true;
@@ -44,6 +46,7 @@
                         document.getElementById("projectTitle").hidden = false;
                         document.getElementById("descriptiveTitle").hidden = false;
                         document.getElementById("projectType").hidden = false;
+                        document.getElementById("pleaseSpecify").hidden = true;
                         document.getElementById("projectImage").hidden = false;
                         document.getElementById("summary").hidden = false;
                         document.getElementById("projectUrl").hidden = false;
@@ -83,41 +86,60 @@
 
 
         <div id="projectType">
-            {{#if (eq submission.projectType "Other")}}
-                <div class="uk-margin">
-                    <label style="color: black; font-size:120%"><strong>Project Type - if 'Other', please specify:</strong></label>
-                    <div class="uk-inline uk-width-1-1">
-                        <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
-                        <input class="uk-input uk-form-small" type="text" name="projectType" placeholder="Other - Please specify"/>
-                    </div>
-                </div>
-            {{else}}
-                <label style="color: black; font-size:120%" class="uk-form-label" for="form-stacked-select">Project Type</label>
-                <div class="uk-form-controls">
-                    <select name="projectType" class="uk-select">
-                        {{#if submission.projectType}}
-                            <option value="{{submission.projectType}}" selected>{{submission.projectType}}</option>
-                        {{/if}}
+            <label style="color: black; font-size:120%" class="uk-form-label" for="form-stacked-select">Project Type</label>
+            <div class="uk-form-controls">
+                <select id="projectTypeSelect" name="projectType" class="uk-select" onchange="otherPleaseSpecify()">
+                    {{#if submission.projectType}}
+                        <option value="{{submission.projectType}}" selected>{{submission.projectType}}</option>
+                    {{/if}}
+                    {{#unless submission.projectType}}
+                        <option value="" disabled selected hidden>Select Project Type</option>
+                    {{/unless}}/>
 
-                        {{#unless submission.projectType}}
-                            <option value="" disabled selected hidden>Select Project Type</option>
-                        {{/unless}}/>
+                    {{#unless (eq submission.projectType "Native Mobile Application")}}
+                        <option value="Native Mobile Application">Native Mobile Application</option>
+                    {{/unless}}/>
 
-                        {{#unless (eq submission.projectType "Native Mobile Application")}}
-                            <option value="Native Mobile Application">Native Mobile Application</option>
-                        {{/unless}}/>
+                    {{#unless (eq submission.projectType "Web Application")}}
+                        <option value="Web Application">Web Application</option>
+                    {{/unless}}
 
-                        {{#unless (eq submission.projectType "Web Application")}}
-                            <option value="Web Application">Web Application</option>
-                        {{/unless}}
-
-                        {{#unless (eq submission.projectType "Other")}}
-                            <option value="Other">Other</option>
-                        {{/unless}}
-                    </select>
-                </div>
-            {{/if}}
+                    {{#unless (eq submission.projectType "Other")}}
+                        <option value="Other">Other</option>
+                    {{/unless}}
+                </select>
+            </div>
         </div>
+
+        <script type="text/javascript">
+            function otherPleaseSpecify(){
+                if(document.getElementById("projectTypeSelect").value === "Other"){
+                    document.getElementById("pleaseSpecify").hidden = false;
+                    document.getElementById("pleaseSpecifyInput").disabled = false;
+                    document.getElementById("projectType").hidden = true;
+                    document.getElementById("projectTypeSelect").disabled = true;
+                    document.getElementById("projectTypeOther").checked = true;
+                }else{
+                    document.getElementById("pleaseSpecify").hidden = true;
+                    document.getElementById("pleaseSpecifyInput").disabled = true;
+                    document.getElementById("projectType").hidden = false;
+                    document.getElementById("projectTypeSelect").disabled = false;
+                    document.getElementById("projectTypeOther").checked = false;
+                }
+            }
+        </script>
+
+        <div id="pleaseSpecify" class="uk-margin" hidden>
+            <label style="color: black; font-size:120%"><strong>Project Type - please specify</strong></label>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
+                <input id="pleaseSpecifyInput" class="uk-input uk-form-small" type="text" name="projectType" placeholder="Other - Please specify" onsubmit="otherPleaseSpecify()" disabled/>
+            </div>
+        </div>
+
+        <label for="projectTypeOther" style="color: black">
+            <input class="uk-checkbox" type="checkbox" id="projectTypeOther" name="projectTypeOther" value="true" hidden>
+        </label>
 
 
         <div class="uk-margin">
@@ -176,19 +198,6 @@
             </div>
         </div>
 
-        <div class="uk-margin" id="videoUrl">
-            <label style="color: black; font-size:120%">Demonstration Video URL:</label>
-            <div class="uk-inline uk-width-1-1">
-                <span class="uk-form-icon" uk-icon="icon: youtube"></span>
-                <input class="uk-input uk-form-small" type="url" name="videoUrl"
-                    {{#if submission.videoUrl}}
-                       placeholder="{{submission.videoUrl}}"
-                    {{/if}}
-                    {{#unless submission.videoUrl}}
-                       placeholder="Demonstration Video URL"
-                    {{/unless}}/>
-            </div>
-        </div>
 
         <div class="uk-margin">
             <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>

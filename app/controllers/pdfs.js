@@ -3,6 +3,9 @@ const User = require("../models/user");
 const Submission = require("../models/submission");
 const imageDataURI = require("image-data-uri");
 const { jsPDF } = require("jspdf");
+const Deadline = require("../controllers/accounts");
+const Joi = require("@hapi/joi");
+const sanitizeHtml = require("sanitize-html");
 
 const Pdfs = {
   createPdf: {
@@ -42,7 +45,7 @@ const Pdfs = {
           doc.textWithLink("Video", 276, 202, { url: submission.videoUrl });
           doc.addImage(youtubeImgData, "PNG", 275, 190, 20, 20);
           doc.save("./public/handbooks/" + user.firstName + user.lastName + ".pdf");
-          return h.redirect("/report", {
+          return h.view("submission-admin", {
             title: "User's Submission",
             user: user,
             submission: submission,
@@ -51,7 +54,7 @@ const Pdfs = {
           const user = await User.findById(request.params._id).lean();
           const submission = await Submission.findByUserId(user).lean();
           console.log("Error creating pdf");
-          return h.view("report", {
+          return h.view("submission-admin", {
             title: "Submission Error",
             user: user,
             submission: submission,
@@ -79,7 +82,7 @@ const Pdfs = {
           doc.setFontSize(20);
           doc.text(submission.firstName + " " + submission.lastName, 70, 70);
           doc.save("./public/handbooks/" + user.firstName + user.lastName + ".pdf");
-          return h.redirect("/report", {
+          return h.view("submission-admin", {
             title: "User's Submission",
             user: user,
             submission: submission,
@@ -88,7 +91,7 @@ const Pdfs = {
           const user = await User.findById(request.params._id).lean();
           const submission = await Submission.findByUserId(user).lean();
           console.log("Error creating pdf");
-          return h.view("report", {
+          return h.view("submission-admin", {
             title: "Submission Error",
             user: user,
             submission: submission,
@@ -96,6 +99,127 @@ const Pdfs = {
           });
         }
       }
+    },
+  },
+
+  createHandBook: {
+    auth: false,
+    handler: async function (request, h) {
+      const file1 = await require("../../public/handbooks/CathalHenchy.pdf");
+      //const pic1 = await require("../../public/images/Course.jpg");
+      //const file1 = await ("public/handbooks/CathalHenchy.pdf");
+      const testImgData = await imageDataURI.encodeFromFile("public/images/henchy.jpg");
+      const doc = await file1;
+      //const doc = new jsPDF({ orientation: "landscape", compress: true });
+      doc.addImage(testImgData, "JPG", 5, 5, 60, 60);
+      doc.save("public/handbooks/test.pdf");
+      /*const doc = new jsPDF({ orientation: "landscape", compress: true });
+      const file1 = require("../../public/handbooks/CathalHenchy.pdf");
+      const file2 = require("../../public/handbooks/JohnMullane.pdf");
+      doc.addFileToVFS(file1, file2);
+      doc.addFileToVFS(file2, file1);
+      doc.save("./public/handbooks/handbook.pdf");*/
+      console.log("Handbook Creation");
+      return h.redirect("admin", { errors: "Oops" });
+    },
+  },
+
+  showSubmissionAdmin: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
+        const deadline = await Deadline.deadline();
+        const userId = await request.params._id;
+        const user = await User.findById(userId).lean();
+        const submission = await Submission.findByUserId(user).lean();
+        console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
+        return h.view("submission-admin", {
+          title: user.firstName + "'s Submission",
+          submission: submission,
+          user: user,
+          today: today,
+          deadline: deadline,
+        });
+      } catch (err) {
+        return h.view("login", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
+  submitByAdmin: {
+    auth: false,
+    validate: {
+      payload: {
+        projectType: Joi.string().allow(""),
+        videoUrl: Joi.string().allow(""),
+      },
+      options: {
+        abortEarly: false,
+      },
+      failAction: async function (request, h, error) {
+        const userId = await request.request.params._id;
+        const user = await User.findById(userId);
+        const submission = await Submission.findByUserId(user).lean();
+        console.log("Admin has entered unacceptable data for submission");
+        return h
+          .view("admin", {
+            title: "Submission Error",
+            errors: error.details,
+            submission: submission,
+          })
+          .takeover()
+          .code(400);
+      },
+    },
+
+    handler: async function (request, h) {
+      try {
+        const submissionEdit = request.payload;
+        const submissionId = await request.params._id;
+        const submission = await Submission.findById(submissionId);
+
+        if (submissionEdit.projectType !== "") {
+          submission.projectType = sanitizeHtml(submissionEdit.projectType);
+        }
+
+        if (submissionEdit.videoUrl !== "") {
+          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
+        }
+
+        /*if (submissionEdit.projectType === "Other") {
+          submission.projectType = sanitizeHtml(submissionEdit.projectType);
+          await submission.save();
+          console.log("Error updating Submission");
+          return h.redirect("/submission-form", {
+            title: "Specify Project Type",
+            submission: submission,
+          });
+        }*/
+
+        console.log(
+          "Admin has added the following Video URL to " +
+            submission.projectTitle +
+            ":" +
+            "\n" +
+            submission.videoUrl +
+            "\n"
+        );
+        await submission.save();
+        return h.redirect("/admin");
+      } catch (err) {
+        console.log("Error updating Submission, so there is");
+        return h.view("admin", {
+          title: "Video URL Error",
+          errors: [{ message: err.message }],
+        });
+      }
+    },
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
     },
   },
 };

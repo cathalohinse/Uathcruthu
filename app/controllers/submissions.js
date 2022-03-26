@@ -14,7 +14,7 @@ const Submissions = {
     },
   },
 
-  report: {
+  showSubmission: {
     handler: async function (request, h) {
       const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
       const deadline = await Deadline.deadline();
@@ -22,7 +22,7 @@ const Submissions = {
       const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
       console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
-      return h.view("report", {
+      return h.view("submission-user", {
         title: user.firstName + "'s Submission",
         submission: submission,
         user: user,
@@ -44,8 +44,9 @@ const Submissions = {
           .allow("")
           .regex(/^\s*(\S+\s+|\S+$){0,100}$/i), //100 words max
         projectUrl: Joi.string().allow(""),
-        videoUrl: Joi.string().allow(""),
+        //videoUrl: Joi.string().allow(""),
         nda: Joi.boolean(),
+        projectTypeOther: Joi.boolean(),
       },
       options: {
         abortEarly: false,
@@ -56,7 +57,7 @@ const Submissions = {
         const submission = await Submission.findByUserId(user).lean();
         console.log(user.firstName + " has entered unacceptable data for submission");
         return h
-          .view("submit", {
+          .view("submission-form", {
             title: "Submission Error",
             errors: error.details,
             submission: submission,
@@ -120,26 +121,30 @@ const Submissions = {
         if (submissionEdit.projectUrl !== "") {
           submission.projectUrl = sanitizeHtml(submissionEdit.projectUrl);
         }
-        if (submissionEdit.videoUrl !== "") {
+        /*if (submissionEdit.videoUrl !== "") {
           submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
-        }
+        }*/
 
-        if (submissionEdit.projectType === "Other") {
+        /*if (submissionEdit.projectType === "Other") {
+          submission.projectTypeOther = true;
+          console.log("Other: " + submission.projectTypeOther);
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
           await submission.save();
-          console.log("Error updating Submission");
-          return h.redirect("/submit", {
+          console.log("If Project Type is 'Other', please specify");
+          return h.redirect("/submission-form", {
             title: "Specify Project Type",
             submission: submission,
           });
-        }
+        }*/
 
-        console.log(user.firstName + " has created/updated the following Submission: " + submission);
+        submission.projectTypeOther = submissionEdit.projectTypeOther;
+
+        //console.log(user.firstName + " has created/updated the following Submission: " + submission);
         await submission.save();
-        return h.redirect("/report");
+        return h.redirect("/submission-user");
       } catch (err) {
         console.log("Error updating Submission");
-        return h.view("submit", {
+        return h.view("submission-form", {
           title: "Submission Error",
           errors: [{ message: err.message }],
         });

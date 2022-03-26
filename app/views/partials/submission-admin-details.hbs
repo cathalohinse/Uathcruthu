@@ -1,0 +1,105 @@
+<form action="/update-submission/{{submission._id}}" method="POST" enctype="multipart/form-data">
+<div class="uk-grid">
+    <div class="uk-width-1-2 uk-grid-margin">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Student Name:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.firstName}} {{submission.lastName}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Title:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.projectTitle}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Descriptive Title:</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.descriptiveTitle}}</div>
+        </div>
+    </div>
+
+    {{#if submission.projectTypeOther}}
+        <div class="uk-width-1-2 uk-grid-margin-small">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input uk-form-small" id="projectType" type="text" name="projectType"
+                        {{#if submission.projectType}}
+                           placeholder="{{submission.projectType}}"
+                        {{/if}}
+                        {{#unless submission.projectType}}
+                           placeholder="Project Type"
+                        {{/unless}}/>
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="uk-width-1-2 uk-grid-margin-small">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
+                <div style="color: black" class="uk-text-left">{{submission.projectType}}</div>
+            </div>
+        </div>
+    {{/if}}
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Student Personal Photo:</strong></div>
+            <div style="color: black" class="uk-text-left"><img src="{{submission.personalPhoto}}" alt="Personal Photo"></div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Image:</strong></div>
+            <div style="color: black" class="uk-text-left"><img src="{{submission.projectImage}}" alt="Project Image"></div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-1 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Summary (≤100 words):</strong></div>
+            <div style="color: black" class="uk-text-left">{{submission.summary}}</div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Project Landing Page URL:</strong></div>
+            <div style="color: black" class="uk-text-left"><a href={{submission.projectUrl}} target=”_blank”>{{submission.projectUrl}}</a></div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Demonstration Video URL:</strong></div>
+            <div class="uk-inline uk-width-1-1">
+            <span class="uk-form-icon" uk-icon="icon: youtube"></span>
+            <input class="uk-input uk-form-small" type="url" name="videoUrl"
+                {{#if submission.videoUrl}}
+                   placeholder="{{submission.videoUrl}}"
+                {{/if}}
+                {{#unless submission.videoUrl}}
+                   placeholder="Demonstration Video URL"
+                {{/unless}}/>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
+        <div class="uk-width-expand@m">
+            <div class="uk-width-2-2 uk-grid-margin-small">
+                <div style="background-color: #877EB4" class="uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

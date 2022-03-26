@@ -26,14 +26,14 @@ const Accounts = {
     },
   },
 
-  showSubmit: {
+  showSubmissionForm: {
     handler: async function (request, h) {
       const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
       console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
-      return h.view("submit", {
+      return h.view("submission-form", {
         title: "Project Submission",
         submission: submission,
         today: today,
@@ -165,7 +165,7 @@ const Accounts = {
         user.comparePassword(password);
         request.cookieAuth.set({ id: user.id });
         console.log(user.firstName + " " + user.lastName + " has logged in");
-        return h.redirect("/submit");
+        return h.redirect("/submission-form");
       } catch (err) {
         console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });
@@ -173,13 +173,13 @@ const Accounts = {
     },
   },
 
-  showcase: {
+  showAdminHome: {
     auth: false,
     handler: async function (request, h) {
       try {
         const users = await User.find().lean();
-        console.log("User has navigated to the Showcase page");
-        return h.view("showcase", { title: "Showcases", users: users });
+        console.log("User has navigated to the Admin Home page");
+        return h.view("admin", { title: "Admin", users: users });
       } catch (err) {
         console.log("Error loading Showcase page");
         return h.view("main", { errors: [{ message: err.message }] });
