@@ -222,6 +222,21 @@ const Pdfs = {
       parse: true,
     },
   },
+
+  showOther: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
+        console.log("User has navigated to the 'Other' Project-Selection page");
+        return h.view("other-form", { title: "Other Project Selection", users: users, submissions: submissions });
+      } catch (err) {
+        console.log("Error loading Showcase page");
+        return h.view("admin", { errors: [{ message: err.message }] });
+      }
+    },
+  },
 };
 
 module.exports = Pdfs;

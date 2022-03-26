@@ -19,6 +19,7 @@ module.exports = [
   { method: "GET", path: "/create-handbook", config: Pdfs.createHandBook },
   { method: "GET", path: "/submission-admin/{_id}", config: Pdfs.showSubmissionAdmin },
   { method: "POST", path: "/update-submission/{_id}", config: Pdfs.submitByAdmin },
+  { method: "GET", path: "/other-form", config: Pdfs.showOther },
   {
     method: "GET",
     path: "/{param*}",

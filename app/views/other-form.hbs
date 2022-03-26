@@ -5,7 +5,7 @@
 <div class="uk-container uk-margin">
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
         <div class="uk-width-expand@m">
-            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+            <h1 class="uk-heading-small">Eile</h1>
         </div>
     </div>
 </div>
@@ -20,10 +20,11 @@
                             <div style="color: black" class="uk-text-left"><strong>List of Students</strong></div>
                             <thead>
                             <th style="color: black"><strong>Student</strong></th>
-                            <th style="color: black"><strong>Submission Page</strong></th>
+                            <th style="color: black"><strong>Project Type</strong></th>
                             </thead>
                             <tbody class="uk-text-left">
-                            {{#each users}}
+                            {{#each submissions}}
+                            {{#if projectTypeOther}}
                                 <tr>
                                     <td>
                                         <div class="uk-width-1-2 uk-grid-margin">
@@ -32,32 +33,27 @@
                                             </a>
                                         </div>
                                     </td>
+
                                     <td>
-                                        <div class="uk-margin">
-                                            <a href="/submission-admin/{{_id}}">
-                                                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary">Submission Page</button>
-                                            </a>
-                                        </div>
+                                        <form action="/update-submission/{{_id}}" method="POST" enctype="multipart/form-data">
+                                            <div class="uk-inline uk-width-1-1">
+                                                <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                                                <input class="uk-input uk-form-small" id="projectType" type="text" name="projectType" placeholder="{{projectType}}"/>
+                                            </div>
+
+                                            <div class="uk-margin">
+                                                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
+                                            </div>
+
+                                        </form>
                                     </td>
                                 </tr>
+                            {{/if}}
                             {{/each}}
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-
-
-            <div class="uk-margin">
-                <a href="/create-handbook">
-                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-2">Create Handbook</button>
-                </a>
-            </div>
-
-            <div class="uk-margin">
-                <a href="/other-form">
-                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-2">Other Form</button>
-                </a>
             </div>
 
             {{> error }}
