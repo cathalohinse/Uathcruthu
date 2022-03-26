@@ -6,11 +6,13 @@ const { jsPDF } = require("jspdf");
 const Deadline = require("../controllers/accounts");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
+const PDFMerger = require("pdf-merger-js");
 
 const Pdfs = {
   createPdf: {
     auth: false,
     handler: async function (request, h) {
+      const hey = "hey";
       const user = await User.findById(request.params._id).lean();
       const submission = await Submission.findByUserId(user).lean();
       if (!submission.nda) {
@@ -49,6 +51,7 @@ const Pdfs = {
             title: "User's Submission",
             user: user,
             submission: submission,
+            hey: hey,
           });
         } catch (err) {
           const user = await User.findById(request.params._id).lean();
@@ -99,28 +102,6 @@ const Pdfs = {
           });
         }
       }
-    },
-  },
-
-  createHandBook: {
-    auth: false,
-    handler: async function (request, h) {
-      const file1 = await require("../../public/handbooks/CathalHenchy.pdf");
-      //const pic1 = await require("../../public/images/Course.jpg");
-      //const file1 = await ("public/handbooks/CathalHenchy.pdf");
-      const testImgData = await imageDataURI.encodeFromFile("public/images/henchy.jpg");
-      const doc = await file1;
-      //const doc = new jsPDF({ orientation: "landscape", compress: true });
-      doc.addImage(testImgData, "JPG", 5, 5, 60, 60);
-      doc.save("public/handbooks/test.pdf");
-      /*const doc = new jsPDF({ orientation: "landscape", compress: true });
-      const file1 = require("../../public/handbooks/CathalHenchy.pdf");
-      const file2 = require("../../public/handbooks/JohnMullane.pdf");
-      doc.addFileToVFS(file1, file2);
-      doc.addFileToVFS(file2, file1);
-      doc.save("./public/handbooks/handbook.pdf");*/
-      console.log("Handbook Creation");
-      return h.redirect("admin", { errors: "Oops" });
     },
   },
 
@@ -233,6 +214,27 @@ const Pdfs = {
         return h.view("other-form", { title: "Other Project Selection", users: users, submissions: submissions });
       } catch (err) {
         console.log("Error loading Showcase page");
+        return h.view("admin", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
+  createHandBook: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const users = await User.find().lean();
+        const merger = new PDFMerger();
+        let i = 0;
+        while (i < users.length) {
+          merger.add("./public/handbooks/" + users[i].firstName + users[i].lastName + ".pdf");
+          i++;
+        }
+        await merger.save("./public/handbooks/handbook.pdf");
+        console.log("Handbook has now been created");
+        return h.view("admin", { title: "Admin", users: users });
+      } catch (err) {
+        console.log("Error creating handbook");
         return h.view("admin", { errors: [{ message: err.message }] });
       }
     },
