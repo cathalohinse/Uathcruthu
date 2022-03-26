@@ -1,0 +1,47 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> main-menu title="Uathcruthú" subTitle="Submissions List" }}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+        </div>
+    </div>
+</div>
+
+{{#if submission.nda}}
+    <div class="uk-container uk-margin" id="nda">
+        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+            <div class="uk-width-2-2 uk-grid-margin-small">
+                <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                    <div style="color: black" class="uk-text-middle"><strong>Non Disclosure Agreement</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if (gt today deadline)}}
+    <div class="uk-container uk-margin">
+        <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+            <div class="uk-width-expand@m">
+                <h1 class="uk-heading-small">You have missed the deadline for submission!</h1>
+                <p>Leathanach Ionchuir</p>
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#unless (gt today deadline)}}
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            {{> submission-user-details}}
+        </div>
+    </div>
+</div>
+
+{{> error }}
+{{/unless}}
