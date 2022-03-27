@@ -227,7 +227,7 @@ const Pdfs = {
       try {
         const users = await User.find().lean();
         const submissions = await Submission.find().lean();
-        console.log("User has navigated to the 'Other' Project-Selection page");
+        console.log("User has navigated to the Admin Submission Page");
         return h.view("handbook-form", { title: "Other Project Selection", users: users, submissions: submissions });
       } catch (err) {
         console.log("Error loading Showcase page");
@@ -265,9 +265,10 @@ const Pdfs = {
   /////////////////////////////////////////////////////////////////////////////////////////
 
   adminSubmit: {
+    //auth: false,
     validate: {
       payload: {
-        courseTitle: Joi.string(),
+        courseTitle: Joi.string().allow("").min(4),
         handbookTitle: Joi.string(),
         backgroundImage: Joi.any(),
         deadline: Joi.string(),
@@ -344,6 +345,7 @@ const Pdfs = {
         }*/
 
         await adminSubmission.save();
+        console.log("User has submitted admin pages");
         return h.redirect("/admin");
       } catch (err) {
         console.log("Error submitting admin pages");
