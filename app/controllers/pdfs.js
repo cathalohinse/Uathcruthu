@@ -11,10 +11,9 @@ const sanitizeHtml = require("sanitize-html");
 const PDFMerger = require("pdf-merger-js");
 
 const Pdfs = {
-  createPdf: {
+  createPdfUser: {
     auth: false,
     handler: async function (request, h) {
-      const hey = "hey";
       const user = await User.findById(request.params._id).lean();
       const submission = await Submission.findByUserId(user).lean();
       if (!submission.nda) {
@@ -53,7 +52,6 @@ const Pdfs = {
             title: "User's Submission",
             user: user,
             submission: submission,
-            hey: hey,
           });
         } catch (err) {
           const user = await User.findById(request.params._id).lean();
@@ -247,6 +245,63 @@ const Pdfs = {
       }
     },
   },
+
+  ////////////////////////////////////////////////////////////////////////////
+
+  createPdfAdmin: {
+    auth: false,
+    handler: async function (request, h) {
+      const user = await User.findById(request.params._id).lean();
+      //const adminSubmission = await Submission.findByUserId(user).lean();
+
+      const users = await User.find().lean();
+      const submissions = await Submission.find().lean();
+      console.log("User is attempting to create admin handbook");
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
+
+      try {
+        //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
+        //const doc = new jsPDF("landscape");
+        const doc = new jsPDF({ orientation: "landscape", compress: true });
+        //const user = await User.findById(request.params._id).lean();
+        //const adminSubmission = await Submission.findByUserId(user).lean();
+        const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
+        doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
+        doc.setFontSize(30);
+        doc.setFont(undefined, "bold");
+        doc.text(adminSubmission.courseTitle, 70, 20);
+        doc.setFont(undefined, "normal");
+        doc.text(adminSubmission.handbookTitle, 70, 30, { maxWidth: 240 });
+        doc.setFontSize(20);
+        doc.text(adminSubmission.deadline, 70, 60);
+        doc.addPage();
+        doc.setTextColor(0, 102, 204);
+        doc.textWithLink(adminSubmission.courseUrl, 5, 207, { url: adminSubmission.courseUrl });
+        doc.setFontSize(20);
+        doc.text(adminSubmission.courseTitleLong, 70, 20);
+        doc.save("./public/handbooks/" + adminSubmission.handbookTitle + ".pdf");
+        console.log("New Handbook created");
+        return h.view("handbook-form", {
+          title: "User's Submission",
+          user: user,
+          adminSubmission: adminSubmission,
+        });
+      } catch (err) {
+        const adminSubmissions = await AdminSubmission.find().lean();
+        const adminSubmission = await adminSubmissions[0];
+        console.log("Error creating admin pdf");
+        return h.view("handbook-form", {
+          title: "Admin pdf Creation Error",
+          user: user,
+          adminSubmission: adminSubmission,
+          errors: [{ message: err.message }],
+        });
+      }
+    },
+  },
+
+  /////////////////////////////////////////////////////////////////////////
 
   createHandBook: {
     auth: false,
