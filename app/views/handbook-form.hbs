@@ -1,9 +1,9 @@
 <div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
-    {{> main-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
+    {{> welcome-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
 </div>
 
 <div class="uk-container uk-margin">
-    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center"snip>
         <div class="uk-width-expand@m">
             <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
         </div>
@@ -101,13 +101,27 @@
                 </div>
             </div>
 
-
             <div class="uk-margin">
                 <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
             </div>
 
         </form>
-
         {{> error }}
 
+        <div>
+            <div style="background-color: #877EB4" class="uk-margin-auto uk-card uk-card-default uk-card-small">
+                <input style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1"
+                       type="button" onclick="location.href='/create-pdf-admin';" value="Create PDF"/>
+            </div>
+        </div>
+
     </div>
+
+
+
+<div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+    <div class="uk-margin">
+        <input style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1"
+                   type="button" onclick="location.href='/create-pdf-admin';" value="Create PDF"/>
+    </div>
+</div>
