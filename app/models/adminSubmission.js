@@ -6,6 +6,8 @@ const adminSubmissionSchema = new Schema({
   handbookTitle: String,
   backgroundImage: String,
   deadline: String,
+  courseTitleLong: String,
+  courseUrl: String,
   submitter: {
     type: Schema.Types.ObjectId,
     ref: "User",

@@ -286,6 +286,8 @@ const Pdfs = {
         handbookTitle: Joi.string().allow(""),
         backgroundImage: Joi.any().allow(""),
         deadline: Joi.string().allow(""),
+        courseTitleLong: Joi.string().allow(""),
+        courseUrl: Joi.string().allow(""),
       },
       options: {
         abortEarly: false,
@@ -351,6 +353,12 @@ const Pdfs = {
           const backgroundImageResult = await ImageStore.uploadImage(adminSubmissionEdit.backgroundImage); //consider re-ordering images to maintain consistency
           const backgroundImageUrl = await backgroundImageResult.url;
           adminSubmission.backgroundImage = await backgroundImageUrl;
+        }
+        if (adminSubmissionEdit.courseTitleLong !== "") {
+          adminSubmission.courseTitleLong = sanitizeHtml(adminSubmissionEdit.courseTitleLong);
+        }
+        if (adminSubmissionEdit.courseUrl !== "") {
+          adminSubmission.courseUrl = sanitizeHtml(adminSubmissionEdit.courseUrl);
         }
 
         /*if (submissionEdit.videoUrl !== "") {
