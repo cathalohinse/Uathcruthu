@@ -6,6 +6,8 @@ const adminSubmissionSchema = new Schema({
   handbookTitle: String,
   backgroundImage: String,
   deadline: String,
+  courseTitleLong: String,
+  courseUrl: String,
   submitter: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -17,4 +19,4 @@ adminSubmissionSchema.statics.findByUserId = function (submitter) {
   return this.findOne({ submitter: submitter });
 };
 
-module.exports = Mongoose.model("Admin-Submission", adminSubmissionSchema);
+module.exports = Mongoose.model("AdminSubmission", adminSubmissionSchema);

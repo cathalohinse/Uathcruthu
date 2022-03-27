@@ -73,6 +73,34 @@
                 </div>
             </div>
 
+            <div class="uk-margin" id="courseTitleLong">
+                <label style="color: black; font-size:120%">Course Title (Long):</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: link"></span>
+                    <input class="uk-input uk-form-small" type="text" name="courseTitleLong"
+                        {{#if adminSubmission.courseTitleLong}}
+                           placeholder="{{adminSubmission.courseTitleLong}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseTitleLong}}
+                           placeholder="Course Title (Long)"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin" id="courseUrl">
+                <label style="color: black; font-size:120%">Course URL:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: link"></span>
+                    <input class="uk-input uk-form-small" type="text" name="courseUrl"
+                        {{#if adminSubmission.courseUrl}}
+                           placeholder="{{adminSubmission.courseUrl}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseUrl}}
+                           placeholder="Course URL"
+                        {{/unless}}/>
+                </div>
+            </div>
+
 
             <div class="uk-margin">
                 <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
