@@ -310,14 +310,17 @@ const Pdfs = {
         const users = await User.find().lean();
         const merger = new PDFMerger();
         let i = 0;
+        merger.add("./public/handbooks/Project Showcase 2022.pdf", [1]);
         while (i < users.length) {
           merger.add("./public/handbooks/" + users[i].firstName + users[i].lastName + ".pdf");
           i++;
         }
+        merger.add("./public/handbooks/Project Showcase 2022.pdf", [2]);
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
         console.log("Number of handbooks: " + users.length);
         console.log("First User: " + users[0]);
+        console.log("New Handbook created");
         return h.view("admin", { title: "Admin", users: users });
       } catch (err) {
         console.log("Error creating handbook");
