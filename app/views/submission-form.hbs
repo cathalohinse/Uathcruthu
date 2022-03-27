@@ -84,32 +84,35 @@
             </div>
         </div>
 
-
         <div id="projectType">
             <label style="color: black; font-size:120%" class="uk-form-label" for="form-stacked-select">Project Type</label>
             <div class="uk-form-controls">
                 <select id="projectTypeSelect" name="projectType" class="uk-select" onchange="otherPleaseSpecify()">
                     {{#if submission.projectType}}
-                        <option value="{{submission.projectType}}" selected>{{submission.projectType}}</option>
+                        <option id="currentSelection" value="{{submission.projectType}}" selected>{{submission.projectType}}</option>
                     {{/if}}
                     {{#unless submission.projectType}}
                         <option value="" disabled selected hidden>Select Project Type</option>
                     {{/unless}}/>
-
-                    {{#unless (eq submission.projectType "Native Mobile Application")}}
-                        <option value="Native Mobile Application">Native Mobile Application</option>
-                    {{/unless}}/>
-
-                    {{#unless (eq submission.projectType "Web Application")}}
-                        <option value="Web Application">Web Application</option>
-                    {{/unless}}
-
-                    {{#unless (eq submission.projectType "Other")}}
-                        <option value="Other">Other</option>
-                    {{/unless}}
                 </select>
             </div>
         </div>
+
+        <script>
+            const select = document.getElementById("projectTypeSelect");
+            const currentSelection = document.getElementById("currentSelection");
+            var projectTypes = ["Native Mobile Application", "Web Application", "Other"];
+            for(var i = 0; i < projectTypes.length; i++)
+            {
+                const option = document.createElement("OPTION"),
+                txt = document.createTextNode(projectTypes[i]);
+                option.appendChild(txt);
+                if(currentSelection.getAttribute("value") !== projectTypes[i]) {
+                    option.setAttribute("value", projectTypes[i]);
+                    select.insertBefore(option, select.lastChild);
+                }
+            }
+        </script>
 
         <script type="text/javascript">
             function otherPleaseSpecify(){
@@ -133,7 +136,7 @@
             <label style="color: black; font-size:120%"><strong>Project Type - please specify</strong></label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: file-edit"></span>
-                <input id="pleaseSpecifyInput" class="uk-input uk-form-small" type="text" name="projectType" placeholder="Other - Please specify" onsubmit="otherPleaseSpecify()" disabled/>
+                <input id="pleaseSpecifyInput" class="uk-input uk-form-small" type="text" name="projectType" placeholder="Other - Please specify" disabled/>
             </div>
         </div>
 
