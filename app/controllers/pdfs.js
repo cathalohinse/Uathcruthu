@@ -1,7 +1,9 @@
 "use strict";
 const User = require("../models/user");
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const imageDataURI = require("image-data-uri");
+const ImageStore = require("../utils/image-store");
 const { jsPDF } = require("jspdf");
 const Deadline = require("../controllers/accounts");
 const Joi = require("@hapi/joi");
@@ -219,6 +221,33 @@ const Pdfs = {
     },
   },
 
+  showHandbookForm: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
+        console.log("User has navigated to the Admin Submission Page");
+        const adminSubmissions = await AdminSubmission.find().lean();
+        var adminSubmission = null;
+        if (adminSubmissions.length === 0) {
+          var adminSubmission = new AdminSubmission();
+        } else {
+          var adminSubmission = await adminSubmissions[0];
+        }
+        return h.view("handbook-form", {
+          title: "Other Project Selection",
+          adminSubmission: adminSubmission,
+          users: users,
+          submissions: submissions,
+        });
+      } catch (err) {
+        console.log("Error loading Showcase page");
+        return h.view("admin", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
   createHandBook: {
     auth: false,
     handler: async function (request, h) {
@@ -232,6 +261,8 @@ const Pdfs = {
         }
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
+        console.log("Number of handbooks: " + users.length);
+        console.log("First User: " + users[0]);
         return h.view("admin", { title: "Admin", users: users });
       } catch (err) {
         console.log("Error creating handbook");
@@ -239,6 +270,134 @@ const Pdfs = {
       }
     },
   },
+
+  deadline: async function () {
+    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
+    return deadline;
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  adminSubmit: {
+    //auth: false,
+    validate: {
+      payload: {
+        courseTitle: Joi.string().allow("").min(4),
+        handbookTitle: Joi.string().allow(""),
+        backgroundImage: Joi.any().allow(""),
+        deadline: Joi.string().allow(""),
+        courseTitleLong: Joi.string().allow(""),
+        courseUrl: Joi.string().allow(""),
+      },
+      options: {
+        abortEarly: false,
+      },
+      failAction: async function (request, h, error) {
+        const userId = await request.auth.credentials.id;
+        const user = await User.findById(userId);
+        const submission = await Submission.findByUserId(user).lean();
+        console.log("User has entered unacceptable data for admin submission");
+        return h
+          .view("handbook-form", {
+            title: "Submission Error",
+            errors: error.details,
+            //submission: submission,
+          })
+          .takeover()
+          .code(400);
+      },
+    },
+
+    handler: async function (request, h) {
+      try {
+        const userId = await request.auth.credentials.id;
+        const user = await User.findById(userId);
+        const adminSubmissionEdit = request.payload;
+        //const adminSubmission = await AdminSubmission.findByUserId(user);
+        //let AdminSubmission();
+        //if adminSubmission = undefined
+        const adminSubmissions = await AdminSubmission.find();
+        var adminSubmission = null;
+
+        if (adminSubmissions.length === 0) {
+          var adminSubmission = new AdminSubmission();
+          console.log("A new handbook has been created: " + adminSubmission);
+        } else {
+          var adminSubmission = await adminSubmissions[0];
+          console.log("Existing handbook will be edited: " + adminSubmission.handbookTitle);
+        }
+
+        if (adminSubmissionEdit.courseTitle !== "") {
+          adminSubmission.courseTitle = sanitizeHtml(adminSubmissionEdit.courseTitle);
+        }
+        if (adminSubmissionEdit.handbookTitle !== "") {
+          adminSubmission.handbookTitle = sanitizeHtml(adminSubmissionEdit.handbookTitle);
+        }
+        if (adminSubmissionEdit.deadline !== "") {
+          adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
+        }
+
+        if (adminSubmissionEdit.backgroundImage.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.backgroundImage !== undefined) {
+            const backgroundImageFileName = await adminSubmission.backgroundImage.substr(
+              adminSubmission.backgroundImage.lastIndexOf("/") + 1
+            );
+            const backgroundImagePublic_id = await backgroundImageFileName.substr(
+              0,
+              backgroundImageFileName.indexOf(".")
+            );
+            await ImageStore.deleteImage(backgroundImagePublic_id);
+          }
+          const backgroundImageResult = await ImageStore.uploadImage(adminSubmissionEdit.backgroundImage); //consider re-ordering images to maintain consistency
+          const backgroundImageUrl = await backgroundImageResult.url;
+          adminSubmission.backgroundImage = await backgroundImageUrl;
+        }
+        if (adminSubmissionEdit.courseTitleLong !== "") {
+          adminSubmission.courseTitleLong = sanitizeHtml(adminSubmissionEdit.courseTitleLong);
+        }
+        if (adminSubmissionEdit.courseUrl !== "") {
+          adminSubmission.courseUrl = sanitizeHtml(adminSubmissionEdit.courseUrl);
+        }
+
+        /*if (submissionEdit.videoUrl !== "") {
+          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
+        }*/
+
+        /*if (submissionEdit.projectType === "Other") {
+          submission.projectTypeOther = true;
+          console.log("Other: " + submission.projectTypeOther);
+          submission.projectType = sanitizeHtml(submissionEdit.projectType);
+          await submission.save();
+          console.log("If Project Type is 'Other', please specify");
+          return h.redirect("/submission-form", {
+            title: "Specify Project Type",
+            submission: submission,
+          });
+        }*/
+
+        console.log("New AdminSubmission: " + adminSubmission.handbookTitle);
+        await adminSubmission.save();
+        console.log("User has submitted admin pages");
+        return h.redirect("/handbook-form", { adminSubmission: adminSubmission });
+      } catch (err) {
+        console.log("Error submitting admin pages");
+        return h.view("admin", {
+          title: "Submission Error",
+          errors: [{ message: err.message }],
+        });
+      }
+    },
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
+    },
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////
 };
 
 module.exports = Pdfs;
