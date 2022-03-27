@@ -17,4 +17,4 @@ adminSubmissionSchema.statics.findByUserId = function (submitter) {
   return this.findOne({ submitter: submitter });
 };
 
-module.exports = Mongoose.model("Admin-Submission", adminSubmissionSchema);
+module.exports = Mongoose.model("AdminSubmission", adminSubmissionSchema);

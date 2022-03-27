@@ -228,7 +228,19 @@ const Pdfs = {
         const users = await User.find().lean();
         const submissions = await Submission.find().lean();
         console.log("User has navigated to the Admin Submission Page");
-        return h.view("handbook-form", { title: "Other Project Selection", users: users, submissions: submissions });
+        const adminSubmissions = await AdminSubmission.find().lean();
+        var adminSubmission = null;
+        if (adminSubmissions.length === 0) {
+          var adminSubmission = new AdminSubmission();
+        } else {
+          var adminSubmission = await adminSubmissions[0];
+        }
+        return h.view("handbook-form", {
+          title: "Other Project Selection",
+          adminSubmission: adminSubmission,
+          users: users,
+          submissions: submissions,
+        });
       } catch (err) {
         console.log("Error loading Showcase page");
         return h.view("admin", { errors: [{ message: err.message }] });
@@ -249,6 +261,8 @@ const Pdfs = {
         }
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
+        console.log("Number of handbooks: " + users.length);
+        console.log("First User: " + users[0]);
         return h.view("admin", { title: "Admin", users: users });
       } catch (err) {
         console.log("Error creating handbook");
@@ -269,9 +283,9 @@ const Pdfs = {
     validate: {
       payload: {
         courseTitle: Joi.string().allow("").min(4),
-        handbookTitle: Joi.string(),
-        backgroundImage: Joi.any(),
-        deadline: Joi.string(),
+        handbookTitle: Joi.string().allow(""),
+        backgroundImage: Joi.any().allow(""),
+        deadline: Joi.string().allow(""),
       },
       options: {
         abortEarly: false,
@@ -298,7 +312,18 @@ const Pdfs = {
         const user = await User.findById(userId);
         const adminSubmissionEdit = request.payload;
         //const adminSubmission = await AdminSubmission.findByUserId(user);
-        const adminSubmission = new AdminSubmission();
+        //let AdminSubmission();
+        //if adminSubmission = undefined
+        const adminSubmissions = await AdminSubmission.find();
+        var adminSubmission = null;
+
+        if (adminSubmissions.length === 0) {
+          var adminSubmission = new AdminSubmission();
+          console.log("A new handbook has been created: " + adminSubmission);
+        } else {
+          var adminSubmission = await adminSubmissions[0];
+          console.log("Existing handbook will be edited: " + adminSubmission.handbookTitle);
+        }
 
         if (adminSubmissionEdit.courseTitle !== "") {
           adminSubmission.courseTitle = sanitizeHtml(adminSubmissionEdit.courseTitle);
@@ -344,9 +369,10 @@ const Pdfs = {
           });
         }*/
 
+        console.log("New AdminSubmission: " + adminSubmission.handbookTitle);
         await adminSubmission.save();
         console.log("User has submitted admin pages");
-        return h.redirect("/admin");
+        return h.redirect("/handbook-form", { adminSubmission: adminSubmission });
       } catch (err) {
         console.log("Error submitting admin pages");
         return h.view("admin", {
