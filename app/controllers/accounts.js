@@ -40,9 +40,8 @@ const Accounts = {
         title: "Project Submission",
         submission: submission,
         today: today,
-        //deadline: await Accounts.deadline(),
         deadline: await adminSubmission.deadline,
-        //deadline: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
+        deadlineCutOff: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
       });
     },
   },
