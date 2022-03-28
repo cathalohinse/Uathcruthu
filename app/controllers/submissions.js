@@ -1,10 +1,11 @@
 "use strict";
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const User = require("../models/user");
 const ImageStore = require("../utils/image-store");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
-const Deadline = require("../controllers/accounts");
+//const Deadline = require("../controllers/accounts");
 
 const Submissions = {
   home: {
@@ -17,7 +18,8 @@ const Submissions = {
   showSubmission: {
     handler: async function (request, h) {
       const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
-      const deadline = await Deadline.deadline();
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
@@ -27,7 +29,7 @@ const Submissions = {
         submission: submission,
         user: user,
         today: today,
-        deadline: deadline,
+        deadline: await adminSubmission.deadline,
       });
     },
   },
