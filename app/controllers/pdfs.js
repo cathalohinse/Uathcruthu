@@ -392,8 +392,9 @@ const Pdfs = {
           adminSubmission.handbookTitle = sanitizeHtml(adminSubmissionEdit.handbookTitle);
         }
         if (adminSubmissionEdit.deadline !== "") {
-          var deadlineFormat = sanitizeHtml(adminSubmissionEdit.deadline);
-          adminSubmission.deadline = await Math.floor(new Date(deadlineFormat).getTime() / 1000);
+          //var deadlineFormat = sanitizeHtml(adminSubmissionEdit.deadline);
+          //adminSubmission.deadline = await Math.floor(new Date(deadlineFormat).getTime() / 1000);
+          adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
         }
 
         if (adminSubmissionEdit.backgroundImage.length !== undefined) {

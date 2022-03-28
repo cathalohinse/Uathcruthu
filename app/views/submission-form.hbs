@@ -24,6 +24,33 @@
 {{#unless (gt today deadline)}}
 <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
     <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook/Showcase Submission</h3>
+    <h4 id="dueDate" style="color: black" class="uk-text-center">{{timeLeft}}</h4>
+    <h5 id="timeLeft" style="color: black" class="uk-text-center">{{timeLeft}}</h5>
+
+    <script type="text/javascript">
+        function addHoursMinutes(numOfHours, numOfMins, date = new Date()) {
+            date.setHours(date.getHours() + numOfHours);
+            date.setMinutes(date.getMinutes() + numOfMins);
+            return date;
+        }
+        window.onload = function timeLeft() {
+            const today = new Date();
+            const deadline = addHoursMinutes(22, 59, new Date("{{deadline}}")); //Need to subtract 1 hour from dealine date, as it is selected incorrectly from calendar drop down
+            const differenceInTime = deadline - today;
+            const differenceInDays = parseInt(differenceInTime / (1000 * 3600 * 24));
+            const differenceInHours = parseInt(differenceInTime / (1000 * 3600)) - (differenceInDays * 24);
+            const differenceInMinutes = parseInt(differenceInTime / (1000 * 60)) - (differenceInDays * 24 * 60) - (differenceInHours * 60);
+            document.getElementById('timeLeft').innerHTML = "Time left: " + differenceInDays + " days, " + differenceInHours + " hours, " + differenceInMinutes + " minutes";
+            //document.getElementById('dueDate').innerHTML = "Due Date: {{deadline}}";
+            document.getElementById('dueDate').innerHTML = "Due Date: " + deadline;
+            if(differenceInTime < 86400000) {
+                const deadline = document.getElementById("timeLeft");
+                deadline.setAttribute("style", "color: red");
+            }
+        }
+    </script>
+
+
     <form name="submission-form" action="/submit" method="POST" enctype="multipart/form-data">
 
         <div class="uk-margin uk-grid-small uk-child-width-auto" uk-grid>
@@ -57,7 +84,7 @@
         </div>
 
         <div class="uk-margin" id="projectTitle">
-            <label style="color: black; font-size:120%" id="projectTitleLabel">Project Title:</label>
+            <label style="color: black; font-size:120%" id="projectTitleLabel">Project Title</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: pencil"></span>
                 <input class="uk-input uk-form-small" id="projectTitle" type="text" name="projectTitle"
@@ -71,7 +98,7 @@
         </div>
 
         <div class="uk-margin" id="descriptiveTitle">
-            <label style="color: black; font-size:120%">Descriptive Title:</label>
+            <label style="color: black; font-size:120%">Descriptive Title</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: pencil"></span>
                 <input class="uk-input uk-form-small" type="text" name="descriptiveTitle"
@@ -146,7 +173,7 @@
 
 
         <div class="uk-margin">
-            <label style="color: black; font-size:120%">Personal Digital Photograph:</label>
+            <label style="color: black; font-size:120%">Personal Digital Photograph</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: camera"></span>
                 <input class="uk-input uk-form-small" type="file" name="personalPhoto" accept="image/png, image/jpeg"
@@ -160,7 +187,7 @@
         </div>
 
         <div class="uk-margin" id="projectImage">
-            <label style="color: black; font-size:120%">Project Image:</label>
+            <label style="color: black; font-size:120%">Project Image</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: image"></span>
                 <input class="uk-input uk-form-small" type="file" name="projectImage" accept="image/png, image/jpeg"
@@ -174,7 +201,7 @@
         </div>
 
         <div class="uk-margin" id="summary">
-            <label style="color: black; font-size:120%">Summary (100 words max.):</label>
+            <label style="color: black; font-size:120%">Summary (100 words max.)</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: info"></span>
                 <textarea class="uk-textarea uk-form-small" rows="7" type="text" name="summary"
@@ -188,7 +215,7 @@
         </div>
 
         <div class="uk-margin" id="projectUrl">
-            <label style="color: black; font-size:120%">Project Landing Page URL:</label>
+            <label style="color: black; font-size:120%">Project Landing Page URL</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: link"></span>
                 <input class="uk-input uk-form-small" type="url" name="projectUrl"

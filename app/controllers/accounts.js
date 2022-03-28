@@ -42,6 +42,7 @@ const Accounts = {
         today: today,
         //deadline: await Accounts.deadline(),
         deadline: await adminSubmission.deadline,
+        //deadline: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
       });
     },
   },

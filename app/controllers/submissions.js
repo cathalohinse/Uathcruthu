@@ -29,7 +29,8 @@ const Submissions = {
         submission: submission,
         user: user,
         today: today,
-        deadline: await adminSubmission.deadline,
+        //deadline: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
+        deadline: adminSubmission.deadline,
       });
     },
   },
