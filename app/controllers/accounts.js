@@ -2,15 +2,16 @@
 const User = require("../models/user");
 const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const { jsPDF } = require("jspdf");
 
 const Accounts = {
-  deadline: async function () {
+  /*deadline: async function () {
     const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
     return deadline;
-  },
+  },*/
 
   index: {
     auth: false,
@@ -32,12 +33,17 @@ const Accounts = {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
+      const projectTypes = ["Native Mobile Application", "Web Application", "Combined Web and Mobile", "Other"];
       console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
       return h.view("submission-form", {
         title: "Project Submission",
         submission: submission,
         today: today,
-        deadline: await Accounts.deadline(),
+        deadline: await adminSubmission.deadline,
+        deadlineCutOff: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
+        projectTypes: projectTypes,
       });
     },
   },

@@ -59,11 +59,11 @@
                 </div>
             </div>
 
-            <div class="uk-margin" id="deadline">
+            <div class="dropdown" id="deadline">
                 <label style="color: black; font-size:120%">Deadline:</label>
                 <div class="uk-inline uk-width-1-1">
-                    <span class="uk-form-icon" uk-icon="icon: link"></span>
-                    <input class="uk-input uk-form-small" type="text" name="deadline"
+                    <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                    <input class="uk-input uk-form-small" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')" name="deadline"
                         {{#if adminSubmission.deadline}}
                            placeholder="{{adminSubmission.deadline}}"
                         {{/if}}
@@ -76,7 +76,7 @@
             <div class="uk-margin" id="courseTitleLong">
                 <label style="color: black; font-size:120%">Course Title (Long):</label>
                 <div class="uk-inline uk-width-1-1">
-                    <span class="uk-form-icon" uk-icon="icon: link"></span>
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
                     <input class="uk-input uk-form-small" type="text" name="courseTitleLong"
                         {{#if adminSubmission.courseTitleLong}}
                            placeholder="{{adminSubmission.courseTitleLong}}"
