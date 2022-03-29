@@ -5,7 +5,7 @@ const AdminSubmission = require("../models/adminSubmission");
 const imageDataURI = require("image-data-uri");
 const ImageStore = require("../utils/image-store");
 const { jsPDF } = require("jspdf");
-const Deadline = require("../controllers/accounts");
+//const Deadline = require("../controllers/accounts");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const PDFMerger = require("pdf-merger-js");
@@ -110,7 +110,7 @@ const Pdfs = {
     handler: async function (request, h) {
       try {
         const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
-        const deadline = await Deadline.deadline();
+        //const deadline = await Deadline.deadline();
         const userId = await request.params._id;
         const user = await User.findById(userId).lean();
         const submission = await Submission.findByUserId(user).lean();
@@ -120,7 +120,7 @@ const Pdfs = {
           submission: submission,
           user: user,
           today: today,
-          deadline: deadline,
+          //deadline: deadline,
         });
       } catch (err) {
         return h.view("login", { errors: [{ message: err.message }] });
@@ -329,10 +329,10 @@ const Pdfs = {
     },
   },
 
-  deadline: async function () {
+  /*deadline: async function () {
     const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
     return deadline;
-  },
+  },*/
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -392,6 +392,8 @@ const Pdfs = {
           adminSubmission.handbookTitle = sanitizeHtml(adminSubmissionEdit.handbookTitle);
         }
         if (adminSubmissionEdit.deadline !== "") {
+          //var deadlineFormat = sanitizeHtml(adminSubmissionEdit.deadline);
+          //adminSubmission.deadline = await Math.floor(new Date(deadlineFormat).getTime() / 1000);
           adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
         }
 
