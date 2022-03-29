@@ -128,8 +128,8 @@
         <script type="text/javascript">
             const select = document.getElementById("projectTypeSelect");
             const currentSelection = document.getElementById("currentSelection");
-            const projectTypes2 = "{{projectTypes}}";
-            const projectTypes = projectTypes2.split(",");
+            const projectTypesString = "{{projectTypes}}";
+            const projectTypes = projectTypesString.split(",");
             for(var i = 0; i < projectTypes.length; i++)
             {
                 const option = document.createElement("OPTION"),
