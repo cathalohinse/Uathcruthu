@@ -33,6 +33,7 @@ const Accounts = {
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
+      const projectTypes = ["Native Mobile Application", "Web Application", "Combined Web and Mobile", "Other"];
       console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
       const adminSubmissions = await AdminSubmission.find().lean();
       const adminSubmission = await adminSubmissions[0];
@@ -42,6 +43,7 @@ const Accounts = {
         today: today,
         deadline: await adminSubmission.deadline,
         deadlineCutOff: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
+        projectTypes: projectTypes,
       });
     },
   },
