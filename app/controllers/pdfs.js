@@ -308,13 +308,62 @@ const Pdfs = {
     handler: async function (request, h) {
       try {
         const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
+        const projectTypes = await submissions.map((a) => a.projectType);
+        const projectTypesUnique = [...new Set(projectTypes)];
+        console.log(projectTypesUnique);
         const merger = new PDFMerger();
-        let i = 0;
+
         merger.add("./public/handbooks/Project Showcase 2022.pdf", [1]);
-        while (i < users.length) {
+        let i = 0;
+        /*while (i < users.length) {
+          const doc = new jsPDF({ orientation: "landscape", compress: true });
+          doc.text(users[i].firstName, 70, 20);
+          doc.save("./public/handbooks/temp.pdf");
+          merger.add("./public/handbooks/temp.pdf");
           merger.add("./public/handbooks/" + users[i].firstName + users[i].lastName + ".pdf");
           i++;
+        }*/
+
+        /*while (i < projectTypesUnique.length) {
+          const doc = new jsPDF({ orientation: "landscape", compress: true });
+          doc.text(projectTypesUnique[i], 70, 20);
+          doc.save("./public/handbooks/temp.pdf");
+          merger.add("./public/handbooks/temp.pdf");
+          let j = 0;
+          while (j < submissions.length) {
+            if (submissions[j].projectType === projectTypesUnique[i]) {
+              merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
+            }
+            j++;
+          }
+          i++;
+        }*/
+
+        while (i < projectTypesUnique.length) {
+          const doc = new jsPDF({ orientation: "landscape", compress: true });
+          let j = 0;
+
+          doc.text(projectTypesUnique[i], 70, 20);
+          while (j < submissions.length) {
+            if (submissions[j].projectType === projectTypesUnique[i]) {
+              doc.text(submissions[j].firstName, 70, 50 + j * 10);
+              //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
+            }
+            j++;
+          }
+          doc.save("./public/handbooks/temp.pdf");
+          merger.add("./public/handbooks/temp.pdf");
+          let k = 0;
+          while (k < submissions.length) {
+            if (submissions[k].projectType === projectTypesUnique[i]) {
+              merger.add("./public/handbooks/" + submissions[k].firstName + submissions[k].lastName + ".pdf");
+            }
+            k++;
+          }
+          i++;
         }
+
         merger.add("./public/handbooks/Project Showcase 2022.pdf", [2]);
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
