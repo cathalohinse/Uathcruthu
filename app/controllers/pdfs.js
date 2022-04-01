@@ -15,7 +15,8 @@ const Pdfs = {
     auth: false,
     handler: async function (request, h) {
       const user = await User.findById(request.params._id).lean();
-      const submission = await Submission.findByUserId(user).lean();
+      //const submission = await Submission.findByUserId(user).lean();
+      const submission = await Submission.findById(request.params._id).lean();
       if (!submission.nda) {
         try {
           const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
@@ -27,7 +28,11 @@ const Pdfs = {
           const projectImageImgData = await imageDataURI.encodeFromURL(submission.projectImage);
           const youtubeImgData = await imageDataURI.encodeFromFile("public/images/youtube.png");
           console.log(
-            user.firstName + " " + user.lastName + " has created the following pdf: " + submission.projectTitle
+            submission.firstName +
+              " " +
+              submission.lastName +
+              " has created the following pdf: " +
+              submission.projectTitle
           );
           doc.text(submission.projectUrl, 5, 207); //a very awkward work around for validation of the URL requirement
           doc.text(submission.videoUrl, 276, 202); //a very awkward work around for validation of the URL requirement
@@ -49,7 +54,7 @@ const Pdfs = {
           doc.setFontSize(20);
           doc.textWithLink("Video", 276, 202, { url: submission.videoUrl });
           doc.addImage(youtubeImgData, "PNG", 275, 190, 20, 20);
-          doc.save("./public/handbooks/" + user.firstName + user.lastName + ".pdf");
+          doc.save("./public/handbooks/" + submission.firstName + submission.lastName + ".pdf");
           return h.view("submission-admin", {
             title: "User's Submission",
             user: user,
@@ -57,7 +62,8 @@ const Pdfs = {
           });
         } catch (err) {
           const user = await User.findById(request.params._id).lean();
-          const submission = await Submission.findByUserId(user).lean();
+          //const submission = await Submission.findByUserId(user).lean();
+          // const submission = await Submission.findById(request.params._id).lean();
           console.log("Error creating pdf");
           return h.view("submission-admin", {
             title: "Submission Error",
@@ -75,7 +81,11 @@ const Pdfs = {
           //const submission = await Submission.findByUserId(user).lean();
           const personalPhotoImgData = await imageDataURI.encodeFromURL(submission.personalPhoto);
           console.log(
-            user.firstName + " " + user.lastName + " has created the following pdf: " + submission.projectTitle
+            submission.firstName +
+              " " +
+              submission.lastName +
+              " has created the following pdf: " +
+              submission.projectTitle
           );
           doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
           doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
@@ -86,7 +96,7 @@ const Pdfs = {
           doc.text("This project information is withheld under NDA", 70, 30, { maxWidth: 240 });
           doc.setFontSize(20);
           doc.text(submission.firstName + " " + submission.lastName, 70, 70);
-          doc.save("./public/handbooks/" + user.firstName + user.lastName + ".pdf");
+          doc.save("./public/handbooks/" + submission.firstName + submission.lastName + ".pdf");
           return h.view("submission-admin", {
             title: "User's Submission",
             user: user,
@@ -94,7 +104,8 @@ const Pdfs = {
           });
         } catch (err) {
           const user = await User.findById(request.params._id).lean();
-          const submission = await Submission.findByUserId(user).lean();
+          //const submission = await Submission.findByUserId(user).lean();
+          const submission = await Submission.findById(request.params._id).lean();
           console.log("Error creating pdf");
           return h.view("submission-admin", {
             title: "Submission Error",
@@ -115,10 +126,14 @@ const Pdfs = {
         //const deadline = await Deadline.deadline();
         const userId = await request.params._id;
         const user = await User.findById(userId).lean();
-        const submission = await Submission.findByUserId(user).lean();
-        console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
+        const submissionId = await request.params._id;
+        const submission = await Submission.findById(submissionId).lean();
+        //const submission = await Submission.findByUserId(user).lean();
+        console.log(
+          submission.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page"
+        );
         return h.view("submission-admin", {
-          title: user.firstName + "'s Submission",
+          title: submission.firstName + "'s Submission",
           submission: submission,
           user: user,
           today: today,
@@ -144,7 +159,8 @@ const Pdfs = {
       failAction: async function (request, h, error) {
         const userId = await request.request.params._id;
         const user = await User.findById(userId);
-        const submission = await Submission.findByUserId(user).lean();
+        //const submission = await Submission.findByUserId(user).lean();
+        const submission = await Submission.findById(request.params._id).lean();
         console.log("Admin has entered unacceptable data for submission");
         return h
           .view("admin", {
@@ -162,6 +178,8 @@ const Pdfs = {
         const submissionEdit = request.payload;
         const submissionId = await request.params._id;
         const submission = await Submission.findById(submissionId);
+        const userId = await request.params._id;
+        const user = await User.findById(userId).lean();
 
         if (submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
@@ -193,12 +211,25 @@ const Pdfs = {
             "\n"
         );
         await submission.save();
-        return h.redirect("/admin");
+        return h.view("submission-admin", {
+          //return h.redirect("/submission-admin", {
+          title: "Video URL Error",
+          user: user,
+          submission: await Submission.findById(submissionId).lean(),
+        });
+        //return h.redirect("/submission-admin");
       } catch (err) {
+        const userId = await request.params._id;
+        const user = await User.findById(userId).lean();
+        const submissionId = await request.params._id;
+        const submission = await Submission.findById(submissionId);
         console.log("Error updating Submission, so there is");
-        return h.view("admin", {
+        return h.view("submission-admin", {
+          //return h.redirect("/submission-admin", {
           title: "Video URL Error",
           errors: [{ message: err.message }],
+          user: user,
+          submission: submission,
         });
       }
     },
@@ -357,6 +388,7 @@ const Pdfs = {
             if (submissions[j].projectType === projectTypesUnique[i]) {
               doc.text(submissions[j].firstName, 70, 50 + j * 10);
               doc.text(submissions[j].presentationTime, 60, 50 + j * 10);
+              console.log("test: " + submissions[j].firstName);
               //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
             }
             j++;
@@ -380,10 +412,17 @@ const Pdfs = {
         console.log("Number of handbooks: " + users.length);
         console.log("First User: " + users[0]);
         console.log("New Handbook created");
-        return h.view("admin", { title: "Admin", users: users });
+        return h.view("admin", { title: "Admin", users: users, submissions: submissions });
       } catch (err) {
+        const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
         console.log("Error creating handbook");
-        return h.view("admin", { errors: [{ message: err.message }] });
+        return h.view("admin", {
+          title: "Admin",
+          users: users,
+          submissions: submissions,
+          errors: [{ message: err.message }],
+        });
       }
     },
   },
@@ -412,7 +451,8 @@ const Pdfs = {
       failAction: async function (request, h, error) {
         const userId = await request.auth.credentials.id;
         const user = await User.findById(userId);
-        const submission = await Submission.findByUserId(user).lean();
+        //const submission = await Submission.findByUserId(user).lean();
+        const submission = await Submission.findById(request.params._id).lean();
         console.log("User has entered unacceptable data for admin submission");
         return h
           .view("handbook-form", {

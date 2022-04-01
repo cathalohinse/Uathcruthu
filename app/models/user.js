@@ -9,6 +9,10 @@ const userSchema = new Schema({
   lastName: String,
   email: String,
   password: String,
+  studentSubmission: {
+    type: Schema.Types.ObjectId,
+    ref: "Submission",
+  },
 });
 
 userSchema.statics.findByEmail = function (email) {
