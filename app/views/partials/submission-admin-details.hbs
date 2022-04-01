@@ -1,5 +1,14 @@
 <form action="/update-submission/{{submission._id}}" method="POST" enctype="multipart/form-data">
 <div class="uk-grid">
+
+    {{#if submission.nda}}
+        <div class="uk-width-2-2 uk-grid-margin-small" id="nda">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-middle"><strong>Non Disclosure Agreement</strong></div>
+            </div>
+        </div>
+    {{/if}}
+
     <div class="uk-width-1-2 uk-grid-margin">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
             <div style="color: black" class="uk-text-left"><strong>Student Name:</strong></div>
@@ -105,6 +114,26 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        function submissionCompletion(){
+            if("{{submission.nda}}" && "{{submission.personalPhoto}}" ||
+                    "{{submission.projectTitle}}" && "{{submission.descriptiveTitle}}" &&
+                    "{{submission.projectType}}" && "{{submission.personalPhoto}}" &&
+                    "{{submission.projectImage}}" && "{{submission.summary}}" &&
+                    "{{submission.projectUrl}}" && "{{submission.videoUrl}}" &&
+                    "{{submission.presentationTime}}"){
+                document.getElementById("submissionIncomplete").checked = false;
+            }else{
+                document.getElementById("submissionIncomplete").checked = true;
+            }
+        }
+    </script>
+
+    <label for="submissionIncomplete" style="color: black">
+        <input class="uk-checkbox" type="checkbox" id="submissionIncomplete" name="submissionIncompleter" value="true" hidden>
+    </label>
+
 
 </div>
 

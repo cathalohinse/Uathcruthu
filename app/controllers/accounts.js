@@ -105,6 +105,7 @@ const Accounts = {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           submitter: newUser,
+          submissionIncomplete: true,
         });
         await newSubmission.save();
 

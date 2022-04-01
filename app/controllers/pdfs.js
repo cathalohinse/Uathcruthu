@@ -152,6 +152,7 @@ const Pdfs = {
         projectType: Joi.string().allow(""),
         videoUrl: Joi.string().allow(""),
         presentationTime: Joi.string().allow(""),
+        submissionIncomplete: Joi.boolean,
       },
       options: {
         abortEarly: false,
@@ -192,6 +193,8 @@ const Pdfs = {
         if (submissionEdit.presentationTime !== "") {
           submission.presentationTime = sanitizeHtml(submissionEdit.presentationTime);
         }
+
+        submission.submissionIncomplete = submissionEdit.submissionIncomplete;
         /*if (submissionEdit.projectType === "Other") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
           await submission.save();
@@ -385,10 +388,9 @@ const Pdfs = {
           doc.text(projectTypesUnique[i], 70, 20);
           //loops through all submissions, and adds the user name of which ever ones belong to the projectType to that page
           while (j < submissions.length) {
-            if (submissions[j].projectType === projectTypesUnique[i]) {
+            if (!submissions[j].submissionIncomplete && submissions[j].projectType === projectTypesUnique[i]) {
               doc.text(submissions[j].firstName, 70, 50 + j * 10);
               doc.text(submissions[j].presentationTime, 60, 50 + j * 10);
-              console.log("test: " + submissions[j].firstName);
               //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
             }
             j++;
@@ -398,7 +400,7 @@ const Pdfs = {
           let k = 0;
           while (k < submissions.length) {
             //loops through all submissions and adds the submission pdf page into the handbook in the section pertaining to the appropriate projectType
-            if (submissions[k].projectType === projectTypesUnique[i]) {
+            if (!submissions[k].submissionIncomplete && submissions[k].projectType === projectTypesUnique[i]) {
               merger.add("./public/handbooks/" + submissions[k].firstName + submissions[k].lastName + ".pdf");
             }
             k++;
