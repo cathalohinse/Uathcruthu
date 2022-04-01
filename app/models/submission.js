@@ -18,6 +18,7 @@ const submissionSchema = new Schema({
   },
   nda: Boolean,
   projectTypeOther: Boolean,
+  presentationTime: String,
 });
 
 //My own custom built method:

@@ -90,6 +90,22 @@
         </div>
     </div>
 
+    <div class="uk-width-1-1 uk-grid-margin-small">
+        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+            <div style="color: black" class="uk-text-left"><strong>Presentation Schedule:</strong></div>
+            <div class="uk-inline uk-width-1-1">
+                <span class="uk-form-icon" uk-icon="icon: clock"></span>
+                <input class="uk-input uk-form-small" type="text" name="presentationTime"
+                    {{#if submission.presentationTime}}
+                       placeholder="{{submission.presentationTime}}"
+                    {{/if}}
+                    {{#unless submission.presentationTime}}
+                       placeholder="Presentation Schedule"
+                    {{/unless}}/>
+            </div>
+        </div>
+    </div>
+
 </div>
 
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>

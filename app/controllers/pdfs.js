@@ -29,6 +29,8 @@ const Pdfs = {
           console.log(
             user.firstName + " " + user.lastName + " has created the following pdf: " + submission.projectTitle
           );
+          doc.text(submission.projectUrl, 5, 207); //a very awkward work around for validation of the URL requirement
+          doc.text(submission.videoUrl, 276, 202); //a very awkward work around for validation of the URL requirement
           doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
           doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
           doc.addImage(projectImageImgData, "JPG", 5, 75, 150, 120);
@@ -98,7 +100,7 @@ const Pdfs = {
             title: "Submission Error",
             user: user,
             submission: submission,
-            errors: [{ message: err.message }],
+            errors: [{ message: "Personal Picture required" }],
           });
         }
       }
@@ -134,6 +136,7 @@ const Pdfs = {
       payload: {
         projectType: Joi.string().allow(""),
         videoUrl: Joi.string().allow(""),
+        presentationTime: Joi.string().allow(""),
       },
       options: {
         abortEarly: false,
@@ -168,6 +171,9 @@ const Pdfs = {
           submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
         }
 
+        if (submissionEdit.presentationTime !== "") {
+          submission.presentationTime = sanitizeHtml(submissionEdit.presentationTime);
+        }
         /*if (submissionEdit.projectType === "Other") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
           await submission.save();
@@ -340,14 +346,17 @@ const Pdfs = {
           i++;
         }*/
 
+        //loops through all unique projectTypes so as to create one page for each type
         while (i < projectTypesUnique.length) {
           const doc = new jsPDF({ orientation: "landscape", compress: true });
           let j = 0;
 
           doc.text(projectTypesUnique[i], 70, 20);
+          //loops through all submissions, and adds the user name of which ever ones belong to the projectType to that page
           while (j < submissions.length) {
             if (submissions[j].projectType === projectTypesUnique[i]) {
               doc.text(submissions[j].firstName, 70, 50 + j * 10);
+              doc.text(submissions[j].presentationTime, 60, 50 + j * 10);
               //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
             }
             j++;
@@ -356,6 +365,7 @@ const Pdfs = {
           merger.add("./public/handbooks/temp.pdf");
           let k = 0;
           while (k < submissions.length) {
+            //loops through all submissions and adds the submission pdf page into the handbook in the section pertaining to the appropriate projectType
             if (submissions[k].projectType === projectTypesUnique[i]) {
               merger.add("./public/handbooks/" + submissions[k].firstName + submissions[k].lastName + ".pdf");
             }
