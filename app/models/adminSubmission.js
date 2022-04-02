@@ -4,11 +4,12 @@ const Schema = Mongoose.Schema;
 const adminSubmissionSchema = new Schema({
   courseTitle: String,
   handbookTitle: String,
+  courseImage: String,
   backgroundImage: String,
   studentBackgroundImage: String,
-  deadline: String,
   courseTitleLong: String,
   courseUrl: String,
+  deadline: String,
   submitter: {
     type: Schema.Types.ObjectId,
     ref: "User",

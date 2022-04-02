@@ -351,6 +351,8 @@ const Pdfs = {
 
       const users = await User.find().lean();
       const submissions = await Submission.find().lean();
+      const projectTypes = await submissions.map((a) => a.projectType);
+      const projectTypesUnique = [...new Set(projectTypes)];
       console.log("User is attempting to create admin handbook");
       const adminSubmissions = await AdminSubmission.find().lean();
       const adminSubmission = await adminSubmissions[0];
@@ -362,15 +364,62 @@ const Pdfs = {
         //const user = await User.findById(request.params._id).lean();
         //const adminSubmission = await Submission.findByUserId(user).lean();
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
-        doc.addImage(backgroundImgData, "PNG", 0, 0); //omitting the width and height so that it will default to the size of the page
+        const courseImgData = await imageDataURI.encodeFromURL(adminSubmission.courseImage);
+        doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
         doc.setFontSize(30);
-        doc.setFont(undefined, "bold");
-        doc.text(adminSubmission.courseTitle, 70, 20);
+        doc.text(adminSubmission.courseTitle, pageDimensions[0] / 40, pageDimensions[0] / 20, {
+          maxWidth: pageDimensions[0] / 2,
+        });
         doc.setFont(undefined, "normal");
         doc.setFontSize(50);
-        doc.text(adminSubmission.handbookTitle, 175, 20, { maxWidth: 100 });
+        doc.setFont(undefined, "bold");
+        doc.text(adminSubmission.handbookTitle, pageDimensions[0] / 1.8, pageDimensions[0] / 15, {
+          maxWidth: pageDimensions[0] / 3,
+        });
+        doc.addImage(
+          courseImgData,
+          "PNG",
+          pageDimensions[0] / 1.2,
+          pageDimensions[1] / 25,
+          pageDimensions[0] / 7,
+          pageDimensions[0] / 7
+        );
         doc.setFontSize(20);
+        doc.setFont(undefined, "normal");
         //doc.text(adminSubmission.deadline, 70, 60);
+
+        ///////////////////////////////////////////////////////////////////////////
+        let i = 0;
+
+        //loops through all unique projectTypes so as to create one page for each type
+        var count = 0;
+        while (i < projectTypesUnique.length) {
+          let j = 0;
+          doc.text(projectTypesUnique[i], pageDimensions[0] / 40, pageDimensions[0] / 8 + count * 7);
+          while (j < submissions.length) {
+            if (
+              !submissions[j].submissionIncomplete &&
+              submissions[j].projectType &&
+              submissions[j].projectType === projectTypesUnique[i]
+            ) {
+              count++;
+              doc.text(
+                submissions[j].firstName + " " + submissions[j].lastName + " - " + submissions[j].projectTitle,
+                pageDimensions[0] / 40,
+                pageDimensions[0] / 8 + count * 7,
+                {
+                  maxWidth: pageDimensions[0] / 2,
+                }
+              );
+            }
+            j++;
+          }
+          count++;
+          i++;
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+
         doc.addPage();
         doc.setTextColor(0, 102, 204);
         doc.textWithLink(adminSubmission.courseUrl, 5, 207, { url: adminSubmission.courseUrl });
@@ -412,29 +461,6 @@ const Pdfs = {
 
         merger.add("./public/handbooks/Project Showcase 2022.pdf", [1]);
         let i = 0;
-        /*while (i < users.length) {
-          const doc = new jsPDF({ orientation: "landscape", compress: true });
-          doc.text(users[i].firstName, 70, 20);
-          doc.save("./public/handbooks/temp.pdf");
-          merger.add("./public/handbooks/temp.pdf");
-          merger.add("./public/handbooks/" + users[i].firstName + users[i].lastName + ".pdf");
-          i++;
-        }*/
-
-        /*while (i < projectTypesUnique.length) {
-          const doc = new jsPDF({ orientation: "landscape", compress: true });
-          doc.text(projectTypesUnique[i], 70, 20);
-          doc.save("./public/handbooks/temp.pdf");
-          merger.add("./public/handbooks/temp.pdf");
-          let j = 0;
-          while (j < submissions.length) {
-            if (submissions[j].projectType === projectTypesUnique[i]) {
-              merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
-            }
-            j++;
-          }
-          i++;
-        }*/
 
         //loops through all unique projectTypes so as to create one page for each type
         while (i < projectTypesUnique.length) {
@@ -498,11 +524,12 @@ const Pdfs = {
       payload: {
         courseTitle: Joi.string().allow("").min(4),
         handbookTitle: Joi.string().allow(""),
+        courseImage: Joi.any().allow(""),
         backgroundImage: Joi.any().allow(""),
         studentBackgroundImage: Joi.any().allow(""),
-        deadline: Joi.string().allow(""),
         courseTitleLong: Joi.string().allow(""),
         courseUrl: Joi.string().allow(""),
+        deadline: Joi.string().allow(""),
       },
       options: {
         abortEarly: false,
@@ -549,10 +576,20 @@ const Pdfs = {
         if (adminSubmissionEdit.handbookTitle !== "") {
           adminSubmission.handbookTitle = sanitizeHtml(adminSubmissionEdit.handbookTitle);
         }
-        if (adminSubmissionEdit.deadline !== "") {
-          //var deadlineFormat = sanitizeHtml(adminSubmissionEdit.deadline);
-          //adminSubmission.deadline = await Math.floor(new Date(deadlineFormat).getTime() / 1000);
-          adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
+
+        if (adminSubmissionEdit.courseImage.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.courseImage !== undefined) {
+            const courseImageFileName = await adminSubmission.courseImage.substr(
+              adminSubmission.courseImage.lastIndexOf("/") + 1
+            );
+            const courseImagePublic_id = await courseImageFileName.substr(0, courseImageFileName.indexOf("."));
+            await ImageStore.deleteImage(courseImagePublic_id);
+          }
+          const courseImageResult = await ImageStore.uploadImage(adminSubmissionEdit.courseImage); //consider re-ordering images to maintain consistency
+          const courseImageUrl = await courseImageResult.url;
+          adminSubmission.courseImage = await courseImageUrl;
         }
 
         if (adminSubmissionEdit.backgroundImage.length !== undefined) {
@@ -596,6 +633,12 @@ const Pdfs = {
         }
         if (adminSubmissionEdit.courseUrl !== "") {
           adminSubmission.courseUrl = sanitizeHtml(adminSubmissionEdit.courseUrl);
+        }
+
+        if (adminSubmissionEdit.deadline !== "") {
+          //var deadlineFormat = sanitizeHtml(adminSubmissionEdit.deadline);
+          //adminSubmission.deadline = await Math.floor(new Date(deadlineFormat).getTime() / 1000);
+          adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
         }
 
         /*if (submissionEdit.videoUrl !== "") {

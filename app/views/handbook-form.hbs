@@ -44,11 +44,24 @@
                 </div>
             </div>
 
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Course Image:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="courseImage" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.courseImage}}
+                           placeholder="{{adminSubmission.courseImage}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseImage}}
+                           placeholder="Course Image"
+                        {{/unless}}/>
+                </div>
+            </div>
 
             <div class="uk-margin">
                 <label style="color: black; font-size:120%">Background Image:</label>
                 <div class="uk-inline uk-width-1-1">
-                    <span class="uk-form-icon" uk-icon="icon: camera"></span>
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
                     <input class="uk-input uk-form-small" type="file" name="backgroundImage" accept="image/png, image/jpeg"
                         {{#if adminSubmission.backgroundImage}}
                            placeholder="{{adminSubmission.backgroundImage}}"
@@ -62,27 +75,13 @@
             <div class="uk-margin">
                 <label style="color: black; font-size:120%">Student Background Image:</label>
                 <div class="uk-inline uk-width-1-1">
-                    <span class="uk-form-icon" uk-icon="icon: camera"></span>
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
                     <input class="uk-input uk-form-small" type="file" name="studentBackgroundImage" accept="image/png, image/jpeg"
                         {{#if adminSubmission.studentBackgroundImage}}
                            placeholder="{{adminSubmission.studentBackgroundImage}}"
                         {{/if}}
                         {{#unless adminSubmission.studentBackgroundImage}}
                            placeholder="Background Image"
-                        {{/unless}}/>
-                </div>
-            </div>
-
-            <div class="dropdown" id="deadline">
-                <label style="color: black; font-size:120%">Deadline:</label>
-                <div class="uk-inline uk-width-1-1">
-                    <span class="uk-form-icon" uk-icon="icon: calendar"></span>
-                    <input class="uk-input uk-form-small" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')" name="deadline"
-                        {{#if adminSubmission.deadline}}
-                           placeholder="{{adminSubmission.deadline}}"
-                        {{/if}}
-                        {{#unless adminSubmission.deadline}}
-                           placeholder="Deadline"
                         {{/unless}}/>
                 </div>
             </div>
@@ -115,6 +114,20 @@
                 </div>
             </div>
 
+            <div class="dropdown" id="deadline">
+                <label style="color: black; font-size:120%">Deadline:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                    <input class="uk-input uk-form-small" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')" name="deadline"
+                        {{#if adminSubmission.deadline}}
+                           placeholder="{{adminSubmission.deadline}}"
+                        {{/if}}
+                        {{#unless adminSubmission.deadline}}
+                           placeholder="Deadline"
+                        {{/unless}}/>
+                </div>
+            </div>
+
             <div class="uk-margin">
                 <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
             </div>
@@ -122,10 +135,18 @@
         </form>
         {{> error }}
 
-        <div>
+        <div class="uk-margin">
             <div style="background-color: #877EB4" class="uk-margin-auto uk-card uk-card-default uk-card-small">
                 <input style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1"
                        type="button" onclick="location.href='/create-pdf-admin';" value="Create PDF"/>
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div style="background-color: #877EB4" class="uk-margin-auto uk-card uk-card-default uk-card-small">
+                <a href="./handbooks/{{adminSubmission.handbookTitle}}.pdf" target=”_blank”>
+                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Review PDF</button>
+                </a>
             </div>
         </div>
 
