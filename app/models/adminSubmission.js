@@ -5,6 +5,7 @@ const adminSubmissionSchema = new Schema({
   courseTitle: String,
   handbookTitle: String,
   backgroundImage: String,
+  studentBackgroundImage: String,
   deadline: String,
   courseTitleLong: String,
   courseUrl: String,

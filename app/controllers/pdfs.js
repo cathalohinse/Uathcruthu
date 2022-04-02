@@ -17,13 +17,19 @@ const Pdfs = {
       const user = await User.findById(request.params._id).lean();
       //const submission = await Submission.findByUserId(user).lean();
       const submission = await Submission.findById(request.params._id).lean();
+      const adminSubmissions = await AdminSubmission.find();
+      const adminSubmission = await adminSubmissions[0];
       if (!submission.nda) {
         try {
-          const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
+          //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
+
           //const doc = new jsPDF("landscape");
           const doc = new jsPDF({ orientation: "landscape", compress: true });
           //const user = await User.findById(request.params._id).lean();
           //const submission = await Submission.findByUserId(user).lean();
+          if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
+            var studentBackgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.studentBackgroundImage);
+          }
           const personalPhotoImgData = await imageDataURI.encodeFromURL(submission.personalPhoto);
           const projectImageImgData = await imageDataURI.encodeFromURL(submission.projectImage);
           const youtubeImgData = await imageDataURI.encodeFromFile("public/images/youtube.png");
@@ -36,7 +42,9 @@ const Pdfs = {
           );
           doc.text(submission.projectUrl, 5, 207); //a very awkward work around for validation of the URL requirement
           doc.text(submission.videoUrl, 276, 202); //a very awkward work around for validation of the URL requirement
-          doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
+          if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
+            doc.addImage(studentBackgroundImgData, "PNG", 0, 0, 300, 210);
+          }
           doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
           doc.addImage(projectImageImgData, "JPG", 5, 75, 150, 120);
           doc.setFontSize(30);
@@ -74,11 +82,14 @@ const Pdfs = {
         }
       } else {
         try {
-          const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
+          //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
           //const doc = new jsPDF("landscape");
           const doc = new jsPDF({ orientation: "landscape", compress: true });
           //const user = await User.findById(request.params._id).lean();
           //const submission = await Submission.findByUserId(user).lean();
+          if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
+            var studentBackgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.studentBackgroundImage);
+          }
           const personalPhotoImgData = await imageDataURI.encodeFromURL(submission.personalPhoto);
           console.log(
             submission.firstName +
@@ -87,7 +98,10 @@ const Pdfs = {
               " has created the following pdf: " +
               submission.projectTitle
           );
-          doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
+          if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
+            doc.addImage(studentBackgroundImgData, "PNG", 0, 0, 300, 210);
+          }
+          //doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
           doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
           doc.setFontSize(30);
           doc.setFont(undefined, "bold");
@@ -111,7 +125,8 @@ const Pdfs = {
             title: "Submission Error",
             user: user,
             submission: submission,
-            errors: [{ message: "Personal Picture required" }],
+            //errors: [{ message: "Personal Picture required" }],
+            errors: [{ message: err.message }],
           });
         }
       }
@@ -443,6 +458,7 @@ const Pdfs = {
         courseTitle: Joi.string().allow("").min(4),
         handbookTitle: Joi.string().allow(""),
         backgroundImage: Joi.any().allow(""),
+        studentBackgroundImage: Joi.any().allow(""),
         deadline: Joi.string().allow(""),
         courseTitleLong: Joi.string().allow(""),
         courseUrl: Joi.string().allow(""),
@@ -515,6 +531,25 @@ const Pdfs = {
           const backgroundImageUrl = await backgroundImageResult.url;
           adminSubmission.backgroundImage = await backgroundImageUrl;
         }
+
+        if (adminSubmissionEdit.studentBackgroundImage.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.studentBackgroundImage !== undefined) {
+            const studentBackgroundImageFileName = await adminSubmission.studentBackgroundImage.substr(
+              adminSubmission.studentBackgroundImage.lastIndexOf("/") + 1
+            );
+            const studentBackgroundImagePublic_id = await studentBackgroundImageFileName.substr(
+              0,
+              studentBackgroundImageFileName.indexOf(".")
+            );
+            await ImageStore.deleteImage(studentBackgroundImagePublic_id);
+          }
+          const studentBackgroundImageResult = await ImageStore.uploadImage(adminSubmissionEdit.studentBackgroundImage); //consider re-ordering images to maintain consistency
+          const studentBackgroundImageUrl = await studentBackgroundImageResult.url;
+          adminSubmission.studentBackgroundImage = await studentBackgroundImageUrl;
+        }
+
         if (adminSubmissionEdit.courseTitleLong !== "") {
           adminSubmission.courseTitleLong = sanitizeHtml(adminSubmissionEdit.courseTitleLong);
         }

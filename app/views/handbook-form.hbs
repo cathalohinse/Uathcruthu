@@ -59,6 +59,20 @@
                 </div>
             </div>
 
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Student Background Image:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: camera"></span>
+                    <input class="uk-input uk-form-small" type="file" name="studentBackgroundImage" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.studentBackgroundImage}}
+                           placeholder="{{adminSubmission.studentBackgroundImage}}"
+                        {{/if}}
+                        {{#unless adminSubmission.studentBackgroundImage}}
+                           placeholder="Background Image"
+                        {{/unless}}/>
+                </div>
+            </div>
+
             <div class="dropdown" id="deadline">
                 <label style="color: black; font-size:120%">Deadline:</label>
                 <div class="uk-inline uk-width-1-1">
