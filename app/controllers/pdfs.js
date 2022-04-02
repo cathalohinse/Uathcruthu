@@ -9,6 +9,8 @@ const { jsPDF } = require("jspdf");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const PDFMerger = require("pdf-merger-js");
+//const pageDimensions = [338.582, 190.5];
+const pageDimensions = [297, 210];
 
 const Pdfs = {
   createPdfUser: {
@@ -24,7 +26,7 @@ const Pdfs = {
           //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
 
           //const doc = new jsPDF("landscape");
-          const doc = new jsPDF({ orientation: "landscape", compress: true });
+          const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
           //const user = await User.findById(request.params._id).lean();
           //const submission = await Submission.findByUserId(user).lean();
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
@@ -40,28 +42,58 @@ const Pdfs = {
               " has created the following pdf: " +
               submission.projectTitle
           );
-          doc.text(submission.projectUrl, 5, 207); //a very awkward work around for validation of the URL requirement
-          doc.text(submission.videoUrl, 276, 202); //a very awkward work around for validation of the URL requirement
+          //doc.text(submission.projectUrl, 5, 207); //a very awkward work around for validation of the URL requirement
+          //doc.text(submission.videoUrl, 276, 202); //a very awkward work around for validation of the URL requirement
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
-            doc.addImage(studentBackgroundImgData, "PNG", 0, 0, 300, 210);
+            doc.addImage(studentBackgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
           }
-          doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
-          doc.addImage(projectImageImgData, "JPG", 5, 75, 150, 120);
+          doc.addImage(
+            personalPhotoImgData,
+            "JPG",
+            pageDimensions[0] / 50,
+            pageDimensions[0] / 50,
+            pageDimensions[0] / 6,
+            pageDimensions[0] / 6
+          ); //originally w:30, h:40
+          doc.addImage(
+            projectImageImgData,
+            "JPG",
+            pageDimensions[0] / 50,
+            pageDimensions[0] / 5.3,
+            pageDimensions[0] / 2,
+            pageDimensions[1] / 1.7
+          );
           doc.setFontSize(30);
           doc.setFont(undefined, "bold");
-          doc.text(submission.projectTitle, 70, 20);
+          //doc.text(submission.projectTitle, 70, 20);
+          doc.text(submission.projectTitle, pageDimensions[0] / 5, pageDimensions[0] / 20);
           doc.setFont(undefined, "normal");
-          doc.text(submission.descriptiveTitle, 70, 30, { maxWidth: 240 });
+          //doc.text(submission.descriptiveTitle, pageDimensions[0] / 5, pageDimensions[1] / 6.5, {
+          doc.text(submission.descriptiveTitle, pageDimensions[0] / 5, pageDimensions[0] / 12, {
+            maxWidth: pageDimensions[0] / 1.3,
+          });
           doc.setFontSize(20);
-          doc.text(submission.projectType, 70, 60);
-          doc.text(submission.firstName + " " + submission.lastName, 70, 70);
+          //doc.text(submission.firstName + " " + submission.lastName, pageDimensions[0] / 5, pageDimensions[1] / 3.2);
+          doc.text(submission.firstName + " " + submission.lastName, pageDimensions[0] / 5, pageDimensions[0] / 5.7);
           doc.setFontSize(15);
-          doc.text(submission.summary, 165, 60, { maxWidth: 120 });
+          doc.text(submission.summary, pageDimensions[0] / 1.85, pageDimensions[0] / 4.8, {
+            maxWidth: pageDimensions[0] / 2.23,
+          });
           doc.setTextColor(0, 102, 204);
-          doc.textWithLink("Project Landing Page", 5, 207, { url: submission.projectUrl });
+          //doc.textWithLink("Project Landing Page", pageDimensions[0] / 50, pageDimensions[0] / 1.83, {
+          doc.textWithLink("Project Landing Page", pageDimensions[0] / 50, pageDimensions[1] / 1.04, {
+            url: submission.projectUrl,
+          });
           doc.setFontSize(20);
-          doc.textWithLink("Video", 276, 202, { url: submission.videoUrl });
-          doc.addImage(youtubeImgData, "PNG", 275, 190, 20, 20);
+          doc.textWithLink("Video", pageDimensions[0] / 1.09, pageDimensions[1] / 1.08, { url: submission.videoUrl });
+          doc.addImage(
+            youtubeImgData,
+            "PNG",
+            pageDimensions[0] / 1.1,
+            pageDimensions[1] / 1.16,
+            pageDimensions[0] / 13.3,
+            pageDimensions[0] / 13.3
+          );
           doc.save("./public/handbooks/" + submission.firstName + submission.lastName + ".pdf");
           return h.view("submission-admin", {
             title: "User's Submission",
@@ -84,7 +116,7 @@ const Pdfs = {
         try {
           //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
           //const doc = new jsPDF("landscape");
-          const doc = new jsPDF({ orientation: "landscape", compress: true });
+          const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
           //const user = await User.findById(request.params._id).lean();
           //const submission = await Submission.findByUserId(user).lean();
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
@@ -99,17 +131,25 @@ const Pdfs = {
               submission.projectTitle
           );
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
-            doc.addImage(studentBackgroundImgData, "PNG", 0, 0, 300, 210);
+            doc.addImage(studentBackgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
           }
           //doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
-          doc.addImage(personalPhotoImgData, "JPG", 5, 5, 60, 60); //originally w:30, h:40
+          doc.addImage(
+            personalPhotoImgData,
+            pageDimensions[0] / 50,
+            pageDimensions[0] / 50,
+            pageDimensions[0] / 6,
+            pageDimensions[0] / 6
+          ); //originally w:30, h:40
           doc.setFontSize(30);
           doc.setFont(undefined, "bold");
-          doc.text("NDA", 70, 20);
+          doc.text("NDA", pageDimensions[0] / 5, pageDimensions[0] / 20);
           doc.setFont(undefined, "normal");
-          doc.text("This project information is withheld under NDA", 70, 30, { maxWidth: 240 });
+          doc.text("This project information is withheld under NDA", pageDimensions[0] / 5, pageDimensions[0] / 12, {
+            maxWidth: pageDimensions[0] / 1.3,
+          });
           doc.setFontSize(20);
-          doc.text(submission.firstName + " " + submission.lastName, 70, 70);
+          doc.text(submission.firstName + " " + submission.lastName, pageDimensions[0] / 5, pageDimensions[0] / 5.7);
           doc.save("./public/handbooks/" + submission.firstName + submission.lastName + ".pdf");
           return h.view("submission-admin", {
             title: "User's Submission",
@@ -318,18 +358,19 @@ const Pdfs = {
       try {
         //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
         //const doc = new jsPDF("landscape");
-        const doc = new jsPDF({ orientation: "landscape", compress: true });
+        const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
         //const user = await User.findById(request.params._id).lean();
         //const adminSubmission = await Submission.findByUserId(user).lean();
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
-        doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
+        doc.addImage(backgroundImgData, "PNG", 0, 0); //omitting the width and height so that it will default to the size of the page
         doc.setFontSize(30);
         doc.setFont(undefined, "bold");
         doc.text(adminSubmission.courseTitle, 70, 20);
         doc.setFont(undefined, "normal");
-        doc.text(adminSubmission.handbookTitle, 70, 30, { maxWidth: 240 });
+        doc.setFontSize(50);
+        doc.text(adminSubmission.handbookTitle, 175, 20, { maxWidth: 100 });
         doc.setFontSize(20);
-        doc.text(adminSubmission.deadline, 70, 60);
+        //doc.text(adminSubmission.deadline, 70, 60);
         doc.addPage();
         doc.setTextColor(0, 102, 204);
         doc.textWithLink(adminSubmission.courseUrl, 5, 207, { url: adminSubmission.courseUrl });
@@ -397,7 +438,7 @@ const Pdfs = {
 
         //loops through all unique projectTypes so as to create one page for each type
         while (i < projectTypesUnique.length) {
-          const doc = new jsPDF({ orientation: "landscape", compress: true });
+          const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
           let j = 0;
 
           doc.text(projectTypesUnique[i], 70, 20);
