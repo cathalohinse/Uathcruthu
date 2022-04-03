@@ -369,9 +369,31 @@ const Pdfs = {
         //const adminSubmission = await Submission.findByUserId(user).lean();
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
         const courseImgData = await imageDataURI.encodeFromURL(adminSubmission.courseImage);
+        const adminImg1Data = await imageDataURI.encodeFromURL(adminSubmission.adminImage1);
+        const adminImg2Data = await imageDataURI.encodeFromURL(adminSubmission.adminImage2);
+        const adminImg3Data = await imageDataURI.encodeFromURL(adminSubmission.adminImage3);
 
         //doc.text(adminSubmission.deadline, 70, 60);
         doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
+        doc.setFontSize(pageDimensions[0] / 11);
+        doc.text(adminSubmission.courseTitle, pageDimensions[0] / 40, pageDimensions[0] / 20, {
+          maxWidth: pageDimensions[0] / 2,
+        });
+        doc.setFont(undefined, "normal");
+        doc.setFontSize(pageDimensions[0] / 6);
+        doc.setFont(undefined, "bold");
+        doc.text(adminSubmission.handbookTitle, pageDimensions[0] / 1.9, pageDimensions[0] / 15, {
+          maxWidth: pageDimensions[0] / 3,
+        });
+        doc.addImage(
+          courseImgData,
+          "PNG",
+          pageDimensions[0] / 1.2,
+          pageDimensions[1] / 25,
+          pageDimensions[0] / 7,
+          pageDimensions[0] / 7
+        );
+        doc.setFont(undefined, "normal");
         ///////////////////////////////////////////////////////////////////////////
         const endOfPage = pageDimensions[1] / 1.1;
         let i = 0;
@@ -383,48 +405,29 @@ const Pdfs = {
         while (i < projectTypesUnique.length) {
           let j = 0;
 
-          //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-          doc.setFontSize(30);
-          doc.text(adminSubmission.courseTitle, pageDimensions[0] / 40, pageDimensions[0] / 20, {
-            maxWidth: pageDimensions[0] / 2,
-          });
-          doc.setFont(undefined, "normal");
-          doc.setFontSize(50);
-          doc.setFont(undefined, "bold");
-          doc.text(adminSubmission.handbookTitle, pageDimensions[0] / 1.9, pageDimensions[0] / 15, {
-            maxWidth: pageDimensions[0] / 3,
-          });
-          doc.addImage(
-            courseImgData,
-            "PNG",
-            pageDimensions[0] / 1.2,
-            pageDimensions[1] / 25,
-            pageDimensions[0] / 7,
-            pageDimensions[0] / 7
-          );
-          doc.setFont(undefined, "normal");
-          //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-          doc.setFontSize(25);
+          doc.setFontSize(pageDimensions[0] / 13);
 
           // if list reaches the end of the page, in order to prevent spill over, it is moved to the next column in the page
           if (pageDimensions[0] / 7 + countColumn1 * 8 > endOfPage) {
             countColumn2 += 1.5;
+            doc.setTextColor(0, 102, 204);
             doc.text(projectTypesUnique[i], pageDimensions[0] / 1.9, pageDimensions[0] / 4 + countColumn2 * 8);
-          } else doc.text(projectTypesUnique[i], pageDimensions[0] / 40, pageDimensions[0] / 7 + countColumn1 * 8);
-
+          } else {
+            doc.setTextColor(0, 102, 204);
+            doc.text(projectTypesUnique[i], pageDimensions[0] / 40, pageDimensions[0] / 7 + countColumn1 * 8);
+          }
           while (j < submissions.length) {
             if (
               !submissions[j].submissionIncomplete &&
               submissions[j].projectType &&
               submissions[j].projectType === projectTypesUnique[i]
             ) {
-              doc.setFontSize(20);
+              doc.setFontSize(pageDimensions[0] / 15);
               // if list reaches the end of the page, in order to prevent spill over, it is moved to the next column in the page
               //if (countColumn1 > 20) {
               if (pageDimensions[0] / 7 + countColumn1 * 8 > endOfPage) {
                 countColumn2++;
+                doc.setTextColor("black");
                 doc.text(
                   submissions[j].firstName + " " + submissions[j].lastName + " - " + submissions[j].projectTitle,
                   pageDimensions[0] / 1.9,
@@ -435,6 +438,7 @@ const Pdfs = {
                 );
               } else {
                 countColumn1++;
+                doc.setTextColor("black");
                 doc.text(
                   submissions[j].firstName + " " + submissions[j].lastName + " - " + submissions[j].projectTitle,
                   pageDimensions[0] / 40,
@@ -452,6 +456,27 @@ const Pdfs = {
               console.log("New Page added for long list of projects");
               doc.addPage();
               doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
+              doc.setFontSize(pageDimensions[0] / 11);
+              doc.setTextColor("black");
+              doc.text(adminSubmission.courseTitle, pageDimensions[0] / 40, pageDimensions[0] / 20, {
+                maxWidth: pageDimensions[0] / 2,
+              });
+              doc.setFont(undefined, "normal");
+              doc.setFontSize(pageDimensions[0] / 6);
+              doc.setFont(undefined, "bold");
+              doc.setTextColor("black");
+              doc.text(adminSubmission.handbookTitle, pageDimensions[0] / 1.9, pageDimensions[0] / 15, {
+                maxWidth: pageDimensions[0] / 3,
+              });
+              doc.addImage(
+                courseImgData,
+                "PNG",
+                pageDimensions[0] / 1.2,
+                pageDimensions[1] / 25,
+                pageDimensions[0] / 7,
+                pageDimensions[0] / 7
+              );
+              doc.setFont(undefined, "normal");
               countColumn1 = 0;
               countColumn2 = 0;
             }
@@ -463,10 +488,48 @@ const Pdfs = {
         //////////////////////////////////////////////////////////////////////////
 
         doc.addPage();
-        doc.setTextColor(0, 102, 204);
-        doc.textWithLink(adminSubmission.courseUrl, 5, 207, { url: adminSubmission.courseUrl });
-        doc.setFontSize(20);
+        doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
+        doc.setFontSize(pageDimensions[0] / 11);
         doc.text(adminSubmission.courseTitleLong, 70, 20);
+        doc.textWithLink(adminSubmission.courseUrl, pageDimensions[0] / 10, pageDimensions[1] / 4, {
+          url: adminSubmission.courseUrl,
+        });
+        doc.addImage(
+          courseImgData,
+          "PNG",
+          pageDimensions[0] / 20,
+          pageDimensions[1] / 2,
+          pageDimensions[0] / 6,
+          pageDimensions[0] / 5
+        );
+
+        doc.addImage(
+          adminImg1Data,
+          "PNG",
+          pageDimensions[0] / 1.25,
+          pageDimensions[1] / 2,
+          pageDimensions[0] / 6,
+          pageDimensions[0] / 5
+        );
+
+        doc.addImage(
+          adminImg2Data,
+          "PNG",
+          pageDimensions[0] / 4,
+          pageDimensions[1] / 2,
+          pageDimensions[0] / 2,
+          pageDimensions[0] / 5
+        );
+
+        doc.addImage(
+          adminImg3Data,
+          "PNG",
+          pageDimensions[0] / 20,
+          pageDimensions[1] / 1.15,
+          pageDimensions[0] / 1.11,
+          pageDimensions[0] / 15
+        );
+
         doc.save("./public/handbooks/" + adminSubmission.handbookTitle + ".pdf");
         console.log("New Handbook created");
         return h.view("handbook-form", {
@@ -500,6 +563,10 @@ const Pdfs = {
         const projectTypesUnique = [...new Set(projectTypes)];
         console.log(projectTypesUnique);
         const merger = new PDFMerger();
+        const adminSubmissions = await AdminSubmission.find().lean();
+        const adminSubmission = await adminSubmissions[0];
+        const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
+        const endOfPage = pageDimensions[1] / 1.1;
 
         merger.add("./public/handbooks/Project Showcase 2022.pdf", [1]);
         let i = 0;
@@ -507,14 +574,24 @@ const Pdfs = {
         //loops through all unique projectTypes so as to create one page for each type
         while (i < projectTypesUnique.length) {
           const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
+          doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
+
           let j = 0;
 
           doc.text(projectTypesUnique[i], 70, 20);
           //loops through all submissions, and adds the user name of which ever ones belong to the projectType to that page
           while (j < submissions.length) {
             if (!submissions[j].submissionIncomplete && submissions[j].projectType === projectTypesUnique[i]) {
-              doc.text(submissions[j].firstName, 70, 50 + j * 10);
-              doc.text(submissions[j].presentationTime, 60, 50 + j * 10);
+              doc.text(
+                submissions[j].presentationTime + " " + submissions[j].firstName + " " + submissions[j].lastName,
+                pageDimensions[0] / 40,
+                pageDimensions[0] / 20
+              );
+              doc.text(
+                submissions[j].projectTitle + " - " + submissions[j].descriptiveTitle,
+                pageDimensions[0] / 40,
+                pageDimensions[0] / 10
+              );
               //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
             }
             j++;
@@ -535,7 +612,7 @@ const Pdfs = {
         merger.add("./public/handbooks/Project Showcase 2022.pdf", [2]);
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
-        console.log("Number of handbooks: " + users.length);
+        console.log("Number of users: " + users.length);
         console.log("First User: " + users[0]);
         console.log("New Handbook created");
         return h.view("admin", { title: "Admin", users: users, submissions: submissions });
@@ -572,6 +649,9 @@ const Pdfs = {
         courseTitleLong: Joi.string().allow(""),
         courseUrl: Joi.string().allow(""),
         deadline: Joi.string().allow(""),
+        adminImage1: Joi.any().allow(""),
+        adminImage2: Joi.any().allow(""),
+        adminImage3: Joi.any().allow(""),
       },
       options: {
         abortEarly: false,
@@ -683,21 +763,50 @@ const Pdfs = {
           adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
         }
 
-        /*if (submissionEdit.videoUrl !== "") {
-          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
-        }*/
+        if (adminSubmissionEdit.adminImage1.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.adminImage1 !== undefined) {
+            const adminImage1FileName = await adminSubmission.adminImage1.substr(
+              adminSubmission.adminImage1.lastIndexOf("/") + 1
+            );
+            const adminImage1Public_id = await adminImage1FileName.substr(0, adminImage1FileName.indexOf("."));
+            await ImageStore.deleteImage(adminImage1Public_id);
+          }
+          const adminImage1Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage1); //consider re-ordering images to maintain consistency
+          const adminImage1Url = await adminImage1Result.url;
+          adminSubmission.adminImage1 = await adminImage1Url;
+        }
 
-        /*if (submissionEdit.projectType === "Other") {
-          submission.projectTypeOther = true;
-          console.log("Other: " + submission.projectTypeOther);
-          submission.projectType = sanitizeHtml(submissionEdit.projectType);
-          await submission.save();
-          console.log("If Project Type is 'Other', please specify");
-          return h.redirect("/submission-form", {
-            title: "Specify Project Type",
-            submission: submission,
-          });
-        }*/
+        if (adminSubmissionEdit.adminImage2.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.adminImage2 !== undefined) {
+            const adminImage2FileName = await adminSubmission.adminImage2.substr(
+              adminSubmission.adminImage2.lastIndexOf("/") + 1
+            );
+            const adminImage2Public_id = await adminImage2FileName.substr(0, adminImage2FileName.indexOf("."));
+            await ImageStore.deleteImage(adminImage2Public_id);
+          }
+          const adminImage2Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage2); //consider re-ordering images to maintain consistency
+          const adminImage2Url = await adminImage2Result.url;
+          adminSubmission.adminImage2 = await adminImage2Url;
+        }
+
+        if (adminSubmissionEdit.adminImage3.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (adminSubmission.adminImage3 !== undefined) {
+            const adminImage3FileName = await adminSubmission.adminImage3.substr(
+              adminSubmission.adminImage3.lastIndexOf("/") + 1
+            );
+            const adminImage3Public_id = await adminImage3FileName.substr(0, adminImage3FileName.indexOf("."));
+            await ImageStore.deleteImage(adminImage3Public_id);
+          }
+          const adminImage3Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage3); //consider re-ordering images to maintain consistency
+          const adminImage3Url = await adminImage3Result.url;
+          adminSubmission.adminImage3 = await adminImage3Url;
+        }
 
         console.log("New AdminSubmission: " + adminSubmission.handbookTitle);
         await adminSubmission.save();

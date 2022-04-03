@@ -129,6 +129,48 @@
             </div>
 
             <div class="uk-margin">
+                <label style="color: black; font-size:120%">Admin Image 1:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="adminImage1" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.adminImage1}}
+                           placeholder="{{adminSubmission.adminImage1}}"
+                        {{/if}}
+                        {{#unless adminSubmission.adminImage1}}
+                           placeholder="Admin Image 1"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Admin Image 2:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="adminImage2" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.adminImage2}}
+                           placeholder="{{adminSubmission.adminImage2}}"
+                        {{/if}}
+                        {{#unless adminSubmission.adminImage2}}
+                           placeholder="Admin Image 2"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Admin Image 3:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="adminImage3" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.adminImage3}}
+                           placeholder="{{adminSubmission.adminImage3}}"
+                        {{/if}}
+                        {{#unless adminSubmission.adminImage3}}
+                           placeholder="Admin Image 3"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
                 <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
             </div>
 
