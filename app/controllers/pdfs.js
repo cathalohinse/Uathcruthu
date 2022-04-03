@@ -490,8 +490,8 @@ const Pdfs = {
         doc.addPage();
         doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
         doc.setFontSize(pageDimensions[0] / 11);
-        doc.text(adminSubmission.courseTitleLong, 70, 20);
-        doc.textWithLink(adminSubmission.courseUrl, pageDimensions[0] / 10, pageDimensions[1] / 4, {
+        doc.text(adminSubmission.courseTitleLong, pageDimensions[0] / 2, pageDimensions[0] / 15, "center");
+        doc.textWithLink(adminSubmission.courseUrl, pageDimensions[0] / 2, pageDimensions[1] / 4, "center", {
           url: adminSubmission.courseUrl,
         });
         doc.addImage(
@@ -566,33 +566,55 @@ const Pdfs = {
         const adminSubmissions = await AdminSubmission.find().lean();
         const adminSubmission = await adminSubmissions[0];
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
-        const endOfPage = pageDimensions[1] / 1.1;
+        const endOfPage = pageDimensions[1] / 1.25;
 
         merger.add("./public/handbooks/Project Showcase 2022.pdf", [1]);
         let i = 0;
 
         //loops through all unique projectTypes so as to create one page for each type
         while (i < projectTypesUnique.length) {
+          let count = 0;
           const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
           doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
 
           let j = 0;
-
-          doc.text(projectTypesUnique[i], 70, 20);
+          doc.setFontSize(30);
+          doc.setFont(undefined, "bold");
+          doc.text(projectTypesUnique[i], pageDimensions[0] / 2, pageDimensions[1] / 1.12, "center");
+          doc.setFontSize(18);
+          doc.setFont(undefined, "normal");
+          doc.text(adminSubmission.courseTitleLong, pageDimensions[0] / 2, pageDimensions[1] / 1.05, "center");
           //loops through all submissions, and adds the user name of which ever ones belong to the projectType to that page
           while (j < submissions.length) {
             if (!submissions[j].submissionIncomplete && submissions[j].projectType === projectTypesUnique[i]) {
+              count++;
+              //doc.setFont(undefined, "bold");
               doc.text(
                 submissions[j].presentationTime + " " + submissions[j].firstName + " " + submissions[j].lastName,
                 pageDimensions[0] / 40,
-                pageDimensions[0] / 20
+                pageDimensions[0] / 20 + count * 8
               );
+              doc.setFont(undefined, "normal");
               doc.text(
                 submissions[j].projectTitle + " - " + submissions[j].descriptiveTitle,
                 pageDimensions[0] / 40,
-                pageDimensions[0] / 10
+                pageDimensions[0] / 15 + count * 8
               );
+              count += 1.5;
               //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
+            }
+
+            //add new page
+            if (pageDimensions[0] / 20 + count * 8 > endOfPage) {
+              doc.addPage();
+              doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
+              doc.setFontSize(30);
+              doc.setFont(undefined, "bold");
+              doc.text(projectTypesUnique[i], pageDimensions[0] / 2, pageDimensions[1] / 1.12, "center");
+              doc.setFontSize(18);
+              doc.setFont(undefined, "normal");
+              doc.text(adminSubmission.courseTitleLong, pageDimensions[0] / 2, pageDimensions[1] / 1.05, "center");
+              count = 0;
             }
             j++;
           }
