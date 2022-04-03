@@ -79,14 +79,22 @@ const Submissions = {
 
         submission.nda = submissionEdit.nda;
 
-        if (submissionEdit.projectTitle !== "") {
+        if (submission.nda) {
+          submission.projectTitle = await "NDA";
+        } else if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
         if (submissionEdit.descriptiveTitle !== "") {
           submission.descriptiveTitle = sanitizeHtml(submissionEdit.descriptiveTitle);
         }
-        if (submissionEdit.projectType !== "") {
+        /*if (submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
+        }*/
+
+        if (submission.nda) {
+          submission.projectType = await "NDA";
+        } else if (submissionEdit.projectType !== "") {
+          submission.projectType = await sanitizeHtml(submissionEdit.projectType);
         }
 
         if (submissionEdit.personalPhoto.length !== undefined) {
