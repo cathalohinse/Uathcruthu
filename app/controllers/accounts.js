@@ -5,15 +5,12 @@ const Submission = require("../models/submission");
 const AdminSubmission = require("../models/adminSubmission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 const { jsPDF } = require("jspdf");
 const Admin = require("../models/admin");
 
 const Accounts = {
-  /*deadline: async function () {
-    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
-    return deadline;
-  },*/
-
   index: {
     auth: false,
     handler: function (request, h) {
@@ -94,11 +91,13 @@ const Accounts = {
           const message = "Email address is already registered";
           throw Boom.badData(message);
         }
+        const hash = await bcrypt.hash(payload.password, saltRounds);
+
         const newUser = new User({
           firstName: sanitizeHtml(payload.firstName),
           lastName: sanitizeHtml(payload.lastName),
           email: sanitizeHtml(payload.email),
-          password: sanitizeHtml(payload.password),
+          password: sanitizeHtml(hash),
         });
         user = await newUser.save();
 
