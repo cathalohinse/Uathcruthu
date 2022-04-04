@@ -6,6 +6,7 @@ const AdminSubmission = require("../models/adminSubmission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const { jsPDF } = require("jspdf");
+const Admin = require("../models/admin");
 
 const Accounts = {
   /*deadline: async function () {
@@ -165,14 +166,21 @@ const Accounts = {
       const { email, password } = request.payload;
       try {
         let user = await User.findByEmail(email);
-        if (!user) {
+        let admin = await Admin.findByEmail(email);
+        if (!user && !admin) {
           const message = "Email address is not registered";
           throw Boom.unauthorized(message);
+        } else if (user) {
+          user.comparePassword(password);
+          request.cookieAuth.set({ id: user.id });
+          console.log(user.firstName + " " + user.lastName + " has logged in");
+          return h.redirect("/submission-form");
+        } else {
+          admin.comparePassword(password);
+          request.cookieAuth.set({ id: admin.id });
+          console.log(admin.firstName + " " + admin.lastName + " has logged in");
+          return h.redirect("/admin");
         }
-        user.comparePassword(password);
-        request.cookieAuth.set({ id: user.id });
-        console.log(user.firstName + " " + user.lastName + " has logged in");
-        return h.redirect("/submission-form");
       } catch (err) {
         console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });
