@@ -531,7 +531,7 @@ const Pdfs = {
         );
 
         doc.save("./public/handbooks/" + adminSubmission.handbookTitle + ".pdf");
-        console.log("New Handbook created");
+        console.log("New Handbook created with the following amount of pages: " + doc.internal.getNumberOfPages());
         return h.view("handbook-form", {
           title: "User's Submission",
           user: user,
@@ -567,8 +567,10 @@ const Pdfs = {
         const adminSubmission = await adminSubmissions[0];
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
         const endOfPage = pageDimensions[1] / 1.25;
+        const page = 1;
+        const pages = [1, 2, 3];
 
-        merger.add("./public/handbooks/Project Showcase 2022.pdf", [1]);
+        await merger.add("./public/handbooks/Project Showcase 2022.pdf", pages.slice(0, -1));
         let i = 0;
 
         //loops through all unique projectTypes so as to create one page for each type
@@ -631,7 +633,7 @@ const Pdfs = {
           i++;
         }
 
-        merger.add("./public/handbooks/Project Showcase 2022.pdf", [2]);
+        merger.add("./public/handbooks/Project Showcase 2022.pdf", pages.slice(-1));
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
         console.log("Number of users: " + users.length);
