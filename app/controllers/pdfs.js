@@ -5,7 +5,6 @@ const AdminSubmission = require("../models/adminSubmission");
 const imageDataURI = require("image-data-uri");
 const ImageStore = require("../utils/image-store");
 const { jsPDF } = require("jspdf");
-//const Deadline = require("../controllers/accounts");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const PDFMerger = require("pdf-merger-js");
@@ -19,18 +18,12 @@ const Pdfs = {
     auth: false,
     handler: async function (request, h) {
       const user = await User.findById(request.params._id).lean();
-      //const submission = await Submission.findByUserId(user).lean();
       const submission = await Submission.findById(request.params._id).lean();
       const adminSubmissions = await AdminSubmission.find();
       const adminSubmission = await adminSubmissions[0];
       if (!submission.nda) {
         try {
-          //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
-
-          //const doc = new jsPDF("landscape");
           const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
-          //const user = await User.findById(request.params._id).lean();
-          //const submission = await Submission.findByUserId(user).lean();
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
             var studentBackgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.studentBackgroundImage);
           }
@@ -44,8 +37,6 @@ const Pdfs = {
               " has created the following pdf: " +
               submission.projectTitle
           );
-          //doc.text(submission.projectUrl, 5, 207); //a very awkward work around for validation of the URL requirement
-          //doc.text(submission.videoUrl, 276, 202); //a very awkward work around for validation of the URL requirement
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
             doc.addImage(studentBackgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
           }
@@ -56,7 +47,7 @@ const Pdfs = {
             pageDimensions[0] / 50,
             pageDimensions[0] / 6,
             pageDimensions[0] / 6
-          ); //originally w:30, h:40
+          );
           doc.addImage(
             projectImageImgData,
             "JPG",
@@ -67,22 +58,18 @@ const Pdfs = {
           );
           doc.setFontSize(30);
           doc.setFont(undefined, "bold");
-          //doc.text(submission.projectTitle, 70, 20);
           doc.text(submission.projectTitle, pageDimensions[0] / 5, pageDimensions[0] / 20);
           doc.setFont(undefined, "normal");
-          //doc.text(submission.descriptiveTitle, pageDimensions[0] / 5, pageDimensions[1] / 6.5, {
           doc.text(submission.descriptiveTitle, pageDimensions[0] / 5, pageDimensions[0] / 12, {
             maxWidth: pageDimensions[0] / 1.3,
           });
           doc.setFontSize(20);
-          //doc.text(submission.firstName + " " + submission.lastName, pageDimensions[0] / 5, pageDimensions[1] / 3.2);
           doc.text(submission.firstName + " " + submission.lastName, pageDimensions[0] / 5, pageDimensions[0] / 5.7);
           doc.setFontSize(15);
           doc.text(submission.summary, pageDimensions[0] / 1.85, pageDimensions[0] / 4.8, {
             maxWidth: pageDimensions[0] / 2.23,
           });
           doc.setTextColor(0, 102, 204);
-          //doc.textWithLink("Project Landing Page", pageDimensions[0] / 50, pageDimensions[0] / 1.83, {
           doc.textWithLink("Project Landing Page", pageDimensions[0] / 50, pageDimensions[1] / 1.04, {
             url: submission.projectUrl,
           });
@@ -104,8 +91,6 @@ const Pdfs = {
           });
         } catch (err) {
           const user = await User.findById(request.params._id).lean();
-          //const submission = await Submission.findByUserId(user).lean();
-          // const submission = await Submission.findById(request.params._id).lean();
           console.log("Error creating pdf");
           return h.view("submission-admin", {
             title: "Submission Error",
@@ -116,11 +101,7 @@ const Pdfs = {
         }
       } else {
         try {
-          //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
-          //const doc = new jsPDF("landscape");
           const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
-          //const user = await User.findById(request.params._id).lean();
-          //const submission = await Submission.findByUserId(user).lean();
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
             var studentBackgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.studentBackgroundImage);
           }
@@ -135,14 +116,13 @@ const Pdfs = {
           if (adminSubmission && adminSubmission.studentBackgroundImage !== undefined) {
             doc.addImage(studentBackgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
           }
-          //doc.addImage(backgroundImgData, "PNG", 0, 0, 300, 210);
           doc.addImage(
             personalPhotoImgData,
             pageDimensions[0] / 50,
             pageDimensions[0] / 50,
             pageDimensions[0] / 6,
             pageDimensions[0] / 6
-          ); //originally w:30, h:40
+          );
           doc.setFontSize(30);
           doc.setFont(undefined, "bold");
           doc.text("NDA", pageDimensions[0] / 5, pageDimensions[0] / 20);
@@ -160,14 +140,12 @@ const Pdfs = {
           });
         } catch (err) {
           const user = await User.findById(request.params._id).lean();
-          //const submission = await Submission.findByUserId(user).lean();
           const submission = await Submission.findById(request.params._id).lean();
           console.log("Error creating pdf");
           return h.view("submission-admin", {
             title: "Submission Error",
             user: user,
             submission: submission,
-            //errors: [{ message: "Personal Picture required" }],
             errors: [{ message: err.message }],
           });
         }
@@ -180,12 +158,10 @@ const Pdfs = {
     handler: async function (request, h) {
       try {
         const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
-        //const deadline = await Deadline.deadline();
         const userId = await request.params._id;
         const user = await User.findById(userId).lean();
         const submissionId = await request.params._id;
         const submission = await Submission.findById(submissionId).lean();
-        //const submission = await Submission.findByUserId(user).lean();
         console.log(
           submission.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page"
         );
@@ -194,7 +170,6 @@ const Pdfs = {
           submission: submission,
           user: user,
           today: today,
-          //deadline: deadline,
         });
       } catch (err) {
         return h.view("login", { errors: [{ message: err.message }] });
@@ -215,9 +190,6 @@ const Pdfs = {
         abortEarly: false,
       },
       failAction: async function (request, h, error) {
-        const userId = await request.request.params._id;
-        const user = await User.findById(userId);
-        //const submission = await Submission.findByUserId(user).lean();
         const submission = await Submission.findById(request.params._id).lean();
         console.log("Admin has entered unacceptable data for submission");
         return h
@@ -254,15 +226,6 @@ const Pdfs = {
         }
 
         submission.submissionIncomplete = submissionEdit.submissionIncomplete;
-        /*if (submissionEdit.projectType === "Other") {
-          submission.projectType = sanitizeHtml(submissionEdit.projectType);
-          await submission.save();
-          console.log("Error updating Submission");
-          return h.redirect("/submission-form", {
-            title: "Specify Project Type",
-            submission: submission,
-          });
-        }*/
 
         console.log(
           "Admin has added the following Video URL to " +
@@ -274,12 +237,10 @@ const Pdfs = {
         );
         await submission.save();
         return h.view("submission-admin", {
-          //return h.redirect("/submission-admin", {
           title: "Video URL Error",
           user: user,
           submission: await Submission.findById(submissionId).lean(),
         });
-        //return h.redirect("/submission-admin");
       } catch (err) {
         const userId = await request.params._id;
         const user = await User.findById(userId).lean();
@@ -287,7 +248,6 @@ const Pdfs = {
         const submission = await Submission.findById(submissionId);
         console.log("Error updating Submission, so there is");
         return h.view("submission-admin", {
-          //return h.redirect("/submission-admin", {
           title: "Video URL Error",
           errors: [{ message: err.message }],
           user: user,
@@ -345,15 +305,10 @@ const Pdfs = {
     },
   },
 
-  ////////////////////////////////////////////////////////////////////////////
-
   createPdfAdmin: {
     auth: false,
     handler: async function (request, h) {
       const user = await User.findById(request.params._id).lean();
-      //const adminSubmission = await Submission.findByUserId(user).lean();
-
-      const users = await User.find().lean();
       const submissions = await Submission.find().lean();
       const projectTypes = await submissions.map((a) => a.projectType);
       const projectTypesUnique = [...new Set(projectTypes)];
@@ -362,18 +317,12 @@ const Pdfs = {
       const adminSubmission = await adminSubmissions[0];
 
       try {
-        //const backgroundImgData = await imageDataURI.encodeFromFile("public/images/background.png");
-        //const doc = new jsPDF("landscape");
         const doc = new jsPDF({ orientation: "landscape", compress: true, format: pageDimensions });
-        //const user = await User.findById(request.params._id).lean();
-        //const adminSubmission = await Submission.findByUserId(user).lean();
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
         const courseImgData = await imageDataURI.encodeFromURL(adminSubmission.courseImage);
         const adminImg1Data = await imageDataURI.encodeFromURL(adminSubmission.adminImage1);
         const adminImg2Data = await imageDataURI.encodeFromURL(adminSubmission.adminImage2);
         const adminImg3Data = await imageDataURI.encodeFromURL(adminSubmission.adminImage3);
-
-        //doc.text(adminSubmission.deadline, 70, 60);
         doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
         doc.setFontSize(pageDimensions[0] / 11);
         doc.text(adminSubmission.courseTitle, pageDimensions[0] / 40, pageDimensions[0] / 20, {
@@ -394,20 +343,16 @@ const Pdfs = {
           pageDimensions[0] / 7
         );
         doc.setFont(undefined, "normal");
-        ///////////////////////////////////////////////////////////////////////////
         const endOfPage = pageDimensions[1] / 1.1;
         let i = 0;
 
         //loops through all unique projectTypes so as to find each submission that used that type
         var countColumn1 = 0;
         var countColumn2 = 0;
-
         while (i < projectTypesUnique.length) {
           let j = 0;
-
           doc.setFontSize(pageDimensions[0] / 13);
 
-          // if list reaches the end of the page, in order to prevent spill over, it is moved to the next column in the page
           if (pageDimensions[0] / 7 + countColumn1 * 8 > endOfPage) {
             countColumn2 += 1.5;
             doc.setTextColor(0, 102, 204);
@@ -424,7 +369,7 @@ const Pdfs = {
             ) {
               doc.setFontSize(pageDimensions[0] / 15);
               // if list reaches the end of the page, in order to prevent spill over, it is moved to the next column in the page
-              //if (countColumn1 > 20) {
+
               if (pageDimensions[0] / 7 + countColumn1 * 8 > endOfPage) {
                 countColumn2++;
                 doc.setTextColor("black");
@@ -485,8 +430,6 @@ const Pdfs = {
           i++;
         }
 
-        //////////////////////////////////////////////////////////////////////////
-
         doc.addPage();
         doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
         doc.setFontSize(pageDimensions[0] / 11);
@@ -531,6 +474,7 @@ const Pdfs = {
         );
 
         doc.save("./public/handbooks/" + adminSubmission.handbookTitle + ".pdf");
+        const adminPdfNumPages = doc.internal.getNumberOfPages();
         console.log("New Handbook created with the following amount of pages: " + doc.internal.getNumberOfPages());
         return h.view("handbook-form", {
           title: "User's Submission",
@@ -551,8 +495,6 @@ const Pdfs = {
     },
   },
 
-  /////////////////////////////////////////////////////////////////////////
-
   createHandBook: {
     auth: false,
     handler: async function (request, h) {
@@ -567,10 +509,27 @@ const Pdfs = {
         const adminSubmission = await adminSubmissions[0];
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
         const endOfPage = pageDimensions[1] / 1.25;
-        const page = 1;
-        const pages = [1, 2, 3];
 
-        await merger.add("./public/handbooks/Project Showcase 2022.pdf", pages.slice(0, -1));
+        const fs = require("fs");
+        const pdf = require("pdf-parse");
+        let dataBuffer = fs.readFileSync("./public/handbooks/Project Showcase 2022.pdf");
+        const numPages = await pdf(dataBuffer).then(function (data) {
+          return data.numpages;
+        });
+
+        let arrayPages = [];
+        let l = numPages;
+        console.log("l = " + l);
+        while (l > 0) {
+          arrayPages.push(l);
+          l--;
+        }
+        arrayPages.reverse();
+
+        console.log("number of pages: " + numPages);
+        console.log("array of pages: " + arrayPages);
+
+        await merger.add("./public/handbooks/Project Showcase 2022.pdf", arrayPages.slice(0, -1));
         let i = 0;
 
         //loops through all unique projectTypes so as to create one page for each type
@@ -590,7 +549,6 @@ const Pdfs = {
           while (j < submissions.length) {
             if (!submissions[j].submissionIncomplete && submissions[j].projectType === projectTypesUnique[i]) {
               count++;
-              //doc.setFont(undefined, "bold");
               doc.text(
                 submissions[j].presentationTime + " " + submissions[j].firstName + " " + submissions[j].lastName,
                 pageDimensions[0] / 40,
@@ -603,7 +561,6 @@ const Pdfs = {
                 pageDimensions[0] / 15 + count * 8
               );
               count += 1.5;
-              //merger.add("./public/handbooks/" + submissions[j].firstName + submissions[j].lastName + ".pdf");
             }
 
             //add new page
@@ -633,7 +590,7 @@ const Pdfs = {
           i++;
         }
 
-        merger.add("./public/handbooks/Project Showcase 2022.pdf", pages.slice(-1));
+        merger.add("./public/handbooks/Project Showcase 2022.pdf", arrayPages.slice(-1));
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
         console.log("Number of users: " + users.length);
@@ -654,15 +611,7 @@ const Pdfs = {
     },
   },
 
-  /*deadline: async function () {
-    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
-    return deadline;
-  },*/
-
-  /////////////////////////////////////////////////////////////////////////////////////////
-
   adminSubmit: {
-    //auth: false,
     validate: {
       payload: {
         courseTitle: Joi.string().allow("").min(4),
@@ -681,16 +630,11 @@ const Pdfs = {
         abortEarly: false,
       },
       failAction: async function (request, h, error) {
-        const userId = await request.auth.credentials.id;
-        const user = await User.findById(userId);
-        //const submission = await Submission.findByUserId(user).lean();
-        const submission = await Submission.findById(request.params._id).lean();
         console.log("User has entered unacceptable data for admin submission");
         return h
           .view("handbook-form", {
             title: "Submission Error",
             errors: error.details,
-            //submission: submission,
           })
           .takeover()
           .code(400);
@@ -699,12 +643,7 @@ const Pdfs = {
 
     handler: async function (request, h) {
       try {
-        const userId = await request.auth.credentials.id;
-        const user = await User.findById(userId);
         const adminSubmissionEdit = request.payload;
-        //const adminSubmission = await AdminSubmission.findByUserId(user);
-        //let AdminSubmission();
-        //if adminSubmission = undefined
         const adminSubmissions = await AdminSubmission.find();
         var adminSubmission = null;
 
@@ -782,8 +721,6 @@ const Pdfs = {
         }
 
         if (adminSubmissionEdit.deadline !== "") {
-          //var deadlineFormat = sanitizeHtml(adminSubmissionEdit.deadline);
-          //adminSubmission.deadline = await Math.floor(new Date(deadlineFormat).getTime() / 1000);
           adminSubmission.deadline = sanitizeHtml(adminSubmissionEdit.deadline);
         }
 
@@ -851,8 +788,6 @@ const Pdfs = {
       parse: true,
     },
   },
-
-  /////////////////////////////////////////////////////////////////////////////////////////
 };
 
 module.exports = Pdfs;

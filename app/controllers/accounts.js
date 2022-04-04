@@ -9,11 +9,6 @@ const { jsPDF } = require("jspdf");
 const Admin = require("../models/admin");
 
 const Accounts = {
-  /*deadline: async function () {
-    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
-    return deadline;
-  },*/
-
   index: {
     auth: false,
     handler: function (request, h) {

@@ -177,13 +177,7 @@
             <label style="color: black; font-size:120%">Personal Digital Photograph</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: camera"></span>
-                <input class="uk-input uk-form-small" type="file" name="personalPhoto" accept="image/png, image/jpeg"
-                    {{#if submission.personalPhoto}}
-                       placeholder="{{submission.personalPhoto}}"
-                    {{/if}}
-                    {{#unless submission.personalPhoto}}
-                       placeholder="Personal Digital Photograph"
-                    {{/unless}}/>
+                <input class="uk-input uk-form-small" type="file" name="personalPhoto" accept="image/png, image/jpeg"/>
             </div>
         </div>
 
@@ -191,13 +185,7 @@
             <label style="color: black; font-size:120%">Project Image</label>
             <div class="uk-inline uk-width-1-1">
                 <span class="uk-form-icon" uk-icon="icon: image"></span>
-                <input class="uk-input uk-form-small" type="file" name="projectImage" accept="image/png, image/jpeg"
-                    {{#if submission.projectImage}}
-                       placeholder="{{submission.projectImage}}"
-                    {{/if}}
-                    {{#unless submission.projectImage}}
-                       placeholder="Project Image"
-                    {{/unless}}/>
+                <input class="uk-input uk-form-small" type="file" name="projectImage" accept="image/png, image/jpeg"/>
             </div>
         </div>
 
