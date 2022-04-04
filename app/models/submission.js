@@ -2,7 +2,6 @@
 const Mongoose = require("mongoose");
 const Schema = Mongoose.Schema;
 const submissionSchema = new Schema({
-  //name: String,
   firstName: String,
   lastName: String,
   projectTitle: String,
@@ -17,6 +16,10 @@ const submissionSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  nda: Boolean,
+  projectTypeOther: Boolean,
+  presentationTime: String,
+  submissionIncomplete: Boolean,
 });
 
 //My own custom built method:

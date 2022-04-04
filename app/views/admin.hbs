@@ -1,0 +1,78 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> admin-menu title="Uathcruthú" subTitle="Showcase Selection" }}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+        </div>
+    </div>
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center uk-grid">
+        <div class="uk-width-expand@m">
+            <div class="uk-grid">
+                <div class="uk-width-1-2 uk-grid-margin">
+                    <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                        <table style="color: black" class="uk-table">
+                            <div style="color: black" class="uk-text-left"><strong>List of Students</strong></div>
+                            <thead>
+                            <th style="color: black"><strong>Student</strong></th>
+                            <th style="color: black"><strong>Submission Page</strong></th>
+                            </thead>
+                            <tbody class="uk-text-left">
+                            {{#each submissions}}
+                                <tr>
+                                    <td>
+                                        <div class="uk-width-1-2 uk-grid-margin">
+                                            <a href="./handbooks/{{firstName}}{{lastName}}.pdf" target=”_blank” class="uk-card uk-card-small uk-text-center uk-padding-remove">
+                                                <div style="color: black" class="uk-text-left">{{firstName}} {{lastName}}</div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="uk-margin">
+                                            <a href="/submission-admin/{{_id}}">
+                                                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary">Submission Page</button>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="uk-margin">
+                <a href="/create-handbook">
+                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-2">Create Handbook</button>
+                </a>
+            </div>
+
+            <div class="uk-margin">
+                <a href="./handbooks/handbook.pdf" target=”_blank”>
+                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-2">Review Handbook</button>
+                </a>
+            </div>
+
+            <div class="uk-margin">
+                <a href="/other-form">
+                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-2">Other Form</button>
+                </a>
+            </div>
+
+            <div class="uk-margin">
+                <a href="/handbook-form">
+                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-2">Misc Pages</button>
+                </a>
+            </div>
+
+            {{> error }}
+        </div>
+    </div>
+</div>

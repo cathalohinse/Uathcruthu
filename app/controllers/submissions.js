@@ -1,5 +1,6 @@
 "use strict";
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const User = require("../models/user");
 const ImageStore = require("../utils/image-store");
 const Joi = require("@hapi/joi");
@@ -13,16 +14,21 @@ const Submissions = {
     },
   },
 
-  report: {
+  showSubmission: {
     handler: async function (request, h) {
+      const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
       const userId = await request.auth.credentials.id;
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
-      console.log(user.firstName + " has submitted " + submission.projectTitle);
-      console.log("Submission: " + submission);
-      return h.view("report", {
-        title: "User's Submission",
+      console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
+      return h.view("submission-user", {
+        title: user.firstName + "'s Submission",
         submission: submission,
+        user: user,
+        today: today,
+        deadline: adminSubmission.deadline,
       });
     },
   },
@@ -35,9 +41,12 @@ const Submissions = {
         projectType: Joi.string().allow(""),
         personalPhoto: Joi.any().allow(""),
         projectImage: Joi.any().allow(""),
-        summary: Joi.string().allow("").max(100),
+        summary: Joi.string()
+          .allow("")
+          .regex(/^\s*(\S+\s+|\S+$){0,100}$/i), //100 words max
         projectUrl: Joi.string().allow(""),
-        videoUrl: Joi.string().allow(""),
+        nda: Joi.boolean(),
+        projectTypeOther: Joi.boolean(),
       },
       options: {
         abortEarly: false,
@@ -48,8 +57,8 @@ const Submissions = {
         const submission = await Submission.findByUserId(user).lean();
         console.log(user.firstName + " has entered unacceptable data for submission");
         return h
-          .view("submit", {
-            title: "Submission error",
+          .view("submission-form", {
+            title: "Submission Error",
             errors: error.details,
             submission: submission,
           })
@@ -60,54 +69,82 @@ const Submissions = {
 
     handler: async function (request, h) {
       try {
-        const submissionEdit = await request.payload;
         const userId = await request.auth.credentials.id;
         const user = await User.findById(userId);
+        const submissionEdit = request.payload;
         const submission = await Submission.findByUserId(user);
-        //const result = await ImageStore.uploadImage(submissionEdit.personalPhoto);
-        //const imageUrl = result.url;
-        console.log("Submission (submit): " + submission);
-        if (submissionEdit.projectTitle !== "") {
+
+        submission.nda = submissionEdit.nda;
+
+        if (submission.nda) {
+          submission.projectTitle = await "NDA";
+        } else if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
         if (submissionEdit.descriptiveTitle !== "") {
           submission.descriptiveTitle = sanitizeHtml(submissionEdit.descriptiveTitle);
         }
-        if (submissionEdit.projectType !== "") {
-          submission.projectType = sanitizeHtml(submissionEdit.projectType);
+        if (submission.nda) {
+          submission.projectType = await "NDA";
+        } else if (submissionEdit.projectType !== "") {
+          submission.projectType = await sanitizeHtml(submissionEdit.projectType);
         }
-        if (submissionEdit.personalPhoto !== "") {
-          submission.personalPhoto = sanitizeHtml(submissionEdit.personalPhoto);
-          //submission.personalPhoto = imageUrl;
+
+        if (submissionEdit.personalPhoto.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          //so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (submission.personalPhoto !== undefined) {
+            const personalPhotoFileName = await submission.personalPhoto.substr(
+              submission.personalPhoto.lastIndexOf("/") + 1
+            );
+            const personalPhotoPublic_id = await personalPhotoFileName.substr(0, personalPhotoFileName.indexOf("."));
+            await ImageStore.deleteImage(personalPhotoPublic_id);
+          }
+          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto); //consider re-ordering images to maintain consistency
+          const personalPhotoUrl = await personalPhotoResult.url;
+          submission.personalPhoto = await personalPhotoUrl;
         }
-        if (submissionEdit.projectImage !== "") {
-          submission.projectImage = sanitizeHtml(submissionEdit.projectImage);
+
+        if (submissionEdit.projectImage.length !== undefined) {
+          //Extracting the public_id from the previously submitted image url,
+          // so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          if (submission.projectImage !== undefined) {
+            const projectImageFileName = await submission.projectImage.substr(
+              submission.projectImage.lastIndexOf("/") + 1
+            );
+            const projectImagePublic_id = await projectImageFileName.substr(0, projectImageFileName.indexOf("."));
+            await ImageStore.deleteImage(projectImagePublic_id);
+          }
+          const projectImageResult = await ImageStore.uploadImage(submissionEdit.projectImage);
+          const projectImageUrl = projectImageResult.url;
+          submission.projectImage = projectImageUrl;
         }
+
         if (submissionEdit.summary !== "") {
           submission.summary = sanitizeHtml(submissionEdit.summary);
         }
         if (submissionEdit.projectUrl !== "") {
           submission.projectUrl = sanitizeHtml(submissionEdit.projectUrl);
         }
-        if (submissionEdit.videoUrl !== "") {
-          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
-        }
+
+        submission.projectTypeOther = submissionEdit.projectTypeOther;
+
         await submission.save();
-        console.log(user.firstName + " has updated " + submissionEdit.projectTitle);
-        return h.redirect("/report");
+        return h.redirect("/submission-user");
       } catch (err) {
         console.log("Error updating Submission");
-        return h.view("submit", { errors: [{ message: err.message }] });
+        return h.view("submission-form", {
+          title: "Submission Error",
+          errors: [{ message: err.message }],
+        });
       }
     },
-  },
-
-  payload: {
-    multipart: true,
-    //output: "data",
-    output: "data",
-    maxBytes: 209715200,
-    parse: true,
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
+    },
   },
 };
 

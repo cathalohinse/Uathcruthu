@@ -2,39 +2,58 @@
 const User = require("../models/user");
 const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
+const { jsPDF } = require("jspdf");
+const Admin = require("../models/admin");
 
 const Accounts = {
   index: {
     auth: false,
     handler: function (request, h) {
       console.log("Welcome to Uathcruthú");
+      const date = new Date();
+      const week_day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const month_name = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      console.log(
+        week_day[date.getDay()] + " " + month_name[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear()
+      );
       return h.view("main", { title: "ITPL Tionscadal Cuir Isteach" });
     },
   },
 
-  showSubmit: {
+  showSubmissionForm: {
     handler: async function (request, h) {
+      const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
-      console.log(submission.firstName + " " + submission.lastName + " has navigated to the submit screen");
-      return h.view("submit", { title: "Project Submission", submission: submission });
+      const projectTypes = ["Native Mobile Application", "Web Application", "Combined Web and Mobile", "Other"];
+      console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
+      return h.view("submission-form", {
+        title: "Project Submission",
+        submission: submission,
+        today: today,
+        deadline: await adminSubmission.deadline,
+        deadlineCutOff: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
+        projectTypes: projectTypes,
+      });
     },
   },
 
   showSignup: {
     auth: false,
     handler: function (request, h) {
-      console.log("User has navigated to the sign-up screen");
+      console.log("User has navigated to the Sign-Up page");
       return h.view("signup", { title: "Signup for Submissions", subtitle: "This is the Signup Subtitle" });
     },
   },
 
   signup: {
     auth: false,
-
     validate: {
       payload: {
         firstName: Joi.string()
@@ -76,23 +95,20 @@ const Accounts = {
           email: sanitizeHtml(payload.email),
           password: sanitizeHtml(payload.password),
         });
+        user = await newUser.save();
 
         const newSubmission = new Submission({
           firstName: newUser.firstName,
           lastName: newUser.lastName,
-          projectTitle: "",
-          descriptiveTitle: "",
-          projectType: "",
-          personalPhoto: "",
-          projectImage: "",
-          summary: "",
-          projectUrl: "",
-          videoUrl: "",
           submitter: newUser,
+          submissionIncomplete: true,
         });
         await newSubmission.save();
 
-        user = await newUser.save();
+        const doc = await new jsPDF("landscape");
+        doc.text(newUser.firstName + " has not created their Handbook yet.", 20, 20);
+        doc.save("./public/handbooks/" + newUser.firstName + newUser.lastName + ".pdf");
+
         request.cookieAuth.set({ id: user.id });
         console.log(newUser.firstName + " " + newUser.lastName + " has registered");
         return h.redirect("/login");
@@ -101,13 +117,20 @@ const Accounts = {
         return h.view("signup", { errors: [{ message: err.message }] });
       }
     },
+
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
+    },
   },
 
   showLogin: {
     auth: false,
     handler: function (request, h) {
-      console.log("User has navigated to the login screen");
-      return h.view("login", { title: "Login to Submissions", subtitle: "This is the subtitle" });
+      console.log("User has navigated to the Login page");
+      return h.view("login", { title: "Login", subtitle: "This is the subtitle" });
     },
   },
 
@@ -126,7 +149,7 @@ const Accounts = {
         console.log("User has entered unacceptable data for logging in");
         return h
           .view("login", {
-            title: "Log in Error",
+            title: "Login Error",
             errors: error.details,
           })
           .takeover()
@@ -138,17 +161,39 @@ const Accounts = {
       const { email, password } = request.payload;
       try {
         let user = await User.findByEmail(email);
-        if (!user) {
+        let admin = await Admin.findByEmail(email);
+        if (!user && !admin) {
           const message = "Email address is not registered";
           throw Boom.unauthorized(message);
+        } else if (user) {
+          user.comparePassword(password);
+          request.cookieAuth.set({ id: user.id });
+          console.log(user.firstName + " " + user.lastName + " has logged in");
+          return h.redirect("/submission-form");
+        } else {
+          admin.comparePassword(password);
+          request.cookieAuth.set({ id: admin.id });
+          console.log(admin.firstName + " " + admin.lastName + " has logged in");
+          return h.redirect("/admin");
         }
-        user.comparePassword(password);
-        request.cookieAuth.set({ id: user.id });
-        console.log(user.firstName + " " + user.lastName + " has logged in");
-        return h.redirect("/submit");
       } catch (err) {
         console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });
+      }
+    },
+  },
+
+  showAdminHome: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
+        console.log("User has navigated to the Admin Home page");
+        return h.view("admin", { title: "Admin", users: users, submissions: submissions });
+      } catch (err) {
+        console.log("Error loading Showcase page");
+        return h.view("main", { errors: [{ message: err.message }] });
       }
     },
   },
