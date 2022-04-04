@@ -1,5 +1,14 @@
 <form action="/update-submission/{{submission._id}}" method="POST" enctype="multipart/form-data">
 <div class="uk-grid">
+
+    {{#if submission.nda}}
+        <div class="uk-width-2-2 uk-grid-margin-small" id="nda">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-middle"><strong>Non Disclosure Agreement</strong></div>
+            </div>
+        </div>
+    {{/if}}
+
     <div class="uk-width-1-2 uk-grid-margin">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
             <div style="color: black" class="uk-text-left"><strong>Student Name:</strong></div>
@@ -7,44 +16,50 @@
         </div>
     </div>
 
+    {{#unless submission.nda}}
     <div class="uk-width-1-2 uk-grid-margin">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
             <div style="color: black" class="uk-text-left"><strong>Project Title:</strong></div>
             <div style="color: black" class="uk-text-left">{{submission.projectTitle}}</div>
         </div>
     </div>
+    {{/unless}}
 
+    {{#unless submission.nda}}
     <div class="uk-width-1-2 uk-grid-margin-small">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
             <div style="color: black" class="uk-text-left"><strong>Descriptive Title:</strong></div>
             <div style="color: black" class="uk-text-left">{{submission.descriptiveTitle}}</div>
         </div>
     </div>
+    {{/unless}}
 
-    {{#if submission.projectTypeOther}}
-        <div class="uk-width-1-2 uk-grid-margin-small">
-            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-                <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
-                <div class="uk-inline uk-width-1-1">
-                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
-                    <input class="uk-input uk-form-small" id="projectType" type="text" name="projectType"
-                        {{#if submission.projectType}}
-                           placeholder="{{submission.projectType}}"
-                        {{/if}}
-                        {{#unless submission.projectType}}
-                           placeholder="Project Type"
-                        {{/unless}}/>
+    {{#unless submission.nda}}
+        {{#if submission.projectTypeOther}}
+            <div class="uk-width-1-2 uk-grid-margin-small">
+                <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                    <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
+                    <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                        <input class="uk-input uk-form-small" id="projectType" type="text" name="projectType"
+                            {{#if submission.projectType}}
+                               placeholder="{{submission.projectType}}"
+                            {{/if}}
+                            {{#unless submission.projectType}}
+                               placeholder="Project Type"
+                            {{/unless}}/>
+                    </div>
                 </div>
             </div>
-        </div>
-    {{else}}
-        <div class="uk-width-1-2 uk-grid-margin-small">
-            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-                <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
+        {{else}}
+            <div class="uk-width-1-2 uk-grid-margin-small">
+                <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                    <div style="color: black" class="uk-text-left"><strong>Project Type:</strong></div>
                 <div style="color: black" class="uk-text-left">{{submission.projectType}}</div>
             </div>
         </div>
-    {{/if}}
+        {{/if}}
+    {{/unless}}
 
     <div class="uk-width-1-2 uk-grid-margin-small">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
@@ -53,42 +68,86 @@
         </div>
     </div>
 
-    <div class="uk-width-1-2 uk-grid-margin-small">
-        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-            <div style="color: black" class="uk-text-left"><strong>Project Image:</strong></div>
-            <div style="color: black" class="uk-text-left"><img src="{{submission.projectImage}}" alt="Project Image"></div>
+    {{#unless submission.nda}}
+        <div class="uk-width-1-2 uk-grid-margin-small">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-left"><strong>Project Image:</strong></div>
+                <div style="color: black" class="uk-text-left"><img src="{{submission.projectImage}}" alt="Project Image"></div>
+            </div>
         </div>
-    </div>
+    {{/unless}}
+
+    {{#unless submission.nda}}
+        <div class="uk-width-1-1 uk-grid-margin-small">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-left"><strong>Summary (≤100 words):</strong></div>
+                <div style="color: black" class="uk-text-left">{{submission.summary}}</div>
+            </div>
+        </div>
+    {{/unless}}
+
+    {{#unless submission.nda}}
+        <div class="uk-width-1-2 uk-grid-margin-small">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-left"><strong>Project Landing Page URL:</strong></div>
+                <div style="color: black" class="uk-text-left"><a href={{submission.projectUrl}} target=”_blank”>{{submission.projectUrl}}</a></div>
+            </div>
+        </div>
+    {{/unless}}
+
+    {{#unless submission.nda}}
+        <div class="uk-width-1-2 uk-grid-margin-small">
+            <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
+                <div style="color: black" class="uk-text-left"><strong>Demonstration Video URL:</strong></div>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: youtube"></span>
+                    <input class="uk-input uk-form-small" type="url" name="videoUrl"
+                        {{#if submission.videoUrl}}
+                           placeholder="{{submission.videoUrl}}"
+                        {{/if}}
+                        {{#unless submission.videoUrl}}
+                           placeholder="Demonstration Video URL"
+                        {{/unless}}/>
+                </div>
+            </div>
+        </div>
+    {{/unless}}
 
     <div class="uk-width-1-1 uk-grid-margin-small">
         <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-            <div style="color: black" class="uk-text-left"><strong>Summary (≤100 words):</strong></div>
-            <div style="color: black" class="uk-text-left">{{submission.summary}}</div>
-        </div>
-    </div>
-
-    <div class="uk-width-1-2 uk-grid-margin-small">
-        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-            <div style="color: black" class="uk-text-left"><strong>Project Landing Page URL:</strong></div>
-            <div style="color: black" class="uk-text-left"><a href={{submission.projectUrl}} target=”_blank”>{{submission.projectUrl}}</a></div>
-        </div>
-    </div>
-
-    <div class="uk-width-1-2 uk-grid-margin-small">
-        <div style="background-color: #877EB4" class="uk-margin uk-margin-auto uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large">
-            <div style="color: black" class="uk-text-left"><strong>Demonstration Video URL:</strong></div>
+            <div style="color: black" class="uk-text-left"><strong>Presentation Schedule:</strong></div>
             <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon" uk-icon="icon: youtube"></span>
-            <input class="uk-input uk-form-small" type="url" name="videoUrl"
-                {{#if submission.videoUrl}}
-                   placeholder="{{submission.videoUrl}}"
-                {{/if}}
-                {{#unless submission.videoUrl}}
-                   placeholder="Demonstration Video URL"
-                {{/unless}}/>
+                <span class="uk-form-icon" uk-icon="icon: clock"></span>
+                <input class="uk-input uk-form-small" type="text" name="presentationTime"
+                    {{#if submission.presentationTime}}
+                       placeholder="{{submission.presentationTime}}"
+                    {{/if}}
+                    {{#unless submission.presentationTime}}
+                       placeholder="Presentation Schedule"
+                    {{/unless}}/>
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        function submissionCompletion(){
+            if("{{submission.nda}}" && "{{submission.personalPhoto}}" ||
+                    "{{submission.projectTitle}}" && "{{submission.descriptiveTitle}}" &&
+                    "{{submission.projectType}}" && "{{submission.personalPhoto}}" &&
+                    "{{submission.projectImage}}" && "{{submission.summary}}" &&
+                    "{{submission.projectUrl}}" && "{{submission.videoUrl}}" &&
+                    "{{submission.presentationTime}}"){
+                document.getElementById("submissionIncomplete").checked = false;
+            }else{
+                document.getElementById("submissionIncomplete").checked = true;
+            }
+        }
+    </script>
+
+    <label for="submissionIncomplete" style="color: black">
+        <input class="uk-checkbox" type="checkbox" id="submissionIncomplete" name="submissionIncompleter" value="true" hidden>
+    </label>
+
 
 </div>
 
