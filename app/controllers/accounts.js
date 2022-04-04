@@ -105,6 +105,7 @@ const Accounts = {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           submitter: newUser,
+          submissionIncomplete: true,
         });
         await newSubmission.save();
 
@@ -184,8 +185,9 @@ const Accounts = {
     handler: async function (request, h) {
       try {
         const users = await User.find().lean();
+        const submissions = await Submission.find().lean();
         console.log("User has navigated to the Admin Home page");
-        return h.view("admin", { title: "Admin", users: users });
+        return h.view("admin", { title: "Admin", users: users, submissions: submissions });
       } catch (err) {
         console.log("Error loading Showcase page");
         return h.view("main", { errors: [{ message: err.message }] });
