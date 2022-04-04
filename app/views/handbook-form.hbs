@@ -1,0 +1,204 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> admin-menu title="Uathcruthú" subTitle="Submit Project Showcase Data"}}
+</div>
+
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center"snip>
+        <div class="uk-width-expand@m">
+            <h1 class="uk-heading-small">Tionscadal Uathcruthú</h1>
+        </div>
+    </div>
+</div>
+
+
+    <div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+        <h3 style="color: black" class="uk-card-title uk-text-center">Fill in fields for Handbook Creation</h3>
+        <form name="submission-form" action="/admin-submit" method="POST" enctype="multipart/form-data">
+
+
+            <div class="uk-margin" id="courseTitle">
+                <label style="color: black; font-size:120%" id="courseTitleLabel">Course Title:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input uk-form-small" id="courseTitle" type="text" name="courseTitle"
+                        {{#if adminSubmission.courseTitle}}
+                           placeholder="{{adminSubmission.courseTitle}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseTitle}}
+                           placeholder="Course Title"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin" id="handbookTitle">
+                <label style="color: black; font-size:120%">Handbook Title:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input uk-form-small" type="text" name="handbookTitle"
+                        {{#if adminSubmission.handbookTitle}}
+                           placeholder="{{adminSubmission.handbookTitle}}"
+                        {{/if}}
+                        {{#unless adminSubmission.handbookTitle}}
+                           placeholder="Handbook Title"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Course Image:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="courseImage" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.courseImage}}
+                           placeholder="{{adminSubmission.courseImage}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseImage}}
+                           placeholder="Course Image"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Background Image:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="backgroundImage" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.backgroundImage}}
+                           placeholder="{{adminSubmission.backgroundImage}}"
+                        {{/if}}
+                        {{#unless adminSubmission.backgroundImage}}
+                           placeholder="Background Image"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Student Background Image:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="studentBackgroundImage" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.studentBackgroundImage}}
+                           placeholder="{{adminSubmission.studentBackgroundImage}}"
+                        {{/if}}
+                        {{#unless adminSubmission.studentBackgroundImage}}
+                           placeholder="Background Image"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin" id="courseTitleLong">
+                <label style="color: black; font-size:120%">Course Title (Long):</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: pencil"></span>
+                    <input class="uk-input uk-form-small" type="text" name="courseTitleLong"
+                        {{#if adminSubmission.courseTitleLong}}
+                           placeholder="{{adminSubmission.courseTitleLong}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseTitleLong}}
+                           placeholder="Course Title (Long)"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin" id="courseUrl">
+                <label style="color: black; font-size:120%">Course URL:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: link"></span>
+                    <input class="uk-input uk-form-small" type="text" name="courseUrl"
+                        {{#if adminSubmission.courseUrl}}
+                           placeholder="{{adminSubmission.courseUrl}}"
+                        {{/if}}
+                        {{#unless adminSubmission.courseUrl}}
+                           placeholder="Course URL"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="dropdown" id="deadline">
+                <label style="color: black; font-size:120%">Deadline:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: calendar"></span>
+                    <input class="uk-input uk-form-small" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')" name="deadline"
+                        {{#if adminSubmission.deadline}}
+                           placeholder="{{adminSubmission.deadline}}"
+                        {{/if}}
+                        {{#unless adminSubmission.deadline}}
+                           placeholder="Deadline"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Admin Image 1:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="adminImage1" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.adminImage1}}
+                           placeholder="{{adminSubmission.adminImage1}}"
+                        {{/if}}
+                        {{#unless adminSubmission.adminImage1}}
+                           placeholder="Admin Image 1"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Admin Image 2:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="adminImage2" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.adminImage2}}
+                           placeholder="{{adminSubmission.adminImage2}}"
+                        {{/if}}
+                        {{#unless adminSubmission.adminImage2}}
+                           placeholder="Admin Image 2"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label style="color: black; font-size:120%">Admin Image 3:</label>
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: image"></span>
+                    <input class="uk-input uk-form-small" type="file" name="adminImage3" accept="image/png, image/jpeg"
+                        {{#if adminSubmission.adminImage3}}
+                           placeholder="{{adminSubmission.adminImage3}}"
+                        {{/if}}
+                        {{#unless adminSubmission.adminImage3}}
+                           placeholder="Admin Image 3"
+                        {{/unless}}/>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Submit</button>
+            </div>
+
+        </form>
+        {{> error }}
+
+        <div class="uk-margin">
+            <div style="background-color: #877EB4" class="uk-margin-auto uk-card uk-card-default uk-card-small">
+                <input style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1"
+                       type="button" onclick="location.href='/create-pdf-admin';" value="Create PDF"/>
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div style="background-color: #877EB4" class="uk-margin-auto uk-card uk-card-default uk-card-small">
+                <a href="./handbooks/{{adminSubmission.handbookTitle}}.pdf" target=”_blank”>
+                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1">Review PDF</button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+
+
+<div style="background-color: #877EB4" class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+    <div class="uk-margin">
+        <input style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-large uk-width-1-1"
+                   type="button" onclick="location.href='/create-pdf-admin';" value="Create PDF"/>
+    </div>
+</div>

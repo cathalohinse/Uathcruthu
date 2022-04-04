@@ -2,15 +2,17 @@
 const User = require("../models/user");
 const Boom = require("@hapi/boom");
 const Submission = require("../models/submission");
+const AdminSubmission = require("../models/adminSubmission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const { jsPDF } = require("jspdf");
+const Admin = require("../models/admin");
 
 const Accounts = {
-  deadline: async function () {
+  /*deadline: async function () {
     const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
     return deadline;
-  },
+  },*/
 
   index: {
     auth: false,
@@ -26,18 +28,23 @@ const Accounts = {
     },
   },
 
-  showSubmit: {
+  showSubmissionForm: {
     handler: async function (request, h) {
       const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId);
       const submission = await Submission.findByUserId(user).lean();
+      const projectTypes = ["Native Mobile Application", "Web Application", "Combined Web and Mobile", "Other"];
       console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
-      return h.view("submit", {
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
+      return h.view("submission-form", {
         title: "Project Submission",
         submission: submission,
         today: today,
-        deadline: await Accounts.deadline(),
+        deadline: await adminSubmission.deadline,
+        deadlineCutOff: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
+        projectTypes: projectTypes,
       });
     },
   },
@@ -99,6 +106,7 @@ const Accounts = {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           submitter: newUser,
+          submissionIncomplete: true,
         });
         await newSubmission.save();
 
@@ -158,14 +166,21 @@ const Accounts = {
       const { email, password } = request.payload;
       try {
         let user = await User.findByEmail(email);
-        if (!user) {
+        let admin = await Admin.findByEmail(email);
+        if (!user && !admin) {
           const message = "Email address is not registered";
           throw Boom.unauthorized(message);
+        } else if (user) {
+          user.comparePassword(password);
+          request.cookieAuth.set({ id: user.id });
+          console.log(user.firstName + " " + user.lastName + " has logged in");
+          return h.redirect("/submission-form");
+        } else {
+          admin.comparePassword(password);
+          request.cookieAuth.set({ id: admin.id });
+          console.log(admin.firstName + " " + admin.lastName + " has logged in");
+          return h.redirect("/admin");
         }
-        user.comparePassword(password);
-        request.cookieAuth.set({ id: user.id });
-        console.log(user.firstName + " " + user.lastName + " has logged in");
-        return h.redirect("/submit");
       } catch (err) {
         console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });
@@ -173,13 +188,14 @@ const Accounts = {
     },
   },
 
-  showcase: {
+  showAdminHome: {
     auth: false,
     handler: async function (request, h) {
       try {
         const users = await User.find().lean();
-        console.log("User has navigated to the Showcase page");
-        return h.view("showcase", { title: "Showcases", users: users });
+        const submissions = await Submission.find().lean();
+        console.log("User has navigated to the Admin Home page");
+        return h.view("admin", { title: "Admin", users: users, submissions: submissions });
       } catch (err) {
         console.log("Error loading Showcase page");
         return h.view("main", { errors: [{ message: err.message }] });

@@ -1,0 +1,11 @@
+{
+  "admin": {
+    "_model": "Admin",
+    "colm": {
+      "firstName": "Colm",
+      "lastName": "Dunphy",
+      "email": "colm@gmail.com",
+      "password": "q"
+    }
+  }
+}

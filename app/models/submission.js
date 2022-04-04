@@ -17,6 +17,9 @@ const submissionSchema = new Schema({
     ref: "User",
   },
   nda: Boolean,
+  projectTypeOther: Boolean,
+  presentationTime: String,
+  submissionIncomplete: Boolean,
 });
 
 //My own custom built method:

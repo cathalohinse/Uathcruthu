@@ -32,7 +32,9 @@
     "image-data-uri": "^2.0.1",
     "jspdf": "^2.5.1",
     "just-handlebars-helpers": "^1.0.19",
+    "mais-mongoose-seeder": "^1.0.7",
     "mongoose": "^6.2.2",
+    "pdf-merger-js": "^3.4.0",
     "sanitize-html": "^2.7.0"
   },
   "devDependencies": {
