@@ -5,14 +5,12 @@ const Submission = require("../models/submission");
 const AdminSubmission = require("../models/adminSubmission");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 const { jsPDF } = require("jspdf");
+const Admin = require("../models/admin");
 
 const Accounts = {
-  /*deadline: async function () {
-    const deadline = await Math.floor(new Date("2022.04.10").getTime() / 1000);
-    return deadline;
-  },*/
-
   index: {
     auth: false,
     handler: function (request, h) {
@@ -93,11 +91,13 @@ const Accounts = {
           const message = "Email address is already registered";
           throw Boom.badData(message);
         }
+        const hash = await bcrypt.hash(payload.password, saltRounds);
+
         const newUser = new User({
           firstName: sanitizeHtml(payload.firstName),
           lastName: sanitizeHtml(payload.lastName),
           email: sanitizeHtml(payload.email),
-          password: sanitizeHtml(payload.password),
+          password: sanitizeHtml(hash),
         });
         user = await newUser.save();
 
@@ -165,14 +165,21 @@ const Accounts = {
       const { email, password } = request.payload;
       try {
         let user = await User.findByEmail(email);
-        if (!user) {
+        let admin = await Admin.findByEmail(email);
+        if (!user && !admin) {
           const message = "Email address is not registered";
           throw Boom.unauthorized(message);
+        } else if (user) {
+          user.comparePassword(password);
+          request.cookieAuth.set({ id: user.id });
+          console.log(user.firstName + " " + user.lastName + " has logged in");
+          return h.redirect("/submission-form");
+        } else {
+          admin.comparePassword(password);
+          request.cookieAuth.set({ id: admin.id });
+          console.log(admin.firstName + " " + admin.lastName + " has logged in");
+          return h.redirect("/admin");
         }
-        user.comparePassword(password);
-        request.cookieAuth.set({ id: user.id });
-        console.log(user.firstName + " " + user.lastName + " has logged in");
-        return h.redirect("/submission-form");
       } catch (err) {
         console.log("Error logging in");
         return h.view("login", { errors: [{ message: err.message }] });

@@ -5,7 +5,6 @@ const User = require("../models/user");
 const ImageStore = require("../utils/image-store");
 const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
-//const Deadline = require("../controllers/accounts");
 
 const Submissions = {
   home: {
@@ -29,7 +28,6 @@ const Submissions = {
         submission: submission,
         user: user,
         today: today,
-        //deadline: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
         deadline: adminSubmission.deadline,
       });
     },
@@ -47,7 +45,6 @@ const Submissions = {
           .allow("")
           .regex(/^\s*(\S+\s+|\S+$){0,100}$/i), //100 words max
         projectUrl: Joi.string().allow(""),
-        //videoUrl: Joi.string().allow(""),
         nda: Joi.boolean(),
         projectTypeOther: Joi.boolean(),
       },
@@ -87,10 +84,6 @@ const Submissions = {
         if (submissionEdit.descriptiveTitle !== "") {
           submission.descriptiveTitle = sanitizeHtml(submissionEdit.descriptiveTitle);
         }
-        /*if (submissionEdit.projectType !== "") {
-          submission.projectType = sanitizeHtml(submissionEdit.projectType);
-        }*/
-
         if (submission.nda) {
           submission.projectType = await "NDA";
         } else if (submissionEdit.projectType !== "") {
@@ -113,7 +106,8 @@ const Submissions = {
         }
 
         if (submissionEdit.projectImage.length !== undefined) {
-          //Extracting the public_id from the previously submitted image url, so that I can delete the previously submitted image and not clog up cloudinary with excessive images
+          //Extracting the public_id from the previously submitted image url,
+          // so that I can delete the previously submitted image and not clog up cloudinary with excessive images
           if (submission.projectImage !== undefined) {
             const projectImageFileName = await submission.projectImage.substr(
               submission.projectImage.lastIndexOf("/") + 1
@@ -132,25 +126,9 @@ const Submissions = {
         if (submissionEdit.projectUrl !== "") {
           submission.projectUrl = sanitizeHtml(submissionEdit.projectUrl);
         }
-        /*if (submissionEdit.videoUrl !== "") {
-          submission.videoUrl = sanitizeHtml(submissionEdit.videoUrl);
-        }*/
-
-        /*if (submissionEdit.projectType === "Other") {
-          submission.projectTypeOther = true;
-          console.log("Other: " + submission.projectTypeOther);
-          submission.projectType = sanitizeHtml(submissionEdit.projectType);
-          await submission.save();
-          console.log("If Project Type is 'Other', please specify");
-          return h.redirect("/submission-form", {
-            title: "Specify Project Type",
-            submission: submission,
-          });
-        }*/
 
         submission.projectTypeOther = submissionEdit.projectTypeOther;
 
-        //console.log(user.firstName + " has created/updated the following Submission: " + submission);
         await submission.save();
         return h.redirect("/submission-user");
       } catch (err) {
