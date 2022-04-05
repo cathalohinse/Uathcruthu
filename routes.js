@@ -2,7 +2,7 @@
 
 const Accounts = require("./app/controllers/accounts");
 const Submissions = require("./app/controllers/submissions");
-const Pdfs = require("./app/controllers/pdfs");
+const Admins = require("./app/controllers/admins");
 
 module.exports = [
   { method: "GET", path: "/", config: Accounts.index },
@@ -15,14 +15,14 @@ module.exports = [
   { method: "GET", path: "/signup", config: Accounts.showSignup },
   { method: "POST", path: "/signup", config: Accounts.signup },
   { method: "GET", path: "/logout", config: Accounts.logout },
-  { method: "GET", path: "/create-pdf-user/{_id}", config: Pdfs.createPdfUser },
-  { method: "GET", path: "/create-handbook", config: Pdfs.createHandBook },
-  { method: "GET", path: "/submission-admin/{_id}", config: Pdfs.showSubmissionAdmin },
-  { method: "POST", path: "/update-submission/{_id}", config: Pdfs.submitByAdmin },
-  { method: "GET", path: "/other-form", config: Pdfs.showOther },
-  { method: "GET", path: "/handbook-form", config: Pdfs.showHandbookForm },
-  { method: "POST", path: "/admin-submit", config: Pdfs.adminSubmit },
-  { method: "GET", path: "/create-pdf-admin", config: Pdfs.createPdfAdmin },
+  { method: "GET", path: "/create-pdf-user/{_id}", config: Admins.createPdfUser },
+  { method: "GET", path: "/create-handbook", config: Admins.createHandBook },
+  { method: "GET", path: "/submission-admin/{_id}", config: Admins.showSubmissionAdmin },
+  { method: "POST", path: "/update-submission/{_id}", config: Admins.submitByAdmin },
+  { method: "GET", path: "/other-form", config: Admins.showOther },
+  { method: "GET", path: "/handbook-form", config: Admins.showHandbookForm },
+  { method: "POST", path: "/admin-submit", config: Admins.adminSubmit },
+  { method: "GET", path: "/create-pdf-admin", config: Admins.createPdfAdmin },
 
   {
     method: "GET",
