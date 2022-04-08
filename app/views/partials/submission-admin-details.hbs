@@ -129,25 +129,6 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-        function submissionCompletion(){
-            if("{{submission.nda}}" && "{{submission.personalPhoto}}" ||
-                    "{{submission.projectTitle}}" && "{{submission.descriptiveTitle}}" &&
-                    "{{submission.projectType}}" && "{{submission.personalPhoto}}" &&
-                    "{{submission.projectImage}}" && "{{submission.summary}}" &&
-                    "{{submission.projectUrl}}" && "{{submission.videoUrl}}" &&
-                    "{{submission.presentationTime}}"){
-                document.getElementById("submissionIncomplete").checked = false;
-            }else{
-                document.getElementById("submissionIncomplete").checked = true;
-            }
-        }
-    </script>
-
-    <label for="submissionIncomplete" style="color: black">
-        <input class="uk-checkbox" type="checkbox" id="submissionIncomplete" name="submissionIncomplete" value="true" hidden>
-    </label>
-
 
 </div>
 

@@ -50,7 +50,7 @@ const Accounts = {
     auth: false,
     handler: function (request, h) {
       console.log("User has navigated to the Sign-Up page");
-      return h.view("signup", { title: "Signup for Submissions", subtitle: "This is the Signup Subtitle" });
+      return h.view("signup", { title: "Signup for Uathcruthú", subtitle: "This is the Signup Subtitle" });
     },
   },
 
@@ -105,7 +105,6 @@ const Accounts = {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           submitter: newUser,
-          submissionIncomplete: true,
         });
         await newSubmission.save();
 
@@ -115,10 +114,10 @@ const Accounts = {
 
         request.cookieAuth.set({ id: user.id });
         console.log(newUser.firstName + " " + newUser.lastName + " has registered");
-        return h.redirect("/login");
+        return h.redirect("/login", { title: "Signup for Uathcruthú" });
       } catch (err) {
         console.log("Error registering");
-        return h.view("signup", { errors: [{ message: err.message }] });
+        return h.view("signup", { title: "Sign up Error", errors: [{ message: err.message }] });
       }
     },
 
@@ -140,7 +139,6 @@ const Accounts = {
 
   login: {
     auth: false,
-
     validate: {
       payload: {
         email: Joi.string().email().required(),
@@ -182,7 +180,7 @@ const Accounts = {
         }
       } catch (err) {
         console.log("Error logging in");
-        return h.view("login", { errors: [{ message: err.message }] });
+        return h.view("login", { title: "Login Error", errors: [{ message: err.message }] });
       }
     },
   },
@@ -197,7 +195,7 @@ const Accounts = {
         return h.view("admin", { title: "Admin", users: users, submissions: submissions });
       } catch (err) {
         console.log("Error loading Showcase page");
-        return h.view("main", { errors: [{ message: err.message }] });
+        return h.view("main", { title: "Error", errors: [{ message: err.message }] });
       }
     },
   },

@@ -24,7 +24,7 @@ const Submissions = {
       const submission = await Submission.findByUserId(user).lean();
       console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
       return h.view("submission-user", {
-        title: user.firstName + "'s Submission",
+        title: submission.firstName + " " + submission.lastName + "'s Submission",
         submission: submission,
         user: user,
         today: today,
