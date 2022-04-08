@@ -1,5 +1,4 @@
 "use strict";
-const User = require("../models/user");
 const Submission = require("../models/submission");
 const AdminSubmission = require("../models/adminSubmission");
 const imageDataURI = require("image-data-uri");
@@ -18,26 +17,18 @@ const Admins = {
   createPdfUser: {
     auth: false,
     handler: async function (request, h) {
-      const user = await User.findById(request.params._id).lean();
       const submission = await Submission.findById(request.params._id).lean();
-      const adminSubmissions = await AdminSubmission.find();
-      const adminSubmission = await adminSubmissions[0];
       if (!submission.nda) {
         try {
-          console.log("testRequest: " + request + " " + request.params._id + " " + request.params.firstName);
-          await Pdfs.createFullUserPdf(request);
-
+          await Pdfs.createFullUserPdf(request, h);
           return h.view("submission-admin", {
-            title: "User's Submission",
-            user: user,
+            title: submission.firstName + " " + submission.lastName + "'s Submission",
             submission: submission,
           });
         } catch (err) {
-          const user = await User.findById(request.params._id).lean();
           console.log("Error creating pdf");
           return h.view("submission-admin", {
             title: "Submission Error",
-            user: user,
             submission: submission,
             errors: [{ message: err.message }],
           });
@@ -45,19 +36,15 @@ const Admins = {
       } else {
         try {
           await Pdfs.createNdaUserPdf(request);
-
           return h.view("submission-admin", {
-            title: "User's Submission",
-            user: user,
+            title: submission.firstName + " " + submission.lastName + "'s Submission",
             submission: submission,
           });
         } catch (err) {
-          const user = await User.findById(request.params._id).lean();
           const submission = await Submission.findById(request.params._id).lean();
           console.log("Error creating pdf");
           return h.view("submission-admin", {
             title: "Submission Error",
-            user: user,
             submission: submission,
             errors: [{ message: err.message }],
           });
@@ -70,22 +57,15 @@ const Admins = {
     auth: false,
     handler: async function (request, h) {
       try {
-        const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
-        const userId = await request.params._id;
-        const user = await User.findById(userId).lean();
         const submissionId = await request.params._id;
         const submission = await Submission.findById(submissionId).lean();
-        console.log(
-          submission.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page"
-        );
+        console.log(submission.projectTitle + " report page for " + submission.firstName);
         return h.view("submission-admin", {
-          title: submission.firstName + "'s Submission",
+          title: submission.firstName + " " + submission.lastName + "'s Submission",
           submission: submission,
-          user: user,
-          today: today,
         });
       } catch (err) {
-        return h.view("login", { errors: [{ message: err.message }] });
+        return h.view("login", { errors: [{ message: err.message }], title: "Submission Error" });
       }
     },
   },
@@ -97,7 +77,7 @@ const Admins = {
         projectType: Joi.string().allow(""),
         videoUrl: Joi.string().allow(""),
         presentationTime: Joi.string().allow(""),
-        submissionIncomplete: Joi.boolean,
+        //submissionIncomplete: Joi.boolean(),
       },
       options: {
         abortEarly: false,
@@ -106,8 +86,8 @@ const Admins = {
         const submission = await Submission.findById(request.params._id).lean();
         console.log("Admin has entered unacceptable data for submission");
         return h
-          .view("admin", {
-            title: "Submission Error",
+          .view("submission-admin", {
+            title: "Form Input Error",
             errors: error.details,
             submission: submission,
           })
@@ -121,12 +101,8 @@ const Admins = {
         const submissionEdit = request.payload;
         const submissionId = await request.params._id;
         const submission = await Submission.findById(submissionId);
-        const userId = await request.params._id;
-        const user = await User.findById(userId).lean();
 
-        if (submission.nda) {
-          submission.projectTitle = await "NDA";
-        } else if (submissionEdit.projectType !== "") {
+        if (submission.nda && submissionEdit.projectType !== "") {
           submission.projectType = sanitizeHtml(submissionEdit.projectType);
         }
 
@@ -137,33 +113,60 @@ const Admins = {
         if (submissionEdit.presentationTime !== "") {
           submission.presentationTime = sanitizeHtml(submissionEdit.presentationTime);
         }
+        /*submission.videoUrl = "";
+        submission.presentationTime = "";*/
 
-        submission.submissionIncomplete = submissionEdit.submissionIncomplete;
+        if (submission.nda) {
+          if (!submission.personalPhoto || !submission.presentationTime) {
+            console.log("Submission not complete");
+            submission.submissionIncomplete = true;
+          } else {
+            console.log("Submission IS complete!");
+            submission.submissionIncomplete = undefined;
+          }
+        } else if (
+          !submission.projectTitle ||
+          !submission.descriptiveTitle ||
+          !submission.projectType ||
+          !submission.personalPhoto ||
+          !submission.projectImage ||
+          !submission.summary ||
+          !submission.projectUrl ||
+          !submission.videoUrl ||
+          !submission.presentationTime
+        ) {
+          console.log("Submission not complete");
+          submission.submissionIncomplete = true;
+        } else {
+          console.log("Submission IS complete!");
+          submission.submissionIncomplete = undefined;
+        }
 
-        console.log(
-          "Admin has added the following Video URL to " +
-            submission.projectTitle +
-            ":" +
-            "\n" +
-            submission.videoUrl +
-            "\n"
-        );
+        if (submission.videoUrl) {
+          console.log(
+            "Admin has updated " +
+              submission.firstName +
+              " " +
+              submission.lastName +
+              "'s submission with the following Video URL:\n" +
+              submission.videoUrl
+          );
+        } else {
+          console.log("Admin has updated " + submission.firstName + " " + submission.lastName + "'s submission.");
+        }
+
         await submission.save();
         return h.view("submission-admin", {
-          title: "Video URL Error",
-          user: user,
+          title: submission.firstName + " " + submission.lastName + "'s Submission",
           submission: await Submission.findById(submissionId).lean(),
         });
       } catch (err) {
-        const userId = await request.params._id;
-        const user = await User.findById(userId).lean();
         const submissionId = await request.params._id;
         const submission = await Submission.findById(submissionId);
         console.log("Error updating Submission, so there is");
         return h.view("submission-admin", {
-          title: "Video URL Error",
+          title: "Submission Error",
           errors: [{ message: err.message }],
-          user: user,
           submission: submission,
         });
       }
@@ -180,13 +183,12 @@ const Admins = {
     auth: false,
     handler: async function (request, h) {
       try {
-        const users = await User.find().lean();
         const submissions = await Submission.find().lean();
         console.log("User has navigated to the 'Other' Project-Selection page");
-        return h.view("other-form", { title: "Other Project Selection", users: users, submissions: submissions });
+        return h.view("other-form", { title: "Other Project Selection", submissions: submissions });
       } catch (err) {
-        console.log("Error loading Showcase page");
-        return h.view("admin", { errors: [{ message: err.message }] });
+        console.log("Error loading the 'Other' Project-Selection page");
+        return h.view("admin", { errors: [{ message: err.message }], title: "Error - Other Project Selection" });
       }
     },
   },
@@ -195,9 +197,7 @@ const Admins = {
     auth: false,
     handler: async function (request, h) {
       try {
-        const users = await User.find().lean();
-        const submissions = await Submission.find().lean();
-        console.log("User has navigated to the Admin Submission Page");
+        console.log("User has navigated to the Admin pdf Submission Page");
         const adminSubmissions = await AdminSubmission.find().lean();
         var adminSubmission = null;
         if (adminSubmissions.length === 0) {
@@ -206,14 +206,12 @@ const Admins = {
           var adminSubmission = await adminSubmissions[0];
         }
         return h.view("handbook-form", {
-          title: "Other Project Selection",
+          title: "Handbook Form",
           adminSubmission: adminSubmission,
-          users: users,
-          submissions: submissions,
         });
       } catch (err) {
-        console.log("Error loading Showcase page");
-        return h.view("admin", { errors: [{ message: err.message }] });
+        console.log("Error loading Admin pdf Submission page");
+        return h.view("admin", { errors: [{ message: err.message }], adminSubmission: adminSubmission });
       }
     },
   },
@@ -221,29 +219,21 @@ const Admins = {
   createPdfAdmin: {
     auth: false,
     handler: async function (request, h) {
-      const user = await User.findById(request.params._id).lean();
-      const submissions = await Submission.find().lean();
-      const projectTypes = await submissions.map((a) => a.projectType);
-      const projectTypesUnique = [...new Set(projectTypes)];
-      console.log("User is attempting to create admin handbook");
       const adminSubmissions = await AdminSubmission.find().lean();
       const adminSubmission = await adminSubmissions[0];
 
       try {
         await Pdfs.createAdminPdf(request);
-
         return h.view("handbook-form", {
-          title: "User's Submission",
-          user: user,
+          title: "Handbook Form",
           adminSubmission: adminSubmission,
         });
       } catch (err) {
         const adminSubmissions = await AdminSubmission.find().lean();
         const adminSubmission = await adminSubmissions[0];
-        console.log("Error creating admin pdf");
+        console.log("Error creating Admin pdf");
         return h.view("handbook-form", {
           title: "Admin pdf Creation Error",
-          user: user,
           adminSubmission: adminSubmission,
           errors: [{ message: err.message }],
         });
@@ -255,45 +245,33 @@ const Admins = {
     auth: false,
     handler: async function (request, h) {
       try {
-        const users = await User.find().lean();
         const submissions = await Submission.find().lean();
         const projectTypes = await submissions.map((a) => a.projectType);
         const projectTypesUnique = [...new Set(projectTypes)];
-        console.log(projectTypesUnique);
+        console.log("Handbook will contain the following project types: " + projectTypesUnique);
         const merger = new PDFMerger();
         const adminSubmissions = await AdminSubmission.find().lean();
         const adminSubmission = await adminSubmissions[0];
         const backgroundImgData = await imageDataURI.encodeFromURL(adminSubmission.backgroundImage);
         const endOfPage = pageDimensions[1] / 1.25;
-
         const fs = require("fs");
         const pdf = require("pdf-parse");
-        let dataBuffer = fs.readFileSync("./public/handbooks/Project Showcase 2022.pdf");
+
+        let adminPdf = await Pdfs.createAdminPdf(adminSubmission);
+        let dataBuffer = await fs.readFileSync(adminPdf);
         const numPages = await pdf(dataBuffer).then(function (data) {
           return data.numpages;
         });
-
         let arrayPages = [];
         let l = numPages;
-        console.log("l = " + l);
         while (l > 0) {
           arrayPages.push(l);
           l--;
         }
         arrayPages.reverse();
-
-        console.log("number of pages: " + numPages);
-        console.log("array of pages: " + arrayPages);
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        let adminPdf = await Pdfs.createAdminPdf(adminSubmission);
         await merger.add(await adminPdf, arrayPages.slice(0, -1));
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //await merger.add("./public/handbooks/Project Showcase 2022.pdf", arrayPages.slice(0, -1));
         let i = 0;
-
         //loops through all unique projectTypes so as to create one page for each type
         while (i < projectTypesUnique.length) {
           let count = 0;
@@ -317,17 +295,20 @@ const Admins = {
                 pageDimensions[0] / 20 + count * 8
               );
               doc.setFont(undefined, "normal");
-              doc.text(
-                submissions[j].projectTitle + " - " + submissions[j].descriptiveTitle,
-                pageDimensions[0] / 40,
-                pageDimensions[0] / 15 + count * 8
-              );
+              if (!submissions[j].nda) {
+                doc.text(
+                  submissions[j].projectTitle + " - " + submissions[j].descriptiveTitle,
+                  pageDimensions[0] / 40,
+                  pageDimensions[0] / 15 + count * 8
+                );
+              }
               count += 1.5;
             }
 
             //add new page
             if (pageDimensions[0] / 20 + count * 8 > endOfPage) {
               doc.addPage();
+              //console.log("New Page has been added for all " + submissions[j].projectType + " projects");
               doc.addImage(backgroundImgData, "PNG", 0, 0, pageDimensions[0], pageDimensions[1]);
               doc.setFontSize(30);
               doc.setFont(undefined, "bold");
@@ -345,34 +326,30 @@ const Admins = {
           while (k < submissions.length) {
             //loops through all submissions and adds the submission pdf page into the handbook in the section pertaining to the appropriate projectType
             if (!submissions[k].submissionIncomplete && submissions[k].projectType === projectTypesUnique[i]) {
-              //merger.add("./public/handbooks/" + submissions[k].firstName + submissions[k].lastName + ".pdf");
               if (submissions[k].nda) {
                 let userPdf = await Pdfs.createNdaUserPdf(submissions[k]._id);
                 merger.add(await userPdf);
+                Pdfs.refresh(request, h);
               } else {
                 let userPdf = await Pdfs.createFullUserPdf(submissions[k]._id);
                 merger.add(await userPdf);
+                Pdfs.refresh(request, h);
               }
             }
             k++;
           }
           i++;
         }
-
-        merger.add("./public/handbooks/Project Showcase 2022.pdf", arrayPages.slice(-1));
+        merger.add(await adminPdf, arrayPages.slice(-1));
         await merger.save("./public/handbooks/handbook.pdf");
         console.log("Handbook has now been created");
-        console.log("Number of users: " + users.length);
-        console.log("First User: " + users[0]);
-        console.log("New Handbook created");
-        return h.view("admin", { title: "Admin", users: users, submissions: submissions });
+        console.log("Number of users: " + submissions.length);
+        return h.view("admin", { title: "Admin", submissions: submissions });
       } catch (err) {
-        const users = await User.find().lean();
         const submissions = await Submission.find().lean();
         console.log("Error creating handbook");
         return h.view("admin", {
           title: "Admin",
-          users: users,
           submissions: submissions,
           errors: [{ message: err.message }],
         });
@@ -418,10 +395,10 @@ const Admins = {
 
         if (adminSubmissions.length === 0) {
           var adminSubmission = new AdminSubmission();
-          console.log("A new handbook has been created: " + adminSubmission);
+          console.log("Creating new Admin pdf (" + adminSubmission + ")...");
         } else {
           var adminSubmission = await adminSubmissions[0];
-          console.log("Existing handbook will be edited: " + adminSubmission.handbookTitle);
+          console.log("Editing existing Admin pdf (" + adminSubmission.handbookTitle + ")...");
         }
 
         if (adminSubmissionEdit.courseTitle !== "") {
@@ -538,9 +515,8 @@ const Admins = {
           adminSubmission.adminImage3 = await adminImage3Url;
         }
 
-        console.log("New AdminSubmission: " + adminSubmission.handbookTitle);
         await adminSubmission.save();
-        console.log("User has submitted admin pages");
+        console.log(adminSubmission.handbookTitle + " has been created");
         return h.redirect("/handbook-form", { adminSubmission: adminSubmission });
       } catch (err) {
         console.log("Error submitting admin pages");
