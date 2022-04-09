@@ -7,7 +7,7 @@ This application is written in node.js on the hapi framework.
 ### Implementation
 
 #### Environmental Variables
-The '.env' file needs to be populated as follows:
+The '.env' file needs to be populated as follows:  
 cookie_name= "Cookie"  
 cookie_password= "Cookie Password"
 db= "Database Connection String"  
