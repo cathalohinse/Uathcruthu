@@ -7,5 +7,18 @@
       "email": "colm@gmail.com",
       "password": "q"
     }
+  },
+  "user": {
+    "_model": "User",
+    "james": {
+      "firstName": "James",
+      "lastName": "Geraghty",
+      "email": "jamesgeraghty@mail.wit.ie"
+    },
+    "ian": {
+      "firstName": "Ian",
+      "lastName": "Hutchinson",
+      "email": "ianhutchinson@mail.wit.ie"
+    }
   }
 }

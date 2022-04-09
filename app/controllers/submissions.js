@@ -55,12 +55,17 @@ const Submissions = {
         const userId = await request.auth.credentials.id;
         const user = await User.findById(userId);
         const submission = await Submission.findByUserId(user).lean();
+        const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
+        const adminSubmissions = await AdminSubmission.find().lean();
+        const adminSubmission = await adminSubmissions[0];
         console.log(user.firstName + " has entered unacceptable data for submission");
         return h
           .view("submission-form", {
             title: "Submission Error",
             errors: error.details,
             submission: submission,
+            today: today,
+            deadline: adminSubmission.deadline,
           })
           .takeover()
           .code(400);
@@ -132,10 +137,15 @@ const Submissions = {
         await submission.save();
         return h.redirect("/submission-user");
       } catch (err) {
+        const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
+        const adminSubmissions = await AdminSubmission.find().lean();
+        const adminSubmission = await adminSubmissions[0];
         console.log("Error updating Submission");
         return h.view("submission-form", {
           title: "Submission Error",
           errors: [{ message: err.message }],
+          today: today,
+          deadline: adminSubmission.deadline,
         });
       }
     },
