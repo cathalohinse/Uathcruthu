@@ -18,35 +18,62 @@ const Admins = {
     auth: false,
     handler: async function (request, h) {
       const submission = await Submission.findById(request.params._id).lean();
+
       if (!submission.nda) {
-        try {
-          await Pdfs.createFullUserPdf(request, h);
-          return h.view("submission-admin", {
-            title: submission.firstName + " " + submission.lastName + "'s Submission",
-            submission: submission,
-          });
-        } catch (err) {
-          console.log("Error creating pdf");
+        if (
+          submission.projectTitle &&
+          submission.descriptiveTitle &&
+          submission.personalPhoto &&
+          submission.projectImage &&
+          submission.summary &&
+          submission.projectUrl &&
+          submission.videoUrl
+        ) {
+          try {
+            await Pdfs.createFullUserPdf(request, h);
+            return h.view("submission-admin", {
+              title: submission.firstName + " " + submission.lastName + "'s Submission",
+              submission: submission,
+            });
+          } catch (err) {
+            console.log("Error creating pdf");
+            return h.view("submission-admin", {
+              title: "Submission Error",
+              submission: submission,
+              errors: [{ message: err.message }],
+            });
+          }
+        } else {
+          console.log("Some Submission Details are missing");
           return h.view("submission-admin", {
             title: "Submission Error",
             submission: submission,
-            errors: [{ message: err.message }],
+            errors: [{ message: "Some Submission Details are missing" }],
           });
         }
       } else {
-        try {
-          await Pdfs.createNdaUserPdf(request);
-          return h.view("submission-admin", {
-            title: submission.firstName + " " + submission.lastName + "'s Submission",
-            submission: submission,
-          });
-        } catch (err) {
-          const submission = await Submission.findById(request.params._id).lean();
-          console.log("Error creating pdf");
+        if (submission.personalPhoto) {
+          try {
+            await Pdfs.createNdaUserPdf(request);
+            return h.view("submission-admin", {
+              title: submission.firstName + " " + submission.lastName + "'s Submission",
+              submission: submission,
+            });
+          } catch (err) {
+            const submission = await Submission.findById(request.params._id).lean();
+            console.log("Error creating pdf");
+            return h.view("submission-admin", {
+              title: "Submission Error",
+              submission: submission,
+              errors: [{ message: err.message }],
+            });
+          }
+        } else {
+          console.log("Some Submission Details are missing");
           return h.view("submission-admin", {
             title: "Submission Error",
             submission: submission,
-            errors: [{ message: err.message }],
+            errors: [{ message: "Some Submission Details are missing" }],
           });
         }
       }
