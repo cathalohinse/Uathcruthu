@@ -1,9 +1,8 @@
 ## Uathcruthú Landing Page
 
-[Uathcruthú](https://uathcruthu.herokuapp.com/) is a web application that was written up as a final year project submission for the WIT Higher Diploma in Science in Computer Science. It is used to automate the processing of project submission data into a project showcase.
-As part of the submission process for Final Year Project for the Higher Diploma in Science in Computer Science at WIT, each student must submit some data about the project that can be used to summarise their work on a one page entry in a 'showcase handbook'. This application serves as a means to submit that data.
-This application can be used by both students and administrators. The student submits their data using the webform contained therein, and the administrator can then create the handbook based on this input and their own additional input.
-This application is written in node.js on the hapi framework.
+[Uathcruthú](https://uathcruthu.herokuapp.com/) is a web application that was written up as a final year project for the WIT Higher Diploma in Science in Computer Science. It is used to automate the processing of project submission data from the student, into a showcase handbook which is used as a guide by a panel of reviewers at the project presentations. This application is used by both students and administrators. The student submits their data using the webform contained therein, and the administrator then creates the handbook based on this data and their own additional input.
+<br>In summary, this application serves as a means for a student to submit their data, and for the administrator to then generate a showcase handbook.
+<br>This application is written in node.js on the hapi framework.
 
 ### Implementation
 * The application can be deployed from the [repository](https://github.com/cathalohinse/Uathcruthu), by following the instructions on the README.md file contained therein.
