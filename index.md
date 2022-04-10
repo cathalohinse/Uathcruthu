@@ -16,5 +16,5 @@ This application is written in node.js on the hapi framework.
 * [Trello Board](https://trello.com/b/3GvQzJVK/uathcruth%C3%BA)
 
 <p align="center">
-  <img src="/wit.png" alt="WIT Crest"/>
+  <img src="wit.png" alt="WIT Crest"/>
 </p>
