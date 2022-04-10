@@ -4,21 +4,15 @@
     "colm": {
       "firstName": "Colm",
       "lastName": "Dunphy",
-      "email": "colm@gmail.com",
-      "password": "q"
+      "email": "colm@gmail.com"
     }
   },
   "user": {
     "_model": "User",
-    "james": {
-      "firstName": "James",
-      "lastName": "Geraghty",
-      "email": "jamesgeraghty@mail.wit.ie"
-    },
-    "ian": {
-      "firstName": "Ian",
-      "lastName": "Hutchinson",
-      "email": "ianhutchinson@mail.wit.ie"
+    "cathal": {
+      "firstName": "Cathal",
+      "lastName": "Henchy",
+      "email": "20091405@mail.wit.ie"
     }
   }
 }
