@@ -15,4 +15,6 @@ This application is written in node.js on the hapi framework.
 * [GitHub Repository](https://github.com/cathalohinse/Uathcruthu)
 * [Trello Board](https://trello.com/b/3GvQzJVK/uathcruth%C3%BA)
 
-<img src="/ITPL.png" alt="WIT Crest"/>
+<p align="center">
+  <img src="/WIT.png" alt="WIT Crest"/>
+</p>
