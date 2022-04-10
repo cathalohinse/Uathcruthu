@@ -1,8 +1,12 @@
 # Uathcruthú
-Final Year Project: A web app that automates the processing of project submission data into a project showcase.
-As part of the submission process for Final Year Project for the Higher Diploma in Science in Computer Science at WIT, each student must submit some data about the project that can be used to summarise their work on a one page entry in a 'showcase handbook'. This application serves as a means to submit that data.
-This application can be used by both students and administrators. The student submits their data using the webform contained therein, and the administrator can then create the handbook based on this input and their own additional input.
-This application is written in node.js on the hapi framework.
+Final Year Project: A web app that automates the processing of project submission data into an administrative file.
+<br>[Uathcruthú](https://uathcruthu.herokuapp.com/) is a web application that was written up as a final year project for
+the WIT Higher Diploma in Science in Computer Science. It is used to automate the processing of project submission data
+from the student, into a showcase handbook which is used as a guide by a panel of reviewers at the project presentations.
+This application is used by both students and administrators: The student submits their data using the webform contained
+therein, and the administrator then creates the handbook based on this data, and their own additional input.
+<br>In summary, this application serves as a means for a student to submit their data, and for the administrator to then generate a showcase handbook.
+<br>This application is written in node.js on the hapi framework.
 
 ### Implementation
 #### Additional Accounts required
@@ -60,7 +64,11 @@ There is a sign-up feature that is currently hidden from view. This can be enabl
 ### Links
 * [Uathcruthú](https://uathcruthu.herokuapp.com/)
     * [Directory Listing](https://uathcruthu.herokuapp.com/handbooks/)
-* [Demonstration Video](https://www.youtube.com/watch?v=LJrKQbBYcMk)
+* [Demonstration Video](https://youtu.be/Nly0TXLTJAA)
 * [GitHub Repository](https://github.com/cathalohinse/Uathcruthu)
 * [Trello Board](https://trello.com/b/3GvQzJVK/uathcruth%C3%BA)
 * [Landing Page](https://cathalohinse.github.io/Uathcruthu/)
+
+<br>
+
+![WIT Crest](./public/images/ITPL.png)
