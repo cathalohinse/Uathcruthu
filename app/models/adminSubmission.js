@@ -15,12 +15,12 @@ const adminSubmissionSchema = new Schema({
   adminImage3: String,
   submitter: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Admin",
   },
 });
 
 //My own custom built method:
-adminSubmissionSchema.statics.findByUserId = function (submitter) {
+adminSubmissionSchema.statics.findByAdminId = function (submitter) {
   return this.findOne({ submitter: submitter });
 };
 

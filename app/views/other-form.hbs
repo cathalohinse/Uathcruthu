@@ -1,11 +1,11 @@
 <div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
-    {{> admin-menu title="Uathcruthú" subTitle="Showcase Selection" }}
+    {{> admin-menu title="Uathcruthú" subTitle="Foirm Cuir isteach Cineál Tionscadal" }}
 </div>
 
 <div class="uk-container uk-margin">
     <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
         <div class="uk-width-expand@m">
-            <h1 class="uk-heading-small">Eile</h1>
+            <h1 class="uk-heading-small">Cineál Tionscadal - Eile</h1>
         </div>
     </div>
 </div>
@@ -28,30 +28,23 @@
                                 <tr>
                                     <td>
                                         <div class="uk-width-1-2 uk-grid-margin">
-                                            <a href="./handbooks/{{firstName}}{{lastName}}.pdf" target=”_blank” class="uk-card uk-card-small uk-text-center uk-padding-remove">
+                                            <a href="./handbooks/{{firstName}}{{lastName}}.pdf" target=”_blank” class="uk-card uk-card-small uk-text-center uk-padding-remove" onclick="return false">
                                                 <div style="color: black" class="uk-text-left">{{firstName}} {{lastName}}</div>
                                             </a>
                                         </div>
                                     </td>
-
                                     <td>
-
-                                        <form action="/update-submission/{{_id}}" method="POST" enctype="multipart/form-data">
+                                        <form action="/submit-other/{{_id}}" method="POST" enctype="multipart/form-data">
                                             <div class="uk-text-center" uk-grid>
-                                            <div class="uk-inline uk-width-1-2">
-                                                <span class="uk-form-icon uk-width-1-2" uk-icon="icon: pencil"></span>
-                                                <input class="uk-input uk-form-small" id="projectType" type="text" name="projectType" placeholder="{{projectType}}"/>
-                                            </div>
-
-
                                                 <div class="uk-inline uk-width-1-2">
-                                                <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-small uk-width-1-1">Submit</button>
+                                                    <span class="uk-form-icon uk-width-1-2" uk-icon="icon: pencil"></span>
+                                                    <input class="uk-input uk-form-small" id="projectType" type="text" name="projectType" placeholder="{{projectType}}"/>
                                                 </div>
-
+                                                <div class="uk-inline uk-width-1-2">
+                                                    <button style="background-color: #653DC2" class="submit uk-button uk-button-primary uk-button-small uk-width-1-1">Submit</button>
+                                                </div>
                                             </div>
-
                                         </form>
-
                                     </td>
                                 </tr>
                             {{/if}}
@@ -61,7 +54,6 @@
                     </div>
                 </div>
             </div>
-
             {{> error }}
         </div>
     </div>

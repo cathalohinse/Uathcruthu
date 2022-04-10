@@ -7,42 +7,20 @@ const Joi = require("@hapi/joi");
 const sanitizeHtml = require("sanitize-html");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const { jsPDF } = require("jspdf");
 const Admin = require("../models/admin");
 
 const Accounts = {
   index: {
     auth: false,
     handler: function (request, h) {
-      console.log("Welcome to Uathcruthú");
+      console.log("Fáilte chuigh Uathcruthú");
       const date = new Date();
       const week_day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       const month_name = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       console.log(
         week_day[date.getDay()] + " " + month_name[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear()
       );
-      return h.view("main", { title: "ITPL Tionscadal Cuir Isteach" });
-    },
-  },
-
-  showSubmissionForm: {
-    handler: async function (request, h) {
-      const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
-      const userId = await request.auth.credentials.id;
-      const user = await User.findById(userId);
-      const submission = await Submission.findByUserId(user).lean();
-      const projectTypes = ["Native Mobile Application", "Web Application", "Combined Web and Mobile", "Other"];
-      console.log(submission.firstName + " " + submission.lastName + " has navigated to the Submit page");
-      const adminSubmissions = await AdminSubmission.find().lean();
-      const adminSubmission = await adminSubmissions[0];
-      return h.view("submission-form", {
-        title: "Project Submission",
-        submission: submission,
-        today: today,
-        deadline: await adminSubmission.deadline,
-        deadlineCutOff: await Math.floor(new Date(adminSubmission.deadline).getTime() / 1000),
-        projectTypes: projectTypes,
-      });
+      return h.view("main", { title: "Tionscadal ITPL" });
     },
   },
 
@@ -108,9 +86,9 @@ const Accounts = {
         });
         await newSubmission.save();
 
-        const doc = await new jsPDF("landscape");
+        /*const doc = await new jsPDF("landscape");
         doc.text(newUser.firstName + " has not created their Handbook yet.", 20, 20);
-        doc.save("./public/handbooks/" + newUser.firstName + newUser.lastName + ".pdf");
+        doc.save("./public/handbooks/" + newUser.firstName + newUser.lastName + ".pdf");*/
 
         request.cookieAuth.set({ id: user.id });
         console.log(newUser.firstName + " " + newUser.lastName + " has registered");
@@ -160,20 +138,42 @@ const Accounts = {
     },
 
     handler: async function (request, h) {
-      const { email, password } = request.payload;
+      let { email, password } = request.payload;
       try {
         let user = await User.findByEmail(email);
         let admin = await Admin.findByEmail(email);
         if (!user && !admin) {
           const message = "Email address is not registered";
           throw Boom.unauthorized(message);
+          // if a user is logging in for the first time, they can set their password. But there is no prompt, it's as if they're logging in as normal.
+        } else if (user && !user.password) {
+          const hash = await bcrypt.hash(password, saltRounds);
+          user.password = sanitizeHtml(hash);
+          user.save();
+          request.cookieAuth.set({ id: user.id });
+          console.log(user.firstName + " " + user.lastName + " has logged in");
+          const newSubmission = new Submission({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            submitter: user,
+          });
+          await newSubmission.save();
+          return h.redirect("/submission-form");
+          // if an admin is logging in for the first time, they can set their password. But there is no prompt, it's as if they're logging in as normal.
+        } else if (admin && !admin.password) {
+          const hash = await bcrypt.hash(password, saltRounds);
+          admin.password = sanitizeHtml(hash);
+          admin.save();
+          request.cookieAuth.set({ id: admin.id });
+          console.log(admin.firstName + " " + admin.lastName + " has logged in");
+          return h.redirect("/admin");
         } else if (user) {
-          user.comparePassword(password);
+          await user.comparePassword(password);
           request.cookieAuth.set({ id: user.id });
           console.log(user.firstName + " " + user.lastName + " has logged in");
           return h.redirect("/submission-form");
         } else {
-          admin.comparePassword(password);
+          await admin.comparePassword(password);
           request.cookieAuth.set({ id: admin.id });
           console.log(admin.firstName + " " + admin.lastName + " has logged in");
           return h.redirect("/admin");
@@ -185,8 +185,48 @@ const Accounts = {
     },
   },
 
+  showSubmissionForm: {
+    handler: async function (request, h) {
+      const userId = await request.auth.credentials.id;
+      const user = await User.findById(userId);
+      const submission = await Submission.findByUserId(user).lean();
+      //This is where the Project Types are defined.
+      const projectTypes = ["Native Mobile Application", "Web Application", "Combined Web and Mobile", "Other"];
+      const adminSubmissions = await AdminSubmission.find().lean();
+      const adminSubmission = await adminSubmissions[0];
+      //In case the administrator doesn't want to set a deadline for submission of handbook data, this ensures that no alarms appear on the submission form
+      if (adminSubmission === undefined) {
+        var deadline = null;
+        var deadlineCutOff = null;
+        var today = null;
+      } else if (adminSubmission.deadline === undefined) {
+        var deadline = null;
+        var deadlineCutOff = null;
+        var today = null;
+      } else {
+        //This function adds 23 hours and 59 minutes to the deadline selected by the admin. The assumption is that the
+        //deadline selected would be inclusive of that actual day.
+        function addHoursMinutes(numOfHours, numOfMins, date = new Date()) {
+          date.setHours(date.getHours() + numOfHours);
+          date.setMinutes(date.getMinutes() + numOfMins);
+          return date;
+        }
+        var deadline = addHoursMinutes(22, 59, new Date(adminSubmission.deadline));
+        var deadlineCutOff = await Math.floor(new Date(deadline).getTime() / 1000);
+        var today = await Math.floor(new Date(Date.now()).getTime() / 1000);
+      }
+      return h.view("submission-form", {
+        title: "Project Submission",
+        submission: submission,
+        today: today,
+        deadline: deadline,
+        deadlineCutOff: deadlineCutOff,
+        projectTypes: projectTypes,
+      });
+    },
+  },
+
   showAdminHome: {
-    auth: false,
     handler: async function (request, h) {
       try {
         const users = await User.find().lean();

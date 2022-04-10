@@ -16,19 +16,15 @@ const Submissions = {
 
   showSubmission: {
     handler: async function (request, h) {
-      const today = await Math.floor(new Date(Date.now()).getTime() / 1000);
-      const adminSubmissions = await AdminSubmission.find().lean();
-      const adminSubmission = await adminSubmissions[0];
       const userId = await request.auth.credentials.id;
       const user = await User.findById(userId).lean();
       const submission = await Submission.findByUserId(user).lean();
-      console.log(user.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page");
+      console.log(
+        submission.firstName + " has navigated/been redirected to " + submission.projectTitle + " report page"
+      );
       return h.view("submission-user", {
         title: submission.firstName + " " + submission.lastName + "'s Submission",
         submission: submission,
-        user: user,
-        today: today,
-        deadline: adminSubmission.deadline,
       });
     },
   },
@@ -47,6 +43,7 @@ const Submissions = {
         projectUrl: Joi.string().allow(""),
         nda: Joi.boolean(),
         projectTypeOther: Joi.boolean(),
+        submissionIncomplete: Joi.boolean(),
       },
       options: {
         abortEarly: false,
@@ -76,9 +73,7 @@ const Submissions = {
 
         submission.nda = submissionEdit.nda;
 
-        if (submission.nda) {
-          submission.projectTitle = await "NDA";
-        } else if (submissionEdit.projectTitle !== "") {
+        if (submissionEdit.projectTitle !== "") {
           submission.projectTitle = sanitizeHtml(submissionEdit.projectTitle);
         }
         if (submissionEdit.descriptiveTitle !== "") {
@@ -128,6 +123,38 @@ const Submissions = {
         }
 
         submission.projectTypeOther = submissionEdit.projectTypeOther;
+
+        //This determines if the submission has been completed or not.
+        //If the submission has not been completed, it is not included in the 'Create PDF' function.
+        //The whole app is far more functional if the user doesn't need to check the status of all students prior to handbook creation.
+        //It also has to be taken into account that plenty of students will not ever complete their submission in time or will opt for deferrals etc.
+        //An obvious alternative to having a boolean attribute that determines the status of the submission is to just have normal validation ('.required').
+        //However, I opted to go for this approach, so as to allow the students to submit unfinished submissions that they could essentially save as 'drafts' and return to later.
+        if (submission.nda) {
+          if (!submission.personalPhoto || !submission.presentationTime) {
+            console.log("Submission not complete");
+            submission.submissionIncomplete = true;
+          } else {
+            console.log("Submission IS complete!");
+            submission.submissionIncomplete = undefined;
+          }
+        } else if (
+          !submission.projectTitle ||
+          !submission.descriptiveTitle ||
+          !submission.projectType ||
+          !submission.personalPhoto ||
+          !submission.projectImage ||
+          !submission.summary ||
+          !submission.projectUrl ||
+          !submission.videoUrl ||
+          !submission.presentationTime
+        ) {
+          console.log("Submission not complete");
+          submission.submissionIncomplete = true;
+        } else {
+          console.log("Submission IS complete!");
+          submission.submissionIncomplete = undefined;
+        }
 
         await submission.save();
         return h.redirect("/submission-user");

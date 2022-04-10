@@ -20,6 +20,7 @@ module.exports = [
   { method: "GET", path: "/submission-admin/{_id}", config: Admins.showSubmissionAdmin },
   { method: "POST", path: "/update-submission/{_id}", config: Admins.submitByAdmin },
   { method: "GET", path: "/other-form", config: Admins.showOther },
+  { method: "POST", path: "/submit-other/{_id}", config: Admins.submitOther },
   { method: "GET", path: "/handbook-form", config: Admins.showHandbookForm },
   { method: "POST", path: "/admin-submit", config: Admins.adminSubmit },
   { method: "GET", path: "/create-pdf-admin", config: Admins.createPdfAdmin },
