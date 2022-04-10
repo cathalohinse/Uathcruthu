@@ -10,7 +10,7 @@
 
 ### Links
 * [Uathcruthú](https://uathcruthu.herokuapp.com/)
-* [Demonstration Video](https://www.youtube.com/watch?v=Uh36o_e1Kw4)
+* [Demonstration Video](https://www.youtube.com/watch?v=Nly0TXLTJAA)
 * [GitHub Repository](https://github.com/cathalohinse/Uathcruthu)
 * [Trello Board](https://trello.com/b/3GvQzJVK/uathcruth%C3%BA)
 
