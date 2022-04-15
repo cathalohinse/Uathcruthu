@@ -101,7 +101,7 @@ const Pdfs = {
         " " +
         submission.lastName
     );
-    //If this is not being accessed directly, it cannot be returned as a vairable, because there would already be a doc variable in the
+    //If this is not being accessed directly, it cannot be returned as a variable, because there would already be a doc variable in the
     // calling method. Therefore it needs to be sent to the cache from where it can be accessed for the remainder of the calling method
     if (creatingFullUserPdf) {
       return doc;
@@ -158,7 +158,7 @@ const Pdfs = {
         " " +
         submission.lastName
     );
-    //If this is not being accessed directly, it cannot be returned as a vairable, because there would already be a doc variable in the
+    //If this is not being accessed directly, it cannot be returned as a variable, because there would already be a doc variable in the
     //calling method. Therefore it needs to be sent to the cache from where it can be accessed for the remainder of the calling method
     if (creatingNdaUserPdf) {
       return doc;
@@ -377,7 +377,7 @@ const Pdfs = {
 
     doc.save("./public/handbooks/" + adminSubmission.handbookTitle + ".pdf");
     console.log("New AdminPdf created with " + doc.internal.getNumberOfPages() + " pages.");
-    //If this is not being accessed directly, it cannot be returned as a vairable, because there would already be a doc variable in the
+    //If this is not being accessed directly, it cannot be returned as a variable, because there would already be a doc variable in the
     //calling method. Therefore it needs to be sent to the cache from where it can be accessed for the remainder of the calling method
     if (creatingHandbookPdf) {
       return "./public/handbooks/" + adminSubmission.handbookTitle + ".pdf";

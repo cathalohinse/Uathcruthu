@@ -394,7 +394,7 @@ const Admins = {
             const courseImagePublic_id = await courseImageFileName.substr(0, courseImageFileName.indexOf("."));
             await ImageStore.deleteImage(courseImagePublic_id);
           }
-          const courseImageResult = await ImageStore.uploadImage(adminSubmissionEdit.courseImage); //consider re-ordering images to maintain consistency
+          const courseImageResult = await ImageStore.uploadImage(adminSubmissionEdit.courseImage);
           const courseImageUrl = await courseImageResult.url;
           adminSubmission.courseImage = await courseImageUrl;
         }
@@ -430,7 +430,7 @@ const Admins = {
             );
             await ImageStore.deleteImage(studentBackgroundImagePublic_id);
           }
-          const studentBackgroundImageResult = await ImageStore.uploadImage(adminSubmissionEdit.studentBackgroundImage); //consider re-ordering images to maintain consistency
+          const studentBackgroundImageResult = await ImageStore.uploadImage(adminSubmissionEdit.studentBackgroundImage);
           const studentBackgroundImageUrl = await studentBackgroundImageResult.url;
           adminSubmission.studentBackgroundImage = await studentBackgroundImageUrl;
         }
@@ -456,7 +456,7 @@ const Admins = {
             const adminImage1Public_id = await adminImage1FileName.substr(0, adminImage1FileName.indexOf("."));
             await ImageStore.deleteImage(adminImage1Public_id);
           }
-          const adminImage1Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage1); //consider re-ordering images to maintain consistency
+          const adminImage1Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage1);
           const adminImage1Url = await adminImage1Result.url;
           adminSubmission.adminImage1 = await adminImage1Url;
         }
@@ -471,7 +471,7 @@ const Admins = {
             const adminImage2Public_id = await adminImage2FileName.substr(0, adminImage2FileName.indexOf("."));
             await ImageStore.deleteImage(adminImage2Public_id);
           }
-          const adminImage2Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage2); //consider re-ordering images to maintain consistency
+          const adminImage2Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage2);
           const adminImage2Url = await adminImage2Result.url;
           adminSubmission.adminImage2 = await adminImage2Url;
         }
@@ -486,7 +486,7 @@ const Admins = {
             const adminImage3Public_id = await adminImage3FileName.substr(0, adminImage3FileName.indexOf("."));
             await ImageStore.deleteImage(adminImage3Public_id);
           }
-          const adminImage3Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage3); //consider re-ordering images to maintain consistency
+          const adminImage3Result = await ImageStore.uploadImage(adminSubmissionEdit.adminImage3);
           const adminImage3Url = await adminImage3Result.url;
           adminSubmission.adminImage3 = await adminImage3Url;
         }
