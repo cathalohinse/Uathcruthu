@@ -95,7 +95,7 @@ const Submissions = {
             const personalPhotoPublic_id = await personalPhotoFileName.substr(0, personalPhotoFileName.indexOf("."));
             await ImageStore.deleteImage(personalPhotoPublic_id);
           }
-          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto); //consider re-ordering images to maintain consistency
+          const personalPhotoResult = await ImageStore.uploadImage(submissionEdit.personalPhoto);
           const personalPhotoUrl = await personalPhotoResult.url;
           submission.personalPhoto = await personalPhotoUrl;
         }

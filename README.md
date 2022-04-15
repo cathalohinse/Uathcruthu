@@ -47,6 +47,8 @@ There is a sign-up feature that is currently hidden from view. This can be enabl
 * Bcrypt
 * sanitize-html
 * jsPDF
+* pdf-merger-js
+* image-data-uri
 * SourceTree
 * git
 * GitHub
