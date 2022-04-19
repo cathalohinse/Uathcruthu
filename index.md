@@ -12,7 +12,6 @@
 * [Uathcruthú](https://uathcruthu.herokuapp.com/)
 * [Demonstration Video](https://www.youtube.com/watch?v=Nly0TXLTJAA)
 * [GitHub Repository](https://github.com/cathalohinse/Uathcruthu)
-* [Trello Board](https://trello.com/b/3GvQzJVK/uathcruth%C3%BA)
 * [Report](https://cathalohinse.github.io/Uathcruthu/report.pdf)
 * [Presentation](https://cathalohinse.github.io/Uathcruthu/presentation.pptx)
 
